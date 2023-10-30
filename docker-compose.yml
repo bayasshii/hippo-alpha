@@ -12,7 +12,6 @@ services:
     tty: true
     stdin_open: true
     environment:
-      <<: *rails_app_environment
       FRONTEND_ORIGIN: http://localhost:3000
 
   db:
@@ -23,7 +22,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       TZ: "Asia/Tokyo"
-      
+
     ports:
       - "3306:3306"
 
