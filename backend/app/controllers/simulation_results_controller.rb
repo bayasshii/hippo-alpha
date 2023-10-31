@@ -11,6 +11,7 @@ class SimulationResultsController < ApplicationController
 
   def create
     simulationResult = SimulationResult.new(simulationResult_params)
+    puts '吠えgほげ'
     if simulationResult.save
       render json: simulationResult
     else
@@ -35,13 +36,7 @@ class SimulationResultsController < ApplicationController
   end
 
   private
-
-    def set_simulationResult
-      @simulationResult = SimulationResult.find(params[:id])
-    end
-
     def simulationResult_params
       params.require(:simulationResult).permit(:title, :content)
-      # ↑ちゃんと値入れる
     end
 end

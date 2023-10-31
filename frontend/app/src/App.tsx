@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+import { getAPIData } from "./api/getAPIData ";
+import { postAPIData } from "./api/postAPIData";
 
-function App() {
+const App = () => {
+  const [data, setData] = React.useState<Array<Object>>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getAPIData("/simulation_results");
+      setData(response?.data);
+    };
+    fetchData();
+  }, []);
+
+  const postData = async () => {
+    postAPIData("/simulation_results", {
+      title: "foo",
+      content: "bar"
+    }).then((response) => {
+      console.log(response);
+    });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {data.map((item: any) => (
+        <div key={item.id}>
+          <h1>
+            {item.id}:{item.title}
+          </h1>
+          <p>{item.content}</p>
+        </div>
+      ))}
+      <button onClick={postData}>Post Data</button>
     </div>
   );
-}
+};
 
 export default App;
