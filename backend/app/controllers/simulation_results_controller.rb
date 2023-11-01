@@ -16,6 +16,6 @@ class SimulationResultsController < ApplicationController
 
   private
     def simulationResult_params
-      params.require(:simulationResult).permit(:title, :content)
+      params.require(:simulationResult).permit(:title, :principal,:assumed_yields, :monthly_deposit)
     end
 end

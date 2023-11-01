@@ -1,21 +1,12 @@
 SimulationResult.create!(
     title: 'title test',
-    content: 'content test',
+    principal: 100000,
 )
 SimulationResult.create!(
     title: 'title test',
-    content: 'content test',
+    principal: 100000,
 )
 SimulationResult.create!(
     title: 'title test',
-    content: 'content test',
-)
-SimulationResult.create!(
-    title: 'title test',
-    content: 'content test',
-)
-
-SimulationResult.create!(
-    title: 'title test',
-    content: 'content test',
+    principal: 100000,
 )
