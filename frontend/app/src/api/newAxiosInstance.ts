@@ -1,7 +1,7 @@
 import axios from "axios";
 const DEFAULT_API_CONFIG = {
   baseURL: "http://localhost:3001",
-  timeout: 5000,
+  timeout: 1000,
   mode: "cors",
   credentials: "include",
   headers: {
@@ -16,13 +16,13 @@ export const newAxiosInstance = () => {
   instance.interceptors.response.use(
     (response) => {
       if (process.env.NODE_ENV === "development") {
-        console.log("devMode:", response);
+        console.log("devMode-success:", response);
       }
       return response;
     },
     (error) => {
       if (process.env.NODE_ENV === "development") {
-        console.log("エラー：", error);
+        console.log("devMode-error：", error);
       }
       return Promise.reject(error);
     }

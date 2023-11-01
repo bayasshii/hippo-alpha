@@ -15,20 +15,27 @@ const App = () => {
   }, []);
 
   const postData = async () => {
-    postAPIData("/simulation_results", {
+    const newData = {
       title: "foo",
       content: "bar"
-    }).then((response) => {
-      console.log(response);
-    });
+    };
+    postAPIData("/simulation_results", {
+      simulationResult: newData
+    })
+      .catch((error) => {
+        console.log("エラー", error.response.data);
+      })
+      .then(() => {
+        setData([...data, newData]);
+      });
   };
 
   return (
     <div className="App">
-      {data.map((item: any) => (
-        <div key={item.id}>
+      {data.map((item: any, key) => (
+        <div key={key}>
           <h1>
-            {item.id}:{item.title}
+            {key}:{item.title}
           </h1>
           <p>{item.content}</p>
         </div>
