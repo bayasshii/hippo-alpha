@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import "./App.css";
-import { getAPIData } from "./api/getAPIData";
-import { SimulationResult } from "./types/SimulationResult";
-import { usePostSimulationResults } from "./hooks/usePostSimulationResults";
+import { getAPIData } from "../api/getAPIData";
+import { SimulationResult } from "../types/SimulationResult";
+import { usePostSimulationResults } from "../hooks/usePostSimulationResults";
+import { Link } from "react-router-dom";
 
-const App = () => {
+export const List = () => {
   const [data, setData] = React.useState<Array<SimulationResult>>([]);
   const { postSimulationResults } = usePostSimulationResults();
 
@@ -26,7 +26,9 @@ const App = () => {
   };
 
   return (
-    <div className="App">
+    <div>
+      <Link to="/new">New</Link>
+
       {data.map((item: SimulationResult, key) => (
         <div key={key}>
           <h1>
@@ -39,5 +41,3 @@ const App = () => {
     </div>
   );
 };
-
-export default App;
