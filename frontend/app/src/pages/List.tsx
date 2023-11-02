@@ -30,12 +30,12 @@ export const List = () => {
       <Link to="/new">New</Link>
 
       {data.map((item: SimulationResult, key) => (
-        <div key={key}>
+        <Link to={`/${key}`} key={key}>
           <h1>
             {key}:{item.title}
           </h1>
           <p>{item.principal}</p>
-        </div>
+        </Link>
       ))}
       <button onClick={postData}>Post Data</button>
     </div>

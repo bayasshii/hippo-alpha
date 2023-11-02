@@ -5,6 +5,13 @@ class SimulationResultsController < ApplicationController
     render json: simulationResults
   end
 
+  def show
+    simulationResult = SimulationResult.find(params[:id])
+    render json: simulationResult
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: 'SimulationResult not found' }, status: :not_found
+  end
+
   def create
     simulationResult = SimulationResult.new(simulationResult_params)
     if simulationResult.save

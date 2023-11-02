@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema[7.0].define(version: 2023_11_01_144548) do
   create_table "assumed_yields", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.decimal "rate", precision: 10, null: false
+    t.decimal "rate", precision: 11, scale: 8, null: false
     t.integer "order", null: false
     t.integer "year", null: false
     t.datetime "created_at", null: false

@@ -1,5 +1,5 @@
 // railsの方の型定義と自動で合わせたいなぁ
-export type AssumedYields = {
+export type AssumedYield = {
   rate: number;
   order: number;
   year: number;
