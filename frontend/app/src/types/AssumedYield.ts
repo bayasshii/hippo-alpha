@@ -3,5 +3,5 @@ export type AssumedYield = {
   rate: number;
   order: number;
   year: number;
-  simulation_result_id: number;
+  simulation_id: number;
 };

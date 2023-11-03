@@ -11,7 +11,7 @@ export const RouterConfig: React.VFC = () => {
         <Routes>
           <Route index element={<List />} />
           <Route path="new" element={<New />} />
-          <Route path=":simulation_result_id" element={<Edit />} />
+          <Route path=":simulation_id" element={<Edit />} />
         </Routes>
       </BrowserRouter>
     </>

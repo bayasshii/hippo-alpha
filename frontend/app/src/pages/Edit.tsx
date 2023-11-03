@@ -3,19 +3,18 @@ import { Link } from "react-router-dom";
 import { Flex } from "../components/Flex";
 import { getAPIData } from "../api/getAPIData";
 import { useParams } from "react-router-dom";
-import { SimulationResult } from "../types/SimulationResult";
+import { Simulation } from "../types/Simulation";
 import { AssumedYield } from "../types/AssumedYield";
-import { useUpdateSimulationResults } from "../hooks/useUpdateSimulationResults";
+import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
 
 export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
     []
   );
-  const [simulationResult, setSimulationResult] =
-    React.useState<SimulationResult | null>(null);
+  const [simulation, setSimulation] = React.useState<Simulation | null>(null);
 
   const summary = useMemo(() => {
-    const principal = simulationResult?.principal || 0;
+    const principal = simulation?.principal || 0;
     // assumedYieldsの項目をrateをyearで累乗したものを掛け合わせる
     const assumedYearsRatio = assumedYields.reduce(
       (prev, current) => {
@@ -24,7 +23,7 @@ export const Edit = () => {
       1 // 初期値は1
     );
     return principal * assumedYearsRatio;
-  }, [simulationResult, assumedYields]);
+  }, [simulation, assumedYields]);
 
   const yearsSummary = useMemo(() => {
     const years = assumedYields.reduce((prev, current) => {
@@ -33,13 +32,13 @@ export const Edit = () => {
     return years;
   }, [assumedYields]);
 
-  const { simulation_result_id } = useParams();
-  const { updateSimulationResults } = useUpdateSimulationResults();
+  const { updateSimulation } = useUpdateSimulation();
+  const { simulation_id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getAPIData("/assumed_yields", {
-        simulation_result_id: simulation_result_id
+        simulation_id: simulation_id
       });
       if (response?.data.length === 0) {
         console.log("error");
@@ -48,27 +47,25 @@ export const Edit = () => {
       setAssumedYields(response?.data);
     };
     fetchData();
-  }, [simulation_result_id]);
+  }, [simulation_id]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getAPIData(
-        `/simulation_results/${simulation_result_id}`
-      );
-      setSimulationResult(response?.data);
+      const response = await getAPIData(`/simulations/${simulation_id}`);
+      setSimulation(response?.data);
     };
     fetchData();
-  }, [simulation_result_id]);
+  }, [simulation_id]);
 
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (simulationResult == null) return;
-    setSimulationResult({ ...simulationResult, title: e.target.value });
+    if (simulation == null) return;
+    setSimulation({ ...simulation, title: e.target.value });
   };
 
   const onChangePrincipal = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (simulationResult == null) return;
-    setSimulationResult({
-      ...simulationResult,
+    if (simulation == null) return;
+    setSimulation({
+      ...simulation,
       principal: Number(e.target.value)
     });
   };
@@ -108,7 +105,7 @@ export const Edit = () => {
         order: assumedYields.length + 1,
         year: 0,
         rate: 0,
-        simulation_result_id: Number(simulation_result_id)
+        simulation_id: Number(simulation_id)
       }
     ]);
   };
@@ -122,12 +119,12 @@ export const Edit = () => {
 
   const postData = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const newData: SimulationResult = {
-      title: simulationResult?.title || "",
-      principal: Number(simulationResult?.principal) || 0
+    const newData: Simulation = {
+      title: simulation?.title || "",
+      principal: Number(simulation?.principal) || 0
     };
     console.log(newData);
-    await updateSimulationResults(newData, String(simulation_result_id));
+    await updateSimulation(newData, String(simulation_id));
   };
 
   return (
@@ -140,7 +137,7 @@ export const Edit = () => {
           id="title"
           name="title"
           onChange={(e) => onChangeTitle(e)}
-          value={simulationResult?.title || ""}
+          value={simulation?.title || ""}
         />
       </Flex>
 
@@ -151,7 +148,7 @@ export const Edit = () => {
           id="principal"
           name="principal"
           onChange={(e) => onChangePrincipal(e)}
-          value={simulationResult?.principal || 0}
+          value={simulation?.principal || 0}
         />
       </Flex>
 

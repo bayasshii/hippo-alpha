@@ -1,7 +1,7 @@
 class AssumedYield < ApplicationRecord
-    belongs_to :simulation_result
+    belongs_to :simulation
 
-    def self.find_by_simulation_result_id(id)
-        joins(:simulation_result).where('simulation_results.id = ?', id)
+    def self.find_by_simulation_id(id)
+        joins(:simulation).where('simulations.id = ?', id)
     end
 end

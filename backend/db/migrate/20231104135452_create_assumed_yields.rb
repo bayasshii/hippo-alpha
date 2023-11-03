@@ -4,6 +4,7 @@ class CreateAssumedYields < ActiveRecord::Migration[7.0]
       t.numeric "rate", null: false, precision: 11, scale: 8
       t.integer "order", null: false
       t.integer "year", null: false
+      t.references :simulation, null: false, foreign_key: true
       t.timestamps
     end
   end

@@ -1,43 +1,38 @@
 import React, { useEffect } from "react";
 import { getAPIData } from "../api/getAPIData";
-import { SimulationResult } from "../types/SimulationResult";
-import { usePostSimulationResults } from "../hooks/usePostSimulationResults";
+import { Simulation } from "../types/Simulation";
 import { Link } from "react-router-dom";
 
 export const List = () => {
-  const [data, setData] = React.useState<Array<SimulationResult>>([]);
-  const { postSimulationResults } = usePostSimulationResults();
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [data, setData] = React.useState<Array<Simulation> | null>(null);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
-      const response = await getAPIData("/simulation_results");
-      setData(response?.data as Array<SimulationResult>);
+      const response = await getAPIData("/simulations");
+      await setData(response?.data as Array<Simulation>);
+      setIsLoading(false);
     };
     fetchData();
   }, []);
-
-  const postData = async () => {
-    const newData: SimulationResult = {
-      title: "foo",
-      principal: 5000
-    };
-    await postSimulationResults(newData);
-    setData([...data, newData]);
-  };
 
   return (
     <div>
       <Link to="/new">New</Link>
 
-      {data.map((item: SimulationResult, key) => (
-        <Link to={`/${key}`} key={key}>
-          <h1>
-            {key}:{item.title}
-          </h1>
-          <p>{item.principal}</p>
-        </Link>
-      ))}
-      <button onClick={postData}>Post Data</button>
+      {isLoading ? (
+        <p>loading...</p>
+      ) : (
+        data?.map((item: Simulation, key) => (
+          <Link to={`/${item.id}`} key={key}>
+            <h1>
+              {item.id}:{item.title}
+            </h1>
+            <p>{item.principal}</p>
+          </Link>
+        ))
+      )}
     </div>
   );
 };

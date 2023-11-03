@@ -1,22 +1,22 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
-import { SimulationResult } from "../types/SimulationResult";
-import { usePostSimulationResults } from "../hooks/usePostSimulationResults";
+import { Simulation } from "../types/Simulation";
+import { usePostSimulation } from "../hooks/usePostSimulation";
 import { Flex } from "../components/Flex";
 
 export const New = () => {
-  const { postSimulationResults } = usePostSimulationResults();
+  const { postSimulation } = usePostSimulation();
   const titleRef = useRef<HTMLInputElement>(null);
   const principalRef = useRef<HTMLInputElement>(null);
 
   const postData = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const newData: SimulationResult = {
+    const newData: Simulation = {
       title: titleRef.current?.value || "",
       principal: Number(principalRef.current?.value) || 0
     };
     console.log(newData);
-    await postSimulationResults(newData);
+    await postSimulation(newData);
   };
 
   return (
