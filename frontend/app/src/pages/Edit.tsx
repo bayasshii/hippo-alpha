@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Flex } from "../components/Flex";
 import { getAPIData } from "../api/getAPIData";
@@ -10,13 +10,29 @@ export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
     []
   );
-  const [SimulationResult, setSimulationResult] =
+  const [simulationResult, setSimulationResult] =
     React.useState<SimulationResult | null>(null);
 
+  const summary = useMemo(() => {
+    const principal = simulationResult?.principal || 0;
+    // assumedYieldsの項目をrateをyearで累乗したものを掛け合わせる
+    const assumedYearsRatio = assumedYields.reduce(
+      (prev, current) => {
+        return prev * (1 + current.rate / 100) ** current.year;
+      },
+      1 // 初期値は1
+    );
+    return principal * assumedYearsRatio;
+  }, [simulationResult, assumedYields]);
+
+  const yearsSummary = useMemo(() => {
+    const years = assumedYields.reduce((prev, current) => {
+      return prev + current.year;
+    }, 0);
+    return years;
+  }, [assumedYields]);
+
   const { simulation_result_id } = useParams();
-  const titleRef = useRef<HTMLInputElement>(null);
-  const principalRef = useRef<HTMLInputElement>(null);
-  const assumedYieldsRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,48 +59,110 @@ export const Edit = () => {
   }, [simulation_result_id]);
 
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (SimulationResult == null) return;
-    setSimulationResult({ ...SimulationResult, title: e.target.value });
+    if (simulationResult == null) return;
+    setSimulationResult({ ...simulationResult, title: e.target.value });
   };
 
   const onChangePrincipal = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (SimulationResult == null) return;
+    if (simulationResult == null) return;
     setSimulationResult({
-      ...SimulationResult,
+      ...simulationResult,
       principal: Number(e.target.value)
     });
+  };
+
+  const onChangeAssumedYieldsYear = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    order: number
+  ) => {
+    if (assumedYields == null) return;
+    const newAssumedYields = assumedYields.map((assumedYield) => {
+      if (assumedYield.order === order) {
+        return { ...assumedYield, year: Number(e.target.value) };
+      }
+      return assumedYield;
+    });
+    setAssumedYields(newAssumedYields);
+  };
+
+  const onChangeAssumedYieldsRate = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    order: number
+  ) => {
+    if (assumedYields == null) return;
+    const newAssumedYields = assumedYields.map((assumedYield) => {
+      if (assumedYield.order === order) {
+        return { ...assumedYield, rate: Number(e.target.value) };
+      }
+      return assumedYield;
+    });
+    setAssumedYields(newAssumedYields);
   };
 
   return (
     <Flex direction="column" gap={2}>
       <Link to="/">もどる</Link>
-      newと同じコンポーネントにしたいね
-      {assumedYields.map((item: AssumedYield, key) => (
-        <div key={key}>
-          {item.order}番目,{item.year}年, {item.rate}%
-        </div>
-      ))}
       <Flex direction="column">
         <label htmlFor="title">タイトル</label>
         <input
           type="text"
           id="title"
           name="title"
-          ref={titleRef}
           onChange={(e) => onChangeTitle(e)}
-          value={SimulationResult?.title}
+          value={simulationResult?.title}
         />
       </Flex>
+      <Flex direction="column" p={2} style={{ background: "#eee" }}>
+        {assumedYields.map((assumedYield: AssumedYield, key) => (
+          <Flex key={key} gap={1}>
+            <Flex key={key}>
+              <label htmlFor="year">年数</label>
+              <input
+                type="text"
+                id="year"
+                name="year"
+                onChange={(e) =>
+                  onChangeAssumedYieldsYear(e, assumedYield.order)
+                }
+                value={assumedYield.year}
+              />
+            </Flex>
+            <Flex key={key}>
+              <label htmlFor="rate">年利</label>
+              <input
+                type="text"
+                id="rate"
+                name="rate"
+                onChange={(e) =>
+                  onChangeAssumedYieldsRate(e, assumedYield.order)
+                }
+                value={assumedYield.rate}
+              />
+            </Flex>
+          </Flex>
+        ))}
+      </Flex>
+
       <Flex direction="column">
         <label htmlFor="principal">元本</label>
         <input
           type="number"
           id="principal"
           name="principal"
-          ref={principalRef}
           onChange={(e) => onChangePrincipal(e)}
-          value={SimulationResult?.principal}
+          value={simulationResult?.principal}
         />
+      </Flex>
+      <Flex direction="column">
+        <label htmlFor="reserves">積立額</label>
+        <input type="number" id="reserves" name="reserves" />
+      </Flex>
+
+      <Flex direction="column">
+        <p>合計額</p>
+        <p>
+          {yearsSummary}年で{summary}円になるよ
+        </p>
       </Flex>
     </Flex>
   );
