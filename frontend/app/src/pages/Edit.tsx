@@ -8,6 +8,7 @@ import { AssumedYield } from "../types/AssumedYield";
 import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
 import { usePostAssumedYield } from "../hooks/usePostAssumedYield";
 import { useDeleteAssumedYield } from "../hooks/useDeleteAssumedYield";
+import { Chart } from "../components/Chart";
 
 export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
@@ -228,6 +229,14 @@ export const Edit = () => {
           {yearsSummary}年で{summary}円になるよ
         </p>
       </Flex>
+
+      {simulation && (
+        <Chart
+          principal={simulation?.principal}
+          assumedYears={assumedYields}
+          years={yearsSummary}
+        />
+      )}
 
       <button onClick={saveData}>保存</button>
     </Flex>
