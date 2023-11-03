@@ -112,13 +112,25 @@ export const Edit = () => {
           value={simulationResult?.title}
         />
       </Flex>
+
+      <Flex direction="column">
+        <label htmlFor="principal">元本</label>
+        <input
+          type="number"
+          id="principal"
+          name="principal"
+          onChange={(e) => onChangePrincipal(e)}
+          value={simulationResult?.principal}
+        />
+      </Flex>
+
       <Flex direction="column" p={2} style={{ background: "#eee" }}>
         {assumedYields.map((assumedYield: AssumedYield, key) => (
           <Flex key={key} gap={1}>
             <Flex key={key}>
               <label htmlFor="year">年数</label>
               <input
-                type="text"
+                type="number"
                 id="year"
                 name="year"
                 onChange={(e) =>
@@ -130,7 +142,7 @@ export const Edit = () => {
             <Flex key={key}>
               <label htmlFor="rate">年利</label>
               <input
-                type="text"
+                type="number"
                 id="rate"
                 name="rate"
                 onChange={(e) =>
@@ -143,16 +155,6 @@ export const Edit = () => {
         ))}
       </Flex>
 
-      <Flex direction="column">
-        <label htmlFor="principal">元本</label>
-        <input
-          type="number"
-          id="principal"
-          name="principal"
-          onChange={(e) => onChangePrincipal(e)}
-          value={simulationResult?.principal}
-        />
-      </Flex>
       <Flex direction="column">
         <label htmlFor="reserves">積立額</label>
         <input type="number" id="reserves" name="reserves" />
