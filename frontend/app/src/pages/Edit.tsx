@@ -18,18 +18,6 @@ export const Edit = () => {
 
   const assumedYieldIdsRef = useRef<Array<string>>([]);
 
-  const summary = useMemo(() => {
-    const principal = simulation?.principal || 0;
-    // assumedYieldsの項目をrateをyearで累乗したものを掛け合わせる
-    const assumedYearsRatio = assumedYields.reduce(
-      (prev, current) => {
-        return prev * (1 + current.rate / 100) ** current.year;
-      },
-      1 // 初期値は1
-    );
-    return Math.round(principal * assumedYearsRatio);
-  }, [simulation, assumedYields]);
-
   const yearsSummary = useMemo(() => {
     const years = assumedYields.reduce((prev, current) => {
       return prev + current.year;
@@ -186,7 +174,6 @@ export const Edit = () => {
         <button onClick={addAssumedYield}>追加</button>
         {assumedYields.map((assumedYield: AssumedYield, key) => (
           <Flex key={key} gap={1}>
-            {assumedYield.order}
             <Flex>
               <label htmlFor="year">年数</label>
               <input
@@ -223,17 +210,10 @@ export const Edit = () => {
         <input type="number" id="reserves" name="reserves" />
       </Flex>
 
-      <Flex direction="column">
-        <p>合計額</p>
-        <p>
-          {yearsSummary}年で{summary}円になるよ
-        </p>
-      </Flex>
-
       {simulation && (
         <Chart
           principal={simulation?.principal}
-          assumedYears={assumedYields}
+          assumedYields={assumedYields}
           years={yearsSummary}
         />
       )}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -32,16 +32,37 @@ export const options = {
   }
 };
 
-const labels = ["今年", "1年目", "2年目"];
-
 type Props = {
   principal: number;
-  assumedYears: Array<AssumedYield>;
+  assumedYields: Array<AssumedYield>;
   years: number;
 };
-export const Chart = ({ principal, assumedYears, years }: Props) => {
-  const principals = [String(principal), String(principal), String(principal)];
-  const labels = ["今年", "今年", "今年"];
+export const Chart = ({ principal, assumedYields, years }: Props) => {
+  const principals: Array<number> = [
+    ...Array(years + 1).fill(Number(principal))
+  ];
+  const labels = [
+    "今年",
+    ...Array(years)
+      .fill(0)
+      .map((_, index) => `${index + 1}年後`)
+  ];
+
+  const list = assumedYields.flatMap((item) =>
+    Array(item.year).fill(Number(item.rate))
+  );
+
+  const result: Array<number> = Array(years + 1)
+    .fill(1)
+    .map((_, index) => {
+      if (index === 0) {
+        return 0;
+      }
+      const ratio: number = list
+        .slice(0, index)
+        .reduce((a, b) => a + (a * b + b) / 100, 0);
+      return Math.round(principal * ratio);
+    });
 
   const data = {
     labels,
@@ -53,11 +74,19 @@ export const Chart = ({ principal, assumedYears, years }: Props) => {
       },
       {
         label: "運用収益",
-        data: ["100", "200", "300"],
+        data: result,
         backgroundColor: "rgba(53, 162, 235, 0.5)"
       }
     ]
   };
-
-  return <Bar options={options} data={data} />;
+  console.log(principals[1], result[1]);
+  return (
+    <>
+      <p>
+        {years}年後には{principals.slice(-1)[0] + result.slice(-1)[0]}
+        円になってるよ
+      </p>
+      <Bar options={options} data={data} />
+    </>
+  );
 };
