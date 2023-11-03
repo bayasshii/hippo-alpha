@@ -7,12 +7,15 @@ import { Simulation } from "../types/Simulation";
 import { AssumedYield } from "../types/AssumedYield";
 import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
 import { usePostAssumedYield } from "../hooks/usePostAssumedYield";
+import { useDeleteAssumedYield } from "../hooks/useDeleteAssumedYield";
 
 export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
     []
   );
   const [simulation, setSimulation] = React.useState<Simulation | null>(null);
+
+  const assumedYieldIdsRef = useRef<Array<string>>([]);
 
   const summary = useMemo(() => {
     const principal = simulation?.principal || 0;
@@ -35,6 +38,8 @@ export const Edit = () => {
 
   const { updateSimulation } = useUpdateSimulation();
   const { postAssumedYield } = usePostAssumedYield();
+  const { deleteAssumedYield } = useDeleteAssumedYield();
+
   const { simulation_id } = useParams();
 
   useEffect(() => {
@@ -47,6 +52,11 @@ export const Edit = () => {
         // TODO: 404的なページに飛ばす
       }
       setAssumedYields(response?.data);
+      if (assumedYieldIdsRef.current.length >= response?.data.length) return;
+      response?.data.forEach((assumedYield: AssumedYield) => {
+        if (assumedYield.id === undefined) return;
+        assumedYieldIdsRef.current.push(assumedYield.id);
+      });
     };
     fetchData();
   }, [simulation_id]);
@@ -100,7 +110,7 @@ export const Edit = () => {
     setAssumedYields(newAssumedYields);
   };
 
-  const addAssumeYield = () => {
+  const addAssumedYield = () => {
     setAssumedYields([
       ...assumedYields, // 既存の配列を展開
       {
@@ -112,7 +122,7 @@ export const Edit = () => {
     ]);
   };
 
-  const deleteAssumeYield = (order: number) => {
+  const deleteFrontAssumedYield = (order: number) => {
     const newAssumedYields = assumedYields.filter(
       (assumedYield) => assumedYield.order !== order
     );
@@ -125,6 +135,11 @@ export const Edit = () => {
       title: simulation?.title || "",
       principal: Number(simulation?.principal) || 0
     };
+    // 一旦元のデータを消してから、新しいデータを入れる
+    // TODO: 消すのは成功したけど入れるの失敗したら詰むのなんとかする
+    await assumedYieldIdsRef.current.forEach((assumedYield) => {
+      deleteAssumedYield(assumedYield);
+    });
     await assumedYields.forEach((assumedYield) => {
       postAssumedYield({
         order: assumedYield.order,
@@ -162,7 +177,7 @@ export const Edit = () => {
       </Flex>
 
       <Flex direction="column" p={2} style={{ background: "#eee" }}>
-        <button onClick={addAssumeYield}>追加</button>
+        <button onClick={addAssumedYield}>追加</button>
         {assumedYields.map((assumedYield: AssumedYield, key) => (
           <Flex key={key} gap={1}>
             <Flex>
@@ -189,7 +204,7 @@ export const Edit = () => {
                 value={assumedYield.rate || 0}
               />
             </Flex>
-            <button onClick={() => deleteAssumeYield(assumedYield.order)}>
+            <button onClick={() => deleteFrontAssumedYield(assumedYield.order)}>
               削除
             </button>
           </Flex>

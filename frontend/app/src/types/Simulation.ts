@@ -2,5 +2,5 @@
 export type Simulation = {
   title: string;
   principal: number;
-  id?: number; // フロントで保存したタイミングではid持たないのでoptional
+  id?: string; // フロントで保存したタイミングではid持たないのでoptional
 };

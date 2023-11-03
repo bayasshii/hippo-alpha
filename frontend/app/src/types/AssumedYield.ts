@@ -4,4 +4,5 @@ export type AssumedYield = {
   order: number;
   year: number;
   simulation_id: string;
+  id?: string; // フロントで保存したタイミングではid持たないのでoptional
 };

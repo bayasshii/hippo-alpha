@@ -8,7 +8,6 @@ export const usePostAssumedYield = () => {
       postAPIData("/assumed_yields", {
         assumed_yield: newData
       });
-      console.log("成功したよ", newData);
     } catch (e) {
       console.error(e);
       throw new Error("作成に失敗しました");

@@ -6,7 +6,6 @@ export const getAPIData = async (path: string, query?: Object) => {
     const response = await instance.get(path, { params: query });
     return response;
   } catch (error: any) {
-    console.log(error);
     return error.response;
   }
 };
