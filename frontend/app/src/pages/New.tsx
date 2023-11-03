@@ -15,7 +15,6 @@ export const New = () => {
       title: titleRef.current?.value || "",
       principal: Number(principalRef.current?.value) || 0
     };
-    console.log(newData);
     await postSimulation(newData);
   };
 

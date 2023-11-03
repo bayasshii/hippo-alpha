@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { Simulation } from "../types/Simulation";
 import { AssumedYield } from "../types/AssumedYield";
 import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
+import { usePostAssumedYield } from "../hooks/usePostAssumedYield";
 
 export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
@@ -22,7 +23,7 @@ export const Edit = () => {
       },
       1 // 初期値は1
     );
-    return principal * assumedYearsRatio;
+    return Math.round(principal * assumedYearsRatio);
   }, [simulation, assumedYields]);
 
   const yearsSummary = useMemo(() => {
@@ -33,6 +34,7 @@ export const Edit = () => {
   }, [assumedYields]);
 
   const { updateSimulation } = useUpdateSimulation();
+  const { postAssumedYield } = usePostAssumedYield();
   const { simulation_id } = useParams();
 
   useEffect(() => {
@@ -105,7 +107,7 @@ export const Edit = () => {
         order: assumedYields.length + 1,
         year: 0,
         rate: 0,
-        simulation_id: Number(simulation_id)
+        simulation_id: String(simulation_id)
       }
     ]);
   };
@@ -117,13 +119,20 @@ export const Edit = () => {
     setAssumedYields(newAssumedYields);
   };
 
-  const postData = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const saveData = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const newData: Simulation = {
       title: simulation?.title || "",
       principal: Number(simulation?.principal) || 0
     };
-    console.log(newData);
+    await assumedYields.forEach((assumedYield) => {
+      postAssumedYield({
+        order: assumedYield.order,
+        year: assumedYield.year,
+        rate: Number(assumedYield.rate),
+        simulation_id: String(simulation_id)
+      });
+    });
     await updateSimulation(newData, String(simulation_id));
   };
 
@@ -199,7 +208,7 @@ export const Edit = () => {
         </p>
       </Flex>
 
-      <button onClick={postData}>保存</button>
+      <button onClick={saveData}>保存</button>
     </Flex>
   );
 };
