@@ -123,9 +123,14 @@ export const Edit = () => {
   };
 
   const deleteFrontAssumedYield = (order: number) => {
-    const newAssumedYields = assumedYields.filter(
-      (assumedYield) => assumedYield.order !== order
-    );
+    const newAssumedYields = assumedYields.filter((assumedYield) => {
+      console.log(assumedYield.order);
+      return assumedYield.order !== order;
+    });
+    // orderを振り直す
+    newAssumedYields.forEach((assumedYield, index) => {
+      assumedYield.order = index + 1;
+    });
     setAssumedYields(newAssumedYields);
   };
 
@@ -180,6 +185,7 @@ export const Edit = () => {
         <button onClick={addAssumedYield}>追加</button>
         {assumedYields.map((assumedYield: AssumedYield, key) => (
           <Flex key={key} gap={1}>
+            {assumedYield.order}
             <Flex>
               <label htmlFor="year">年数</label>
               <input

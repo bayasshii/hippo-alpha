@@ -2,6 +2,7 @@ class AssumedYieldsController < ApplicationController
   def index
     simulation_id = params[:simulation_id]
     assumedYields = AssumedYield.find_by_simulation_id(simulation_id)
+    assumedYields = assumedYields.sort_by{|assumedYield| assumedYield.order}
     render json: assumedYields
   end
 
