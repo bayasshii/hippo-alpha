@@ -5,6 +5,7 @@ import { getAPIData } from "../api/getAPIData";
 import { useParams } from "react-router-dom";
 import { SimulationResult } from "../types/SimulationResult";
 import { AssumedYield } from "../types/AssumedYield";
+import { useUpdateSimulationResults } from "../hooks/useUpdateSimulationResults";
 
 export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
@@ -33,6 +34,7 @@ export const Edit = () => {
   }, [assumedYields]);
 
   const { simulation_result_id } = useParams();
+  const { updateSimulationResults } = useUpdateSimulationResults();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,6 +101,35 @@ export const Edit = () => {
     setAssumedYields(newAssumedYields);
   };
 
+  const addAssumeYield = () => {
+    setAssumedYields([
+      ...assumedYields, // 既存の配列を展開
+      {
+        order: assumedYields.length + 1,
+        year: 0,
+        rate: 0,
+        simulation_result_id: Number(simulation_result_id)
+      }
+    ]);
+  };
+
+  const deleteAssumeYield = (order: number) => {
+    const newAssumedYields = assumedYields.filter(
+      (assumedYield) => assumedYield.order !== order
+    );
+    setAssumedYields(newAssumedYields);
+  };
+
+  const postData = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const newData: SimulationResult = {
+      title: simulationResult?.title || "",
+      principal: Number(simulationResult?.principal) || 0
+    };
+    console.log(newData);
+    await updateSimulationResults(newData, String(simulation_result_id));
+  };
+
   return (
     <Flex direction="column" gap={2}>
       <Link to="/">もどる</Link>
@@ -109,7 +140,7 @@ export const Edit = () => {
           id="title"
           name="title"
           onChange={(e) => onChangeTitle(e)}
-          value={simulationResult?.title}
+          value={simulationResult?.title || ""}
         />
       </Flex>
 
@@ -120,14 +151,15 @@ export const Edit = () => {
           id="principal"
           name="principal"
           onChange={(e) => onChangePrincipal(e)}
-          value={simulationResult?.principal}
+          value={simulationResult?.principal || 0}
         />
       </Flex>
 
       <Flex direction="column" p={2} style={{ background: "#eee" }}>
+        <button onClick={addAssumeYield}>追加</button>
         {assumedYields.map((assumedYield: AssumedYield, key) => (
           <Flex key={key} gap={1}>
-            <Flex key={key}>
+            <Flex>
               <label htmlFor="year">年数</label>
               <input
                 type="number"
@@ -136,10 +168,10 @@ export const Edit = () => {
                 onChange={(e) =>
                   onChangeAssumedYieldsYear(e, assumedYield.order)
                 }
-                value={assumedYield.year}
+                value={assumedYield.year || 0}
               />
             </Flex>
-            <Flex key={key}>
+            <Flex>
               <label htmlFor="rate">年利</label>
               <input
                 type="number"
@@ -148,9 +180,12 @@ export const Edit = () => {
                 onChange={(e) =>
                   onChangeAssumedYieldsRate(e, assumedYield.order)
                 }
-                value={assumedYield.rate}
+                value={assumedYield.rate || 0}
               />
             </Flex>
+            <button onClick={() => deleteAssumeYield(assumedYield.order)}>
+              削除
+            </button>
           </Flex>
         ))}
       </Flex>
@@ -166,6 +201,8 @@ export const Edit = () => {
           {yearsSummary}年で{summary}円になるよ
         </p>
       </Flex>
+
+      <button onClick={postData}>保存</button>
     </Flex>
   );
 };

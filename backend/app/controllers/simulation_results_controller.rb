@@ -21,8 +21,17 @@ class SimulationResultsController < ApplicationController
     end
   end
 
+  def update
+    simulationResult = SimulationResult.find(params[:id])
+    if simulationResult.update(simulationResult_params)
+      render json: simulationResult
+    else
+      render json: simulationResult.errors
+    end
+  end
+
   private
     def simulationResult_params
-      params.require(:simulationResult).permit(:title, :principal,:assumed_yields, :monthly_deposit)
+      params.require(:simulationResult).permit(:title, :principal, :assumed_yields, :monthly_deposit)
     end
 end
