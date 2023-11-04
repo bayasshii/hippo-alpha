@@ -35,8 +35,8 @@ export const options = {
 
 type Props = {
   principal: number;
-  assumedYields: Array<AssumedYield>;
-  monthlyDeposits: Array<MonthlyDeposit>;
+  assumedYields: Array<number>;
+  monthlyDeposits: Array<number>;
   years: number;
 };
 export const Chart = ({
@@ -45,17 +45,14 @@ export const Chart = ({
   monthlyDeposits = [],
   years
 }: Props) => {
-  const monthlyDepositsList = monthlyDeposits?.flatMap((item) =>
-    Array(item.year).fill(Number(item.amount) * 12)
-  );
-
+  const annualDeposits = monthlyDeposits?.map((item) => item * 12);
   const monthlyDepositsResult: Array<number> = Array(years + 1)
     .fill(1)
     .map((_, index) => {
       if (index === 0) {
         return Number(principal);
       }
-      const principals: number = monthlyDepositsList
+      const principals: number = annualDeposits
         .slice(0, index)
         .reduce((a, b) => Number(a) + Number(b), principal);
       return principals;
@@ -67,10 +64,6 @@ export const Chart = ({
       .fill(0)
       .map((_, index) => `${index + 1}年後`)
   ];
-
-  const assumedYieldsList = assumedYields?.flatMap((item) =>
-    Array(item.year).fill(Number(item.rate))
-  );
 
   // ちゃんとやるなら月毎に計算しなきゃいけない
   const summary = Array(years + 1)
@@ -85,8 +78,8 @@ export const Chart = ({
           .reduce(
             (a, b, i) =>
               Number(a) +
-              monthlyDepositsList[i] +
-              (Number(b) * assumedYieldsList[i]) / 100,
+              annualDeposits[i] +
+              (Number(b) * assumedYields[i]) / 100,
             monthlyDepositsResult[0]
           ) - monthlyDepositsResult[index]
       );

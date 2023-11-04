@@ -1,15 +1,8 @@
-import { type } from "os";
-import { AssumedYield } from "../types/AssumedYield";
 import { Flex } from "./Flex";
 
 type Props = {
-  assumedYields: Array<AssumedYield>;
-  addAssumedYield: () => void;
-  deleteFrontAssumedYield: (order: number) => void;
-  onChangeAssumedYieldsYear: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    order: number
-  ) => void;
+  assumedYields: Array<number>;
+  maxYear: number;
   onChangeAssumedYieldsRate: (
     e: React.ChangeEvent<HTMLInputElement>,
     order: number
@@ -18,46 +11,23 @@ type Props = {
 
 export const AssumedYieldsField = ({
   assumedYields = [],
-  addAssumedYield,
-  deleteFrontAssumedYield,
-  onChangeAssumedYieldsYear,
+  maxYear,
   onChangeAssumedYieldsRate
 }: Props) => {
   return (
-    <Flex direction="column" p={2} style={{ background: "#eee" }}>
-      <button onClick={addAssumedYield}>追加</button>
-      {Array.isArray(assumedYields) &&
-        assumedYields.map((assumedYield: AssumedYield, key) => (
-          <Flex key={key} gap={1}>
-            <Flex>
-              <label htmlFor="year">年数</label>
-              <input
-                type="number"
-                id="year"
-                name="year"
-                onChange={(e) =>
-                  onChangeAssumedYieldsYear(e, assumedYield.order)
-                }
-                value={assumedYield.year || 0}
-              />
-            </Flex>
-            <Flex>
-              <label htmlFor="rate">年利</label>
-              <input
-                type="number"
-                id="rate"
-                name="rate"
-                onChange={(e) =>
-                  onChangeAssumedYieldsRate(e, assumedYield.order)
-                }
-                value={assumedYield.rate || 0}
-              />
-            </Flex>
-            <button onClick={() => deleteFrontAssumedYield(assumedYield.order)}>
-              削除
-            </button>
-          </Flex>
-        ))}
+    <Flex>
+      年利
+      {assumedYields?.map((i, key) => (
+        <input
+          key={key}
+          style={{ width: `${100 / maxYear}%` }}
+          type="number"
+          id={`monthly_deposit_amount${key}`}
+          name={`monthly_deposit_amount${key}`}
+          value={i || 0}
+          onChange={(e) => onChangeAssumedYieldsRate(e, key)}
+        />
+      ))}
     </Flex>
   );
 };
