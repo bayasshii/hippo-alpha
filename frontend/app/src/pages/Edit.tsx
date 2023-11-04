@@ -9,13 +9,18 @@ import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
 import { usePostAssumedYield } from "../hooks/usePostAssumedYield";
 import { useDeleteAssumedYield } from "../hooks/useDeleteAssumedYield";
 import { Chart } from "../components/Chart";
-import { AssumedYieldField } from "../components/AssumedYieldField";
+import { AssumedYieldsField } from "../components/AssumedYieldsField";
+import { MonthlyDeposit } from "../types/MonthlyDeposit";
+import { MonthlyDepositsField } from "../components/MonthlyDepositsField";
 
 export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
     []
   );
   const [simulation, setSimulation] = React.useState<Simulation | null>(null);
+  const [monthlyDeposits, setMonthlyDeposits] = React.useState<
+    Array<MonthlyDeposit>
+  >([]);
 
   const assumedYieldIdsRef = useRef<Array<string>>([]);
 
@@ -34,6 +39,7 @@ export const Edit = () => {
   const { simulation_id } = useParams();
 
   useEffect(() => {
+    // assumed_yieldsのfetch
     const fetchData = async () => {
       const response = await getAPIData("/assumed_yields", {
         simulation_id: simulation_id
@@ -57,12 +63,25 @@ export const Edit = () => {
   }, [simulation_id]);
 
   useEffect(() => {
+    // simulationのfetch
     const fetchData = async () => {
       const response = await getAPIData(`/simulations/${simulation_id}`);
       setSimulation(response?.data);
     };
     fetchData();
   }, [simulation_id]);
+
+  useEffect(() => {
+    // monthly_depositsのfetch
+    const fetchData = async () => {
+      const response = await getAPIData("/monthly_deposits", {
+        simulation_id: simulation_id
+      });
+      setMonthlyDeposits(response?.data);
+      console.log(response?.data);
+    };
+    fetchData();
+  }, []);
 
   const onChangeTitle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,8 +135,8 @@ export const Edit = () => {
       ...assumedYields, // 既存の配列を展開
       {
         order: assumedYields.length + 1,
-        year: 0,
-        rate: 0,
+        year: 1,
+        rate: 3,
         simulation_id: String(simulation_id)
       }
     ]);
@@ -136,6 +155,61 @@ export const Edit = () => {
       setAssumedYields(newAssumedYields);
     },
     [assumedYields]
+  );
+
+  const addMonthlyDeposit = useCallback(() => {
+    setMonthlyDeposits([
+      ...monthlyDeposits, // 既存の配列を展開
+      {
+        order: monthlyDeposits.length + 1,
+        year: 1,
+        amount: 1000,
+        simulation_id: String(simulation_id)
+      }
+    ]);
+  }, [monthlyDeposits, simulation_id]);
+
+  const deleteMonthlyDeposit = useCallback(
+    (order: number) => {
+      const newMonthlyDeposits = monthlyDeposits.filter((monthlyDeposit) => {
+        console.log(monthlyDeposit.order);
+        return monthlyDeposit.order !== order;
+      });
+      // orderを振り直す
+      newMonthlyDeposits.forEach((monthlyDeposit, index) => {
+        monthlyDeposit.order = index + 1;
+      });
+      setMonthlyDeposits(newMonthlyDeposits);
+    },
+    [monthlyDeposits]
+  );
+
+  const onChangeMonthlyDepositsAmount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, order: number) => {
+      if (!Array.isArray(monthlyDeposits)) return;
+      const newMonthlyDeposits = monthlyDeposits.map((monthlyDeposit) => {
+        if (monthlyDeposit.order === order) {
+          return { ...monthlyDeposit, amount: Number(e.target.value) };
+        }
+        return monthlyDeposit;
+      });
+      setMonthlyDeposits(newMonthlyDeposits);
+    },
+    [monthlyDeposits]
+  );
+
+  const onChangeMonthlyDepositsYear = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, order: number) => {
+      if (!Array.isArray(monthlyDeposits)) return;
+      const newMonthlyDeposits = monthlyDeposits.map((monthlyDeposit) => {
+        if (monthlyDeposit.order === order) {
+          return { ...monthlyDeposit, year: Number(e.target.value) };
+        }
+        return monthlyDeposit;
+      });
+      setMonthlyDeposits(newMonthlyDeposits);
+    },
+    [monthlyDeposits]
   );
 
   const saveData = useCallback(
@@ -188,7 +262,7 @@ export const Edit = () => {
         />
       </Flex>
 
-      <AssumedYieldField
+      <AssumedYieldsField
         assumedYields={assumedYields}
         addAssumedYield={addAssumedYield}
         deleteFrontAssumedYield={deleteFrontAssumedYield}
@@ -196,10 +270,13 @@ export const Edit = () => {
         onChangeAssumedYieldsRate={onChangeAssumedYieldsRate}
       />
 
-      <Flex direction="column">
-        <label htmlFor="reserves">積立額</label>
-        <input type="number" id="reserves" name="reserves" />
-      </Flex>
+      <MonthlyDepositsField
+        monthlyDeposits={monthlyDeposits}
+        onChangeMonthlyDepositsAmount={onChangeMonthlyDepositsAmount}
+        onChangeMonthlyDepositsYear={onChangeMonthlyDepositsYear}
+        addMonthlyDeposit={addMonthlyDeposit}
+        deleteMonthlyDeposit={deleteMonthlyDeposit}
+      />
 
       {simulation && (
         <Chart
@@ -209,7 +286,7 @@ export const Edit = () => {
         />
       )}
 
-      <button onClick={saveData}>保存</button>
+      <button onClick={saveData}>変更を保存</button>
     </Flex>
   );
 };

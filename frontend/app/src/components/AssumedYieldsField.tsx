@@ -16,7 +16,7 @@ type Props = {
   ) => void;
 };
 
-export const AssumedYieldField = ({
+export const AssumedYieldsField = ({
   assumedYields,
   addAssumedYield,
   deleteFrontAssumedYield,
