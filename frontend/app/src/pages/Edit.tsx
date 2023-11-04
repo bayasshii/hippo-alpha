@@ -14,6 +14,14 @@ import { Chart } from "../components/Chart";
 import { AssumedYieldsField } from "../components/AssumedYieldsField";
 import { MonthlyDeposit } from "../types/MonthlyDeposit";
 import { MonthlyDepositsField } from "../components/MonthlyDepositsField";
+import { useValidation } from "../hooks/useValidation";
+import { ErrorMessage } from "../components/ErrorMessage";
+import { getYears } from "../helper/getYears";
+
+type Error = {
+  title: Array<string>;
+  principal: Array<string>;
+};
 
 export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
@@ -23,24 +31,24 @@ export const Edit = () => {
   const [monthlyDeposits, setMonthlyDeposits] = React.useState<
     Array<MonthlyDeposit>
   >([]);
+  const [errors, setErrors] = React.useState<Error>({
+    title: [],
+    principal: []
+  });
 
   const assumedYieldIdsRef = useRef<Array<string>>([]);
   const monthlyDepositIdsRef = useRef<Array<string>>([]);
+  const { validations } = useValidation();
+  const { updateSimulation } = useUpdateSimulation();
+  const { postAssumedYield } = usePostAssumedYield();
+  const { deleteAssumedYield } = useDeleteAssumedYield();
+  const { deleteMonthlyDeposit } = useDeleteMonthlyDeposit();
+  const { postMonthlyDeposit } = usePostMonthlyDeposit();
 
-  const assumedYieldsYears = useMemo(
-    () =>
-      assumedYields.reduce((prev, current) => {
-        return prev + current.year;
-      }, 0),
-    [assumedYields]
-  );
-  const monthlyDepositsYears = useMemo(
-    () =>
-      monthlyDeposits.reduce((prev, current) => {
-        return prev + current.year;
-      }, 0),
-    [monthlyDeposits]
-  );
+  const { simulation_id } = useParams();
+
+  const assumedYieldsYears = getYears(assumedYields);
+  const monthlyDepositsYears = getYears(monthlyDeposits);
 
   const yearsSummary = useMemo(() => {
     if (assumedYieldsYears > monthlyDepositsYears) {
@@ -77,14 +85,6 @@ export const Edit = () => {
     }
     return Math.max(assumedYieldsYears, monthlyDepositsYears);
   }, [assumedYieldsYears, monthlyDepositsYears]);
-
-  const { updateSimulation } = useUpdateSimulation();
-  const { postAssumedYield } = usePostAssumedYield();
-  const { deleteAssumedYield } = useDeleteAssumedYield();
-  const { deleteMonthlyDeposit } = useDeleteMonthlyDeposit();
-  const { postMonthlyDeposit } = usePostMonthlyDeposit();
-
-  const { simulation_id } = useParams();
 
   useEffect(() => {
     // assumed_yieldsのfetch
@@ -269,6 +269,20 @@ export const Edit = () => {
   const saveData = useCallback(
     () => async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
+      const titleErrors: Array<string> = validations(
+        String(simulation?.title),
+        50
+      );
+      const principalErrors: Array<string> = validations(
+        Number(simulation?.principal),
+        12
+      );
+      setErrors({
+        title: titleErrors,
+        principal: principalErrors
+      });
+      if (titleErrors.length > 0 || principalErrors.length > 0) return;
+
       const newData: Simulation = {
         title: simulation?.title || "",
         principal: Number(simulation?.principal) || 0
@@ -316,6 +330,7 @@ export const Edit = () => {
           onChange={(e) => onChangeTitle(e)}
           value={simulation?.title || ""}
         />
+        <ErrorMessage messages={errors.title} />
       </Flex>
 
       <Flex direction="column">
@@ -327,6 +342,7 @@ export const Edit = () => {
           onChange={(e) => onChangePrincipal(e)}
           value={simulation?.principal || 0}
         />
+        <ErrorMessage messages={errors.principal} />
       </Flex>
 
       <AssumedYieldsField
