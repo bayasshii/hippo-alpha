@@ -27,13 +27,56 @@ export const Edit = () => {
   const assumedYieldIdsRef = useRef<Array<string>>([]);
   const monthlyDepositIdsRef = useRef<Array<string>>([]);
 
+  const assumedYieldsYears = useMemo(
+    () =>
+      assumedYields.reduce((prev, current) => {
+        return prev + current.year;
+      }, 0),
+    [assumedYields]
+  );
+  const monthlyDepositsYears = useMemo(
+    () =>
+      monthlyDeposits.reduce((prev, current) => {
+        return prev + current.year;
+      }, 0),
+    [monthlyDeposits]
+  );
+
   const yearsSummary = useMemo(() => {
-    if (!Array.isArray(assumedYields)) return 0;
-    const years = assumedYields.reduce((prev, current) => {
-      return prev + current.year;
-    }, 0);
-    return years;
-  }, [assumedYields]);
+    if (assumedYieldsYears > monthlyDepositsYears) {
+      const difference = assumedYieldsYears - monthlyDepositsYears;
+      // 最後の要素の年数を変更する
+      const newMonthlyDeposits: Array<MonthlyDeposit> = monthlyDeposits.map(
+        (monthlyDeposit, index) => {
+          if (index === monthlyDeposits.length - 1) {
+            return {
+              ...monthlyDeposit,
+              year: monthlyDeposit.year + difference
+            };
+          }
+          return monthlyDeposit;
+        }
+      );
+      setMonthlyDeposits(newMonthlyDeposits);
+    }
+    if (assumedYieldsYears < monthlyDepositsYears) {
+      const difference = monthlyDepositsYears - assumedYieldsYears;
+      // 最後の要素の年数を変更する
+      const newAssumedYields: Array<AssumedYield> = assumedYields.map(
+        (assumedYield, index) => {
+          if (index === assumedYields.length - 1) {
+            return {
+              ...assumedYield,
+              year: assumedYield.year + difference
+            };
+          }
+          return assumedYield;
+        }
+      );
+      setAssumedYields(newAssumedYields);
+    }
+    return Math.max(assumedYieldsYears, monthlyDepositsYears);
+  }, [assumedYieldsYears, monthlyDepositsYears]);
 
   const { updateSimulation } = useUpdateSimulation();
   const { postAssumedYield } = usePostAssumedYield();
