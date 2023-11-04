@@ -17,7 +17,7 @@ type Props = {
 };
 
 export const AssumedYieldsField = ({
-  assumedYields,
+  assumedYields = [],
   addAssumedYield,
   deleteFrontAssumedYield,
   onChangeAssumedYieldsYear,

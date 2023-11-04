@@ -41,11 +41,11 @@ type Props = {
 };
 export const Chart = ({
   principal,
-  assumedYields,
-  monthlyDeposits,
+  assumedYields = [],
+  monthlyDeposits = [],
   years
 }: Props) => {
-  const monthlyDepositsList = monthlyDeposits.flatMap((item) =>
+  const monthlyDepositsList = monthlyDeposits?.flatMap((item) =>
     Array(item.year).fill(Number(item.amount) * 12)
   );
 
@@ -68,7 +68,7 @@ export const Chart = ({
       .map((_, index) => `${index + 1}年後`)
   ];
 
-  const assumedYieldsList = assumedYields.flatMap((item) =>
+  const assumedYieldsList = assumedYields?.flatMap((item) =>
     Array(item.year).fill(Number(item.rate))
   );
 

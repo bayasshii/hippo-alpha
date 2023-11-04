@@ -16,7 +16,7 @@ type Props = {
 };
 
 export const MonthlyDepositsField = ({
-  monthlyDeposits,
+  monthlyDeposits = [],
   onChangeMonthlyDepositsYear,
   onChangeMonthlyDepositsAmount,
   addMonthlyDeposit,

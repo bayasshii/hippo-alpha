@@ -27,15 +27,15 @@ export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
     []
   );
-  const [simulation, setSimulation] = React.useState<Simulation | null>(null);
   const [monthlyDeposits, setMonthlyDeposits] = React.useState<
     Array<MonthlyDeposit>
   >([]);
+  const [simulation, setSimulation] = React.useState<Simulation>();
+  const [fetching, setFetching] = React.useState<boolean>(true);
   const [errors, setErrors] = React.useState<Error>({
     title: [],
     principal: []
   });
-
   const assumedYieldIdsRef = useRef<Array<string>>([]);
   const monthlyDepositIdsRef = useRef<Array<string>>([]);
   const { validations } = useValidation();
@@ -44,100 +44,45 @@ export const Edit = () => {
   const { deleteAssumedYield } = useDeleteAssumedYield();
   const { deleteMonthlyDeposit } = useDeleteMonthlyDeposit();
   const { postMonthlyDeposit } = usePostMonthlyDeposit();
-
   const { simulation_id } = useParams();
-
+  const [maxYear, setMaxYear] = React.useState<number>(10);
   const assumedYieldsYears = getYears(assumedYields);
   const monthlyDepositsYears = getYears(monthlyDeposits);
 
-  const yearsSummary = useMemo(() => {
-    if (assumedYieldsYears > monthlyDepositsYears) {
-      const difference = assumedYieldsYears - monthlyDepositsYears;
-      // 最後の要素の年数を変更する
-      const newMonthlyDeposits: Array<MonthlyDeposit> = monthlyDeposits.map(
-        (monthlyDeposit, index) => {
-          if (index === monthlyDeposits.length - 1) {
-            return {
-              ...monthlyDeposit,
-              year: monthlyDeposit.year + difference
-            };
-          }
-          return monthlyDeposit;
-        }
-      );
-      setMonthlyDeposits(newMonthlyDeposits);
-    }
-    if (assumedYieldsYears < monthlyDepositsYears) {
-      const difference = monthlyDepositsYears - assumedYieldsYears;
-      // 最後の要素の年数を変更する
-      const newAssumedYields: Array<AssumedYield> = assumedYields.map(
-        (assumedYield, index) => {
-          if (index === assumedYields.length - 1) {
-            return {
-              ...assumedYield,
-              year: assumedYield.year + difference
-            };
-          }
-          return assumedYield;
-        }
-      );
-      setAssumedYields(newAssumedYields);
-    }
-    return Math.max(assumedYieldsYears, monthlyDepositsYears);
-  }, [assumedYieldsYears, monthlyDepositsYears]);
-
   useEffect(() => {
-    // assumed_yieldsのfetch
-    const fetchData = async () => {
+    const fetchAssumedYields = async () => {
       const response = await getAPIData("/assumed_yields", {
         simulation_id: simulation_id
       });
       if (response?.data.length === 0) {
         console.log("assumed_yieldsのfetch error");
-        // TODO: 404的なページに飛ばす
       }
       setAssumedYields(response?.data);
-      if (
-        assumedYieldIdsRef.current.length >= response?.data.length ||
-        !Array.isArray(response?.data)
-      )
-        return;
+      if (assumedYieldIdsRef.current.length >= response?.data.length) return;
       response?.data.forEach((assumedYield: AssumedYield) => {
         if (assumedYield.id === undefined) return;
         assumedYieldIdsRef.current.push(assumedYield.id);
       });
     };
-    fetchData();
-  }, [simulation_id]);
-
-  useEffect(() => {
-    // simulationのfetch
-    const fetchData = async () => {
+    const fetchSimulations = async () => {
       const response = await getAPIData(`/simulations/${simulation_id}`);
       setSimulation(response?.data);
     };
-    fetchData();
-  }, [simulation_id]);
-
-  useEffect(() => {
-    // monthly_depositsのfetch
-    const fetchData = async () => {
+    const fetchMonthlyDeposits = async () => {
       const response = await getAPIData("/monthly_deposits", {
         simulation_id: simulation_id
       });
       setMonthlyDeposits(response?.data);
-      if (
-        monthlyDepositIdsRef.current.length >= response?.data.length ||
-        !Array.isArray(response?.data)
-      )
-        return;
+      if (monthlyDepositIdsRef.current.length >= response?.data.length) return;
       response?.data.forEach((monthlyDeposit: MonthlyDeposit) => {
         if (monthlyDeposit.id === undefined) return;
         monthlyDepositIdsRef.current.push(monthlyDeposit.id);
       });
     };
-    fetchData();
-  }, [simulation_id]);
+    fetchAssumedYields();
+    fetchSimulations();
+    fetchMonthlyDeposits();
+  }, [simulation_id, fetching]);
 
   const onChangeTitle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,8 +105,7 @@ export const Edit = () => {
 
   const onChangeAssumedYieldsYear = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, order: number) => {
-      if (!Array.isArray(assumedYields)) return;
-      const newAssumedYields = assumedYields.map((assumedYield) => {
+      const newAssumedYields = assumedYields?.map((assumedYield) => {
         if (assumedYield.order === order) {
           return { ...assumedYield, year: Number(e.target.value) };
         }
@@ -174,8 +118,7 @@ export const Edit = () => {
 
   const onChangeAssumedYieldsRate = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, order: number) => {
-      if (!Array.isArray(assumedYields)) return;
-      const newAssumedYields = assumedYields.map((assumedYield) => {
+      const newAssumedYields = assumedYields?.map((assumedYield) => {
         if (assumedYield.order === order) {
           return { ...assumedYield, rate: Number(e.target.value) };
         }
@@ -241,7 +184,7 @@ export const Edit = () => {
   const onChangeMonthlyDepositsAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, order: number) => {
       if (!Array.isArray(monthlyDeposits)) return;
-      const newMonthlyDeposits = monthlyDeposits.map((monthlyDeposit) => {
+      const newMonthlyDeposits = monthlyDeposits?.map((monthlyDeposit) => {
         if (monthlyDeposit.order === order) {
           return { ...monthlyDeposit, amount: Number(e.target.value) };
         }
@@ -255,7 +198,7 @@ export const Edit = () => {
   const onChangeMonthlyDepositsYear = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, order: number) => {
       if (!Array.isArray(monthlyDeposits)) return;
-      const newMonthlyDeposits = monthlyDeposits.map((monthlyDeposit) => {
+      const newMonthlyDeposits = monthlyDeposits?.map((monthlyDeposit) => {
         if (monthlyDeposit.order === order) {
           return { ...monthlyDeposit, year: Number(e.target.value) };
         }
@@ -269,6 +212,7 @@ export const Edit = () => {
   const saveData = useCallback(
     () => async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
+      // 以下validation
       const titleErrors: Array<string> = validations(
         String(simulation?.title),
         50
@@ -283,37 +227,45 @@ export const Edit = () => {
       });
       if (titleErrors.length > 0 || principalErrors.length > 0) return;
 
+      // 以下post
       const newData: Simulation = {
         title: simulation?.title || "",
         principal: Number(simulation?.principal) || 0
       };
-      // 一旦元のデータを消してから、新しいデータを入れる
-      // TODO: 消すのは成功したけど入れるの失敗したら詰むのなんとかする
-      await assumedYieldIdsRef.current.forEach((assumedYield) => {
-        deleteAssumedYield(assumedYield);
-      });
-      await assumedYields.forEach((assumedYield) => {
-        postAssumedYield({
-          order: assumedYield.order,
-          year: assumedYield.year,
-          rate: Number(assumedYield.rate),
-          simulation_id: String(simulation_id)
-        });
-      });
+      const postData = async () => {
+        try {
+          assumedYieldIdsRef.current.forEach((assumedYield) => {
+            deleteAssumedYield(assumedYield);
+          });
+          assumedYields.forEach((assumedYield) => {
+            postAssumedYield({
+              order: assumedYield.order,
+              year: assumedYield.year,
+              rate: Number(assumedYield.rate),
+              simulation_id: String(simulation_id)
+            });
+          });
+          monthlyDepositIdsRef.current.forEach((monthlyDeposit) => {
+            deleteMonthlyDeposit(monthlyDeposit);
+          });
+          monthlyDeposits.forEach((monthlyDeposit) => {
+            postMonthlyDeposit({
+              order: monthlyDeposit.order,
+              year: monthlyDeposit.year,
+              amount: Number(monthlyDeposit.amount),
+              simulation_id: String(simulation_id)
+            });
+          });
+          updateSimulation(newData, String(simulation_id));
+        } catch (e) {
+          console.log("保存時のエラー", e);
+        }
+      };
+      await postData();
 
-      await monthlyDepositIdsRef.current.forEach((monthlyDeposit) => {
-        deleteMonthlyDeposit(monthlyDeposit);
-      });
-      await monthlyDeposits.forEach((monthlyDeposit) => {
-        postMonthlyDeposit({
-          order: monthlyDeposit.order,
-          year: monthlyDeposit.year,
-          amount: Number(monthlyDeposit.amount),
-          simulation_id: String(simulation_id)
-        });
-      });
-
-      await updateSimulation(newData, String(simulation_id));
+      // useEffectで再fetchする。
+      // useEffect内で呼び出してない変数を第二引数に入れてる。アリなのか・・・？
+      setFetching(!fetching);
     },
     [simulation, assumedYields, monthlyDeposits, simulation_id]
   );
@@ -345,6 +297,19 @@ export const Edit = () => {
         <ErrorMessage messages={errors.principal} />
       </Flex>
 
+      <Flex direction="column">
+        <label htmlFor="maxYear">年数</label>
+        <input
+          type="number"
+          id="maxYear"
+          name="maxYear"
+          onChange={(e) => {
+            setMaxYear(Number(e.target.value));
+          }}
+          value={maxYear}
+        />
+      </Flex>
+
       <AssumedYieldsField
         assumedYields={assumedYields}
         addAssumedYield={addAssumedYield}
@@ -366,7 +331,7 @@ export const Edit = () => {
           principal={simulation?.principal}
           assumedYields={assumedYields}
           monthlyDeposits={monthlyDeposits}
-          years={yearsSummary}
+          years={maxYear}
         />
       )}
 
