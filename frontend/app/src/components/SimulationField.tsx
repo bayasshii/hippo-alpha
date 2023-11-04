@@ -172,10 +172,6 @@ export const SimulationField = (props: Props) => {
         }
       };
       await postData();
-
-      // useEffectで再fetchする。
-      // useEffect内で呼び出してない変数を第二引数に入れてる。アリなのか・・・？
-      // setFetching(!fetching);
     },
     [simulation, assumedYields, monthlyDeposits]
   );
