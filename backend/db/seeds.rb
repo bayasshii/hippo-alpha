@@ -17,7 +17,7 @@ AssumedYield.create!(
     simulation_id: 1,
     rate: 5,
     order: 1,
-    year: 5,
+    year: 20,
 )
 
 MonthlyDeposit.create!(
@@ -39,5 +39,5 @@ MonthlyDeposit.create!(
     simulation_id: 1,
     amount: 5000,
     order: 1,
-    year: 4,
+    year: 19,
 )

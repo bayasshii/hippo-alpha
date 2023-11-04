@@ -5,7 +5,7 @@ import { useCallback } from "react";
 export const usePostSimulation = () => {
   const postSimulation = useCallback(async (newData: Simulation) => {
     try {
-      postAPIData("/simulations", {
+      return await postAPIData("/simulations", {
         simulation: newData
       });
     } catch (e) {
