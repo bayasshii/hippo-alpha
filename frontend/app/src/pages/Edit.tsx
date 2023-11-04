@@ -9,6 +9,7 @@ import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
 import { usePostAssumedYield } from "../hooks/usePostAssumedYield";
 import { useDeleteAssumedYield } from "../hooks/useDeleteAssumedYield";
 import { Chart } from "../components/Chart";
+import { AssumedYieldField } from "../components/AssumedYieldField";
 
 export const Edit = () => {
   const [assumedYields, setAssumedYields] = React.useState<Array<AssumedYield>>(
@@ -175,43 +176,13 @@ export const Edit = () => {
         />
       </Flex>
 
-      <Flex direction="column" p={2} style={{ background: "#eee" }}>
-        <button onClick={addAssumedYield}>追加</button>
-        {Array.isArray(assumedYields) &&
-          assumedYields.map((assumedYield: AssumedYield, key) => (
-            <Flex key={key} gap={1}>
-              <Flex>
-                <label htmlFor="year">年数</label>
-                <input
-                  type="number"
-                  id="year"
-                  name="year"
-                  onChange={(e) =>
-                    onChangeAssumedYieldsYear(e, assumedYield.order)
-                  }
-                  value={assumedYield.year || 0}
-                />
-              </Flex>
-              <Flex>
-                <label htmlFor="rate">年利</label>
-                <input
-                  type="number"
-                  id="rate"
-                  name="rate"
-                  onChange={(e) =>
-                    onChangeAssumedYieldsRate(e, assumedYield.order)
-                  }
-                  value={assumedYield.rate || 0}
-                />
-              </Flex>
-              <button
-                onClick={() => deleteFrontAssumedYield(assumedYield.order)}
-              >
-                削除
-              </button>
-            </Flex>
-          ))}
-      </Flex>
+      <AssumedYieldField
+        assumedYields={assumedYields}
+        addAssumedYield={addAssumedYield}
+        deleteFrontAssumedYield={deleteFrontAssumedYield}
+        onChangeAssumedYieldsYear={onChangeAssumedYieldsYear}
+        onChangeAssumedYieldsRate={onChangeAssumedYieldsRate}
+      />
 
       <Flex direction="column">
         <label htmlFor="reserves">積立額</label>
