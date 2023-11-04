@@ -50,7 +50,7 @@ export const Edit = () => {
         simulation_id: simulation_id
       });
       if (response?.data.length === 0) {
-        console.log("error");
+        console.log("assumed_yieldsのfetch error");
         // TODO: 404的なページに飛ばす
       }
       setAssumedYields(response?.data);
@@ -243,6 +243,7 @@ export const Edit = () => {
           simulation_id: String(simulation_id)
         });
       });
+
       await monthlyDepositIdsRef.current.forEach((monthlyDeposit) => {
         deleteMonthlyDeposit(monthlyDeposit);
       });
@@ -257,7 +258,7 @@ export const Edit = () => {
 
       await updateSimulation(newData, String(simulation_id));
     },
-    [simulation, assumedYields, simulation_id]
+    [simulation, assumedYields, monthlyDeposits, simulation_id]
   );
 
   return (
@@ -305,6 +306,7 @@ export const Edit = () => {
         <Chart
           principal={simulation?.principal}
           assumedYields={assumedYields}
+          monthlyDeposits={monthlyDeposits}
           years={yearsSummary}
         />
       )}

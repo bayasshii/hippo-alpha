@@ -10,6 +10,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { AssumedYield } from "../types/AssumedYield";
+import { MonthlyDeposit } from "../types/MonthlyDeposit";
 
 ChartJS.register(
   CategoryScale,
@@ -35,12 +36,31 @@ export const options = {
 type Props = {
   principal: number;
   assumedYields: Array<AssumedYield>;
+  monthlyDeposits: Array<MonthlyDeposit>;
   years: number;
 };
-export const Chart = ({ principal, assumedYields, years }: Props) => {
-  const principals: Array<number> = [
-    ...Array(years + 1).fill(Number(principal))
-  ];
+export const Chart = ({
+  principal,
+  assumedYields,
+  monthlyDeposits,
+  years
+}: Props) => {
+  const monthlyDepositsList = monthlyDeposits.flatMap((item) =>
+    Array(item.year).fill(Number(item.amount))
+  );
+
+  const monthlyDepositsResult: Array<number> = Array(years + 1)
+    .fill(1)
+    .map((_, index) => {
+      if (index === 0) {
+        return principal;
+      }
+      const principals: number = monthlyDepositsList
+        .slice(0, index)
+        .reduce((a, b) => Number(a) + Number(b), principal);
+      return principals;
+    });
+
   const labels = [
     "今年",
     ...Array(years)
@@ -48,17 +68,17 @@ export const Chart = ({ principal, assumedYields, years }: Props) => {
       .map((_, index) => `${index + 1}年後`)
   ];
 
-  const list = Array.isArray(assumedYields)
-    ? assumedYields.flatMap((item) => Array(item.year).fill(Number(item.rate)))
-    : [];
+  const assumedYieldsList = assumedYields.flatMap((item) =>
+    Array(item.year).fill(Number(item.rate))
+  );
 
-  const result: Array<number> = Array(years + 1)
+  const assumedYieldsResult: Array<number> = Array(years + 1)
     .fill(1)
     .map((_, index) => {
       if (index === 0) {
         return 0;
       }
-      const ratio: number = list
+      const ratio: number = assumedYieldsList
         .slice(0, index)
         .reduce((a, b) => a + (a * b + b) / 100, 0);
       return Math.round(principal * ratio);
@@ -69,12 +89,12 @@ export const Chart = ({ principal, assumedYields, years }: Props) => {
     datasets: [
       {
         label: "元本",
-        data: principals,
+        data: monthlyDepositsResult,
         backgroundColor: "rgba(255, 99, 132, 0.5)"
       },
       {
         label: "運用収益",
-        data: result,
+        data: assumedYieldsResult,
         backgroundColor: "rgba(53, 162, 235, 0.5)"
       }
     ]
@@ -82,7 +102,8 @@ export const Chart = ({ principal, assumedYields, years }: Props) => {
   return (
     <>
       <p>
-        {years}年後には{principals.slice(-1)[0] + result.slice(-1)[0]}
+        {years}年後には
+        {monthlyDepositsResult.slice(-1)[0] + assumedYieldsResult.slice(-1)[0]}
         円になってるよ
       </p>
       <Bar options={options} data={data} />

@@ -27,6 +27,7 @@ export const MonthlyDepositsField = ({
       <button onClick={addMonthlyDeposit}>追加</button>
       {monthlyDeposits.map((monthlyDeposit: MonthlyDeposit, key) => (
         <Flex key={key} gap={1}>
+          order:{monthlyDeposit.order}, id:{monthlyDeposit.id}
           <Flex>
             <label htmlFor={`monthly_deposit_year${key}`}>年数</label>
             <input

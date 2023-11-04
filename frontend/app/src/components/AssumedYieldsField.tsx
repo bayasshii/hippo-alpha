@@ -29,6 +29,7 @@ export const AssumedYieldsField = ({
       {Array.isArray(assumedYields) &&
         assumedYields.map((assumedYield: AssumedYield, key) => (
           <Flex key={key} gap={1}>
+            {assumedYield.id}
             <Flex>
               <label htmlFor="year">年数</label>
               <input

@@ -1,7 +1,7 @@
 class MonthlyDepositsController < ApplicationController
     def index
         simulation_id = params[:simulation_id]
-        monthlyDeposits = MonthlyDeposit.where(simulation_id: simulation_id)
+        monthlyDeposits = MonthlyDeposit.find_by_simulation_id(simulation_id)
         monthlyDeposits = monthlyDeposits.sort_by{|monthlyDeposit| monthlyDeposit.order} if monthlyDeposits
         render json: monthlyDeposits
     end
@@ -32,6 +32,6 @@ class MonthlyDepositsController < ApplicationController
     
     private
         def monthly_deposit_params
-        params.require(:monthly_deposit).permit(:amount, :order, :year, :simulation_id)
+          params.require(:monthly_deposit).permit(:amount, :order, :year, :simulation_id)
         end
 end
