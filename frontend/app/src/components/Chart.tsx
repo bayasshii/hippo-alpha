@@ -46,14 +46,14 @@ export const Chart = ({
   years
 }: Props) => {
   const monthlyDepositsList = monthlyDeposits.flatMap((item) =>
-    Array(item.year).fill(Number(item.amount))
+    Array(item.year).fill(Number(item.amount) * 12)
   );
 
   const monthlyDepositsResult: Array<number> = Array(years + 1)
     .fill(1)
     .map((_, index) => {
       if (index === 0) {
-        return principal;
+        return Number(principal);
       }
       const principals: number = monthlyDepositsList
         .slice(0, index)
@@ -72,16 +72,24 @@ export const Chart = ({
     Array(item.year).fill(Number(item.rate))
   );
 
-  const assumedYieldsResult: Array<number> = Array(years + 1)
+  // ちゃんとやるなら月毎に計算しなきゃいけない
+  const summary = Array(years + 1)
     .fill(1)
     .map((_, index) => {
       if (index === 0) {
         return 0;
       }
-      const ratio: number = assumedYieldsList
-        .slice(0, index)
-        .reduce((a, b) => a + (a * b + b) / 100, 0);
-      return Math.round(principal * ratio);
+      return (
+        monthlyDepositsResult
+          .slice(0, index)
+          .reduce(
+            (a, b, i) =>
+              Number(a) +
+              monthlyDepositsList[i] +
+              (Number(b) * assumedYieldsList[i]) / 100,
+            monthlyDepositsResult[0]
+          ) - monthlyDepositsResult[index]
+      );
     });
 
   const data = {
@@ -94,7 +102,7 @@ export const Chart = ({
       },
       {
         label: "運用収益",
-        data: assumedYieldsResult,
+        data: summary,
         backgroundColor: "rgba(53, 162, 235, 0.5)"
       }
     ]
@@ -103,7 +111,7 @@ export const Chart = ({
     <>
       <p>
         {years}年後には
-        {monthlyDepositsResult.slice(-1)[0] + assumedYieldsResult.slice(-1)[0]}
+        {monthlyDepositsResult.slice(-1)[0] + summary.slice(-1)[0]}
         円になってるよ
       </p>
       <Bar options={options} data={data} />
