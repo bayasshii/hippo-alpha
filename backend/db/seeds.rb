@@ -11,3 +11,11 @@ AssumedYield.create!(
     order: 1,
     year: 10,
 )
+
+MonthlyDeposit.create!(
+    simulation: simulation1,
+    simulation_id: 1,
+    amount: 10000,
+    order: 1,
+    year: 10,
+)

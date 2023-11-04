@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_04_135452) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_04_135453) do
   create_table "assumed_yields", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "rate", precision: 11, scale: 8, null: false
     t.integer "order", null: false
@@ -21,6 +21,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_04_135452) do
     t.index ["simulation_id"], name: "index_assumed_yields_on_simulation_id"
   end
 
+  create_table "monthly_deposits", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "amount", null: false
+    t.integer "order", null: false
+    t.integer "year", null: false
+    t.bigint "simulation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["simulation_id"], name: "index_monthly_deposits_on_simulation_id"
+  end
+
   create_table "simulations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title", null: false
     t.string "principal", null: false
@@ -29,4 +39,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_04_135452) do
   end
 
   add_foreign_key "assumed_yields", "simulations"
+  add_foreign_key "monthly_deposits", "simulations"
 end

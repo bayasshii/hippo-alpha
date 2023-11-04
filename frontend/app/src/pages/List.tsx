@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export const List = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [data, setData] = React.useState<Array<Simulation> | null>(null);
+  const [data, setData] = React.useState<Array<Simulation>>([]);
 
   useEffect(() => {
     setIsLoading(true);

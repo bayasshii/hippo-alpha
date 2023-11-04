@@ -48,9 +48,9 @@ export const Chart = ({ principal, assumedYields, years }: Props) => {
       .map((_, index) => `${index + 1}年後`)
   ];
 
-  const list = assumedYields.flatMap((item) =>
-    Array(item.year).fill(Number(item.rate))
-  );
+  const list = Array.isArray(assumedYields)
+    ? assumedYields.flatMap((item) => Array(item.year).fill(Number(item.rate)))
+    : [];
 
   const result: Array<number> = Array(years + 1)
     .fill(1)

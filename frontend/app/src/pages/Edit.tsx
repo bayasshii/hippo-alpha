@@ -19,6 +19,7 @@ export const Edit = () => {
   const assumedYieldIdsRef = useRef<Array<string>>([]);
 
   const yearsSummary = useMemo(() => {
+    if (!Array.isArray(assumedYields)) return 0;
     const years = assumedYields.reduce((prev, current) => {
       return prev + current.year;
     }, 0);
@@ -41,7 +42,11 @@ export const Edit = () => {
         // TODO: 404的なページに飛ばす
       }
       setAssumedYields(response?.data);
-      if (assumedYieldIdsRef.current.length >= response?.data.length) return;
+      if (
+        assumedYieldIdsRef.current.length >= response?.data.length ||
+        !Array.isArray(response?.data)
+      )
+        return;
       response?.data.forEach((assumedYield: AssumedYield) => {
         if (assumedYield.id === undefined) return;
         assumedYieldIdsRef.current.push(assumedYield.id);
@@ -75,7 +80,7 @@ export const Edit = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     order: number
   ) => {
-    if (assumedYields == null) return;
+    if (!Array.isArray(assumedYields)) return;
     const newAssumedYields = assumedYields.map((assumedYield) => {
       if (assumedYield.order === order) {
         return { ...assumedYield, year: Number(e.target.value) };
@@ -89,7 +94,7 @@ export const Edit = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     order: number
   ) => {
-    if (assumedYields == null) return;
+    if (!Array.isArray(assumedYields)) return;
     const newAssumedYields = assumedYields.map((assumedYield) => {
       if (assumedYield.order === order) {
         return { ...assumedYield, rate: Number(e.target.value) };
@@ -172,37 +177,40 @@ export const Edit = () => {
 
       <Flex direction="column" p={2} style={{ background: "#eee" }}>
         <button onClick={addAssumedYield}>追加</button>
-        {assumedYields.map((assumedYield: AssumedYield, key) => (
-          <Flex key={key} gap={1}>
-            <Flex>
-              <label htmlFor="year">年数</label>
-              <input
-                type="number"
-                id="year"
-                name="year"
-                onChange={(e) =>
-                  onChangeAssumedYieldsYear(e, assumedYield.order)
-                }
-                value={assumedYield.year || 0}
-              />
+        {Array.isArray(assumedYields) &&
+          assumedYields.map((assumedYield: AssumedYield, key) => (
+            <Flex key={key} gap={1}>
+              <Flex>
+                <label htmlFor="year">年数</label>
+                <input
+                  type="number"
+                  id="year"
+                  name="year"
+                  onChange={(e) =>
+                    onChangeAssumedYieldsYear(e, assumedYield.order)
+                  }
+                  value={assumedYield.year || 0}
+                />
+              </Flex>
+              <Flex>
+                <label htmlFor="rate">年利</label>
+                <input
+                  type="number"
+                  id="rate"
+                  name="rate"
+                  onChange={(e) =>
+                    onChangeAssumedYieldsRate(e, assumedYield.order)
+                  }
+                  value={assumedYield.rate || 0}
+                />
+              </Flex>
+              <button
+                onClick={() => deleteFrontAssumedYield(assumedYield.order)}
+              >
+                削除
+              </button>
             </Flex>
-            <Flex>
-              <label htmlFor="rate">年利</label>
-              <input
-                type="number"
-                id="rate"
-                name="rate"
-                onChange={(e) =>
-                  onChangeAssumedYieldsRate(e, assumedYield.order)
-                }
-                value={assumedYield.rate || 0}
-              />
-            </Flex>
-            <button onClick={() => deleteFrontAssumedYield(assumedYield.order)}>
-              削除
-            </button>
-          </Flex>
-        ))}
+          ))}
       </Flex>
 
       <Flex direction="column">
