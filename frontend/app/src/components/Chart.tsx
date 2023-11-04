@@ -79,7 +79,6 @@ export const Chart = ({ principal, assumedYields, years }: Props) => {
       }
     ]
   };
-  console.log(principals[1], result[1]);
   return (
     <>
       <p>

@@ -7,7 +7,9 @@ import { Simulation } from "../types/Simulation";
 import { AssumedYield } from "../types/AssumedYield";
 import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
 import { usePostAssumedYield } from "../hooks/usePostAssumedYield";
+import { usePostMonthlyDeposit } from "../hooks/usePostMonthlyDeposit";
 import { useDeleteAssumedYield } from "../hooks/useDeleteAssumedYield";
+import { useDeleteMonthlyDeposit } from "../hooks/useDeleteMonthlyDeposit";
 import { Chart } from "../components/Chart";
 import { AssumedYieldsField } from "../components/AssumedYieldsField";
 import { MonthlyDeposit } from "../types/MonthlyDeposit";
@@ -23,6 +25,7 @@ export const Edit = () => {
   >([]);
 
   const assumedYieldIdsRef = useRef<Array<string>>([]);
+  const monthlyDepositIdsRef = useRef<Array<string>>([]);
 
   const yearsSummary = useMemo(() => {
     if (!Array.isArray(assumedYields)) return 0;
@@ -35,6 +38,8 @@ export const Edit = () => {
   const { updateSimulation } = useUpdateSimulation();
   const { postAssumedYield } = usePostAssumedYield();
   const { deleteAssumedYield } = useDeleteAssumedYield();
+  const { deleteMonthlyDeposit } = useDeleteMonthlyDeposit();
+  const { postMonthlyDeposit } = usePostMonthlyDeposit();
 
   const { simulation_id } = useParams();
 
@@ -78,7 +83,15 @@ export const Edit = () => {
         simulation_id: simulation_id
       });
       setMonthlyDeposits(response?.data);
-      console.log(response?.data);
+      if (
+        monthlyDepositIdsRef.current.length >= response?.data.length ||
+        !Array.isArray(response?.data)
+      )
+        return;
+      response?.data.forEach((monthlyDeposit: MonthlyDeposit) => {
+        if (monthlyDeposit.id === undefined) return;
+        monthlyDepositIdsRef.current.push(monthlyDeposit.id);
+      });
     };
     fetchData();
   }, []);
@@ -145,7 +158,6 @@ export const Edit = () => {
   const deleteFrontAssumedYield = useCallback(
     (order: number) => {
       const newAssumedYields = assumedYields.filter((assumedYield) => {
-        console.log(assumedYield.order);
         return assumedYield.order !== order;
       });
       // orderを振り直す
@@ -169,10 +181,9 @@ export const Edit = () => {
     ]);
   }, [monthlyDeposits, simulation_id]);
 
-  const deleteMonthlyDeposit = useCallback(
+  const deleteFrontMonthlyDeposit = useCallback(
     (order: number) => {
       const newMonthlyDeposits = monthlyDeposits.filter((monthlyDeposit) => {
-        console.log(monthlyDeposit.order);
         return monthlyDeposit.order !== order;
       });
       // orderを振り直す
@@ -232,6 +243,18 @@ export const Edit = () => {
           simulation_id: String(simulation_id)
         });
       });
+      await monthlyDepositIdsRef.current.forEach((monthlyDeposit) => {
+        deleteMonthlyDeposit(monthlyDeposit);
+      });
+      await monthlyDeposits.forEach((monthlyDeposit) => {
+        postMonthlyDeposit({
+          order: monthlyDeposit.order,
+          year: monthlyDeposit.year,
+          amount: Number(monthlyDeposit.amount),
+          simulation_id: String(simulation_id)
+        });
+      });
+
       await updateSimulation(newData, String(simulation_id));
     },
     [simulation, assumedYields, simulation_id]
@@ -275,7 +298,7 @@ export const Edit = () => {
         onChangeMonthlyDepositsAmount={onChangeMonthlyDepositsAmount}
         onChangeMonthlyDepositsYear={onChangeMonthlyDepositsYear}
         addMonthlyDeposit={addMonthlyDeposit}
-        deleteMonthlyDeposit={deleteMonthlyDeposit}
+        deleteFrontMonthlyDeposit={deleteFrontMonthlyDeposit}
       />
 
       {simulation && (
@@ -286,7 +309,7 @@ export const Edit = () => {
         />
       )}
 
-      <button onClick={saveData}>変更を保存</button>
+      <button onClick={saveData()}>変更を保存</button>
     </Flex>
   );
 };

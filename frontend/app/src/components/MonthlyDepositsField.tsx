@@ -4,7 +4,7 @@ import { Flex } from "./Flex";
 type Props = {
   monthlyDeposits: Array<MonthlyDeposit>;
   addMonthlyDeposit: () => void;
-  deleteMonthlyDeposit: (order: number) => void;
+  deleteFrontMonthlyDeposit: (order: number) => void;
   onChangeMonthlyDepositsYear: (
     e: React.ChangeEvent<HTMLInputElement>,
     order: number
@@ -20,7 +20,7 @@ export const MonthlyDepositsField = ({
   onChangeMonthlyDepositsYear,
   onChangeMonthlyDepositsAmount,
   addMonthlyDeposit,
-  deleteMonthlyDeposit
+  deleteFrontMonthlyDeposit
 }: Props) => {
   return (
     <Flex direction="column" p={2} style={{ background: "#eee" }}>
@@ -53,7 +53,9 @@ export const MonthlyDepositsField = ({
               }
             />
           </Flex>
-          <button onClick={() => deleteMonthlyDeposit(monthlyDeposit.order)}>
+          <button
+            onClick={() => deleteFrontMonthlyDeposit(monthlyDeposit.order)}
+          >
             削除
           </button>
         </Flex>
