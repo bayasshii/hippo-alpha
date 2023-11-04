@@ -137,7 +137,7 @@ export const Edit = () => {
       });
     };
     fetchData();
-  }, []);
+  }, [simulation_id]);
 
   const onChangeTitle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
