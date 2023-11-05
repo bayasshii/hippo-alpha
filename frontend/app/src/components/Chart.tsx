@@ -1,4 +1,3 @@
-import React, { useRef } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,9 +8,6 @@ import {
   Legend
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { AssumedYield } from "../types/AssumedYield";
-import { MonthlyDeposit } from "../types/MonthlyDeposit";
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
