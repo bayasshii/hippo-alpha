@@ -1,15 +1,14 @@
 class SimulationsController < ApplicationController
-  
   def index
-    simulations = Simulation.all.order(:id)
+    simulations = Simulation.order(:id)
     render json: simulations
   end
 
   def show
     simulation = Simulation.find(params[:id])
     render json: simulation
-    rescue ActiveRecord::RecordNotFound
-      render json: { error: 'Simulation not found' }, status: :not_found
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Simulation not found' }, status: :not_found
   end
 
   def create
@@ -31,7 +30,8 @@ class SimulationsController < ApplicationController
   end
 
   private
-    def simulation_params
-      params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit)
-    end
+
+  def simulation_params
+    params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit)
+  end
 end
