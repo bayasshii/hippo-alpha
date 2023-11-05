@@ -70,6 +70,7 @@ export const SimulationField = (props: Props) => {
 
   const onChangeMonthlyDepositsAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, key: number) => {
+      // TODO:送信前にフロントでもバリデーションしないとグラフがすごいことになる
       const newMonthlyDeposits: Array<number> = monthlyDeposits?.map(
         (monthlyDeposit, index) => {
           if (index === key) return Number(e.target.value);
