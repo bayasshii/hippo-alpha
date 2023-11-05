@@ -3,10 +3,9 @@ class MonthlyDepositsController < ApplicationController
         simulation_id = params[:simulation_id]
         monthlyDeposits = MonthlyDeposit.find_by_simulation_id(simulation_id)
         monthlyDeposits = monthlyDeposits.sort_by{|monthlyDeposit| monthlyDeposit.order} if monthlyDeposits
-        render json: monthlyDeposits;
+        render json: monthlyDeposits
     end
     
-
     def update
         monthlyDeposit = MonthlyDeposit.find(params[:id])
         if monthlyDeposit.update(monthly_deposit_params)
