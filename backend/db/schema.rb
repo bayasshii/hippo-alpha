@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_04_135453) do
+ActiveRecord::Schema[7.0].define(version: 20_231_104_135_453) do
   create_table "assumed_yields", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "rate", precision: 11, scale: 8, null: false
     t.integer "order", null: false
