@@ -15,9 +15,6 @@ export const newAxiosInstance = () => {
 
   instance.interceptors.response.use(
     (response) => {
-      if (process.env.NODE_ENV === "development") {
-        console.log("devMode-success:", response);
-      }
       return response;
     },
     (error) => {
