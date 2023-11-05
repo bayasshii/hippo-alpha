@@ -103,8 +103,7 @@ export const SimulationField = (props: Props) => {
   );
 
   const onChangeMaxYear = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      // todo: セレクトボックスにしたい。もしくはここでバリデーションする
+    async (e: React.ChangeEvent<HTMLSelectElement>) => {
       setMaxYear(Number(e.target.value));
       balanceYears(Number(e.target.value));
     },
@@ -120,14 +119,14 @@ export const SimulationField = (props: Props) => {
         maxLength: 50
       });
       const principalErrors: Array<string> = numberValidations({
-        value: simulation?.principal,
+        value: Number(simulation?.principal),
         max: 1000000000000, // 1兆
         min: 0,
         isInteger: true
       });
       const yearsErrors: Array<string> = numberValidations({
         value: maxYear,
-        max: 100,
+        max: 101, // 最大100年
         min: 0,
         isInteger: true
       });
@@ -161,6 +160,8 @@ export const SimulationField = (props: Props) => {
               "amount",
               id
             );
+            console.log(monthlyDeposits);
+            console.log(monthlyDepositsConverted);
             monthlyDepositsConverted.forEach((monthlyDeposit: any) => {
               postMonthlyDeposit(monthlyDeposit);
             });
@@ -224,13 +225,17 @@ export const SimulationField = (props: Props) => {
       </Flex>
       <Flex direction="column">
         <label htmlFor="maxYear">年数</label>
-        <input
-          type="number"
+        <select
           id="maxYear"
           name="maxYear"
-          onChange={onChangeMaxYear}
+          onChange={(e) => onChangeMaxYear(e)}
           value={maxYear}
-        />
+        >
+          <option value="10">10年</option>
+          <option value="30">30年</option>
+          <option value="50">50年</option>
+          <option value="100">100年</option>
+        </select>
         <ErrorMessage messages={errors.years} />
       </Flex>
       {simulation && (
