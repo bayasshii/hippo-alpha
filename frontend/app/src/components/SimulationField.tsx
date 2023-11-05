@@ -72,7 +72,6 @@ export const SimulationField = (props: Props) => {
           return monthlyDeposit;
         }
       );
-      console.log(newMonthlyDeposits);
       setMonthlyDeposits(newMonthlyDeposits);
     },
     [monthlyDeposits]
@@ -140,7 +139,6 @@ export const SimulationField = (props: Props) => {
             );
             assumedYieldsConverted.forEach((assumedYield: any) => {
               postAssumedYield(assumedYield);
-              console.log("保存されてそ〜");
             });
             const monthlyDepositsConverted = convertData(
               monthlyDeposits,
@@ -175,8 +173,6 @@ export const SimulationField = (props: Props) => {
     },
     [simulation, assumedYields, monthlyDeposits]
   );
-
-  console.log("props", props);
 
   return (
     <Flex direction="column" gap={2}>
