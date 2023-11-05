@@ -1,7 +1,7 @@
 class CreateAssumedYields < ActiveRecord::Migration[7.0]
   def change
     create_table :assumed_yields do |t|
-      t.numeric "rate", null: false, precision: 11, scale: 8
+      t.numeric "rate", null: false, precision: 4, scale: 1
       t.integer "order", null: false
       t.integer "year", null: false
       t.references :simulation, null: false, foreign_key: true
