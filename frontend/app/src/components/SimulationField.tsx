@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Flex } from "./Flex";
 import { Link } from "react-router-dom";
 import { ErrorMessage } from "./ErrorMessage";
@@ -6,7 +6,8 @@ import { Chart } from "./Chart";
 import { AssumedYieldsField } from "./AssumedYieldsField";
 import { MonthlyDepositsField } from "./MonthlyDepositsField";
 import { Simulation } from "../types/Simulation";
-import { useValidation } from "../hooks/useValidation";
+import { useStringValidation } from "../hooks/useStringValidation";
+import { useNumberValidation } from "../hooks/useNumberValidation";
 import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
 import { usePostAssumedYield } from "../hooks/usePostAssumedYield";
 import { useDeleteAssumedYield } from "../hooks/useDeleteAssumedYield";
@@ -15,9 +16,10 @@ import { usePostMonthlyDeposit } from "../hooks/usePostMonthlyDeposit";
 import { usePostSimulation } from "../hooks/usePostSimulation";
 import { convertData } from "../helper/convertData";
 
-type Error = {
+type ErrorMessages = {
   title: Array<string>;
   principal: Array<string>;
+  years: Array<string>;
 };
 type Props = {
   simulation_id?: string;
@@ -38,11 +40,13 @@ export const SimulationField = (props: Props) => {
     props.simulation || { title: "タイトル", principal: 100000 }
   );
   const [maxYear, setMaxYear] = React.useState<number>(30);
-  const [errors, setErrors] = useState<Error>({
+  const [errors, setErrors] = useState<ErrorMessages>({
     title: [],
-    principal: []
+    principal: [],
+    years: []
   });
-  const { validations } = useValidation();
+  const { stringValidations } = useStringValidation();
+  const { numberValidations } = useNumberValidation();
   const { updateSimulation } = useUpdateSimulation();
   const { postAssumedYield } = usePostAssumedYield();
   const { deleteAssumedYield } = useDeleteAssumedYield();
@@ -99,6 +103,7 @@ export const SimulationField = (props: Props) => {
 
   const onChangeMaxYear = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
+      // todo: セレクトボックスにしたい。もしくはここでバリデーションする
       setMaxYear(Number(e.target.value));
       balanceYears(Number(e.target.value));
     },
@@ -109,24 +114,34 @@ export const SimulationField = (props: Props) => {
     () => async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       // 以下validation
-      const titleErrors: Array<string> = validations(
-        String(simulation?.title),
-        50
-      );
-      const principalErrors: Array<string> = validations(
-        Number(simulation?.principal),
-        12
-      );
+      const titleErrors: Array<string> = stringValidations({
+        value: simulation?.title,
+        maxLength: 50
+      });
+      const principalErrors: Array<string> = numberValidations({
+        value: simulation?.principal,
+        max: 1000000000000, // 1兆
+        min: 0,
+        isInteger: true
+      });
+      const yearsErrors: Array<string> = numberValidations({
+        value: maxYear,
+        max: 100,
+        min: 0,
+        isInteger: true
+      });
       setErrors({
         title: titleErrors,
-        principal: principalErrors
+        principal: principalErrors,
+        years: yearsErrors
       });
+      // エラーがあればreturn
       if (titleErrors.length > 0 || principalErrors.length > 0) return;
 
       // 以下post
       const newData: Simulation = {
         title: simulation?.title || "",
-        principal: Number(simulation?.principal) || 0
+        principal: simulation?.principal || 0
       };
       const postData = async () => {
         try {
@@ -215,6 +230,7 @@ export const SimulationField = (props: Props) => {
           onChange={onChangeMaxYear}
           value={maxYear}
         />
+        <ErrorMessage messages={errors.years} />
       </Flex>
       {simulation && (
         <Chart
