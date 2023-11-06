@@ -22,7 +22,7 @@ type ErrorMessages = {
   years: Array<string>;
 };
 type Props = {
-  simulation_id?: string;
+  simulation_id?: number;
   simulation?: Simulation;
   assumedYields?: Array<number>;
   monthlyDeposits?: Array<number>;
@@ -145,7 +145,7 @@ export const SimulationField = (props: Props) => {
       };
       const postData = async () => {
         try {
-          const updateRelationData = async (id: string) => {
+          const updateRelationData = async (id: number) => {
             // コンバートの仕方が強引。ここまでロジック絡むならもう専用のものを作ったら良さそう
             const assumedYieldsConverted = convertData(
               assumedYields,
@@ -160,8 +160,6 @@ export const SimulationField = (props: Props) => {
               "amount",
               id
             );
-            console.log(monthlyDeposits);
-            console.log(monthlyDepositsConverted);
             monthlyDepositsConverted.forEach((monthlyDeposit: any) => {
               postMonthlyDeposit(monthlyDeposit);
             });
@@ -169,13 +167,16 @@ export const SimulationField = (props: Props) => {
 
           if (props.simulation_id) {
             updateSimulation(newData, String(props.simulation_id));
-            props.deletableAssumedYieldIds?.forEach((assumedYield) => {
+            await props.deletableAssumedYieldIds?.forEach((assumedYield) => {
               deleteAssumedYield(assumedYield);
             });
-            props.deletableMonthlyDepositIds?.forEach((monthlyDeposit) => {
-              deleteMonthlyDeposit(monthlyDeposit);
-            });
+            await props.deletableMonthlyDepositIds?.forEach(
+              (monthlyDeposit) => {
+                deleteMonthlyDeposit(monthlyDeposit);
+              }
+            );
             updateRelationData(props.simulation_id);
+            //  window.location.href = `/${props.simulation_id}`;
           } else {
             const response = await postSimulation(newData);
             const id = response.data.id; // ここでIDを取得

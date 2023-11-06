@@ -1,4 +1,4 @@
-export const convertData = (arr: Array<any>, value: string, id: string) => {
+export const convertData = (arr: Array<any>, value: string, id: number) => {
   let result = [];
   let order = 1;
   for (let i = 0; i < arr.length; ) {

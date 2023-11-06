@@ -13,10 +13,7 @@ export const Edit = () => {
   const [monthlyDeposits, setMonthlyDeposits] = React.useState<Array<number>>(
     []
   );
-  const [simulation, setSimulation] = React.useState<Simulation>({
-    title: "",
-    principal: 0
-  });
+  const [simulation, setSimulation] = React.useState<Simulation>();
   const assumedYieldIdsRef = useRef<Array<string>>([]);
   const monthlyDepositIdsRef = useRef<Array<string>>([]);
   const { simulation_id } = useParams();
@@ -74,16 +71,22 @@ export const Edit = () => {
   return (
     <>
       {isFetching ? (
-        <SimulationField
-          simulation={simulation}
-          assumedYields={assumedYields}
-          monthlyDeposits={monthlyDeposits}
-          deletableAssumedYieldIds={assumedYieldIdsRef.current as Array<string>}
-          deletableMonthlyDepositIds={
-            monthlyDepositIdsRef.current as Array<string>
-          }
-          simulation_id={simulation_id!}
-        />
+        simulation?.title ? (
+          <SimulationField
+            simulation={simulation}
+            assumedYields={assumedYields}
+            monthlyDeposits={monthlyDeposits}
+            deletableAssumedYieldIds={
+              assumedYieldIdsRef.current as Array<string>
+            }
+            deletableMonthlyDepositIds={
+              monthlyDepositIdsRef.current as Array<string>
+            }
+            simulation_id={Number(simulation_id!)}
+          />
+        ) : (
+          <p>NoData</p>
+        )
       ) : (
         <p>loading...</p>
       )}
