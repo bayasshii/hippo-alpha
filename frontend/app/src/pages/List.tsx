@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getAPIData } from "../api/getAPIData";
 import { Simulation } from "../types/Simulation";
 import { Link } from "react-router-dom";
 
 export const List = () => {
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [data, setData] = React.useState<Array<Simulation>>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [data, setData] = useState<Array<Simulation>>([]);
 
   useEffect(() => {
     setIsLoading(true);

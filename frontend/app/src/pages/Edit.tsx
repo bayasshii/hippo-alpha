@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAPIData } from "../api/getAPIData";
 import { useParams } from "react-router-dom";
 import { Simulation } from "../types/Simulation";
@@ -9,15 +9,13 @@ import { SimulationField } from "../components/SimulationField";
 // fetchしてくるのがメインのコンポーネント
 // フロントはSimulationField.tsxに切り出している
 export const Edit = () => {
-  const [assumedYields, setAssumedYields] = React.useState<Array<number>>([]);
-  const [monthlyDeposits, setMonthlyDeposits] = React.useState<Array<number>>(
-    []
-  );
-  const [simulation, setSimulation] = React.useState<Simulation>();
+  const [assumedYields, setAssumedYields] = useState<Array<number>>([]);
+  const [monthlyDeposits, setMonthlyDeposits] = useState<Array<number>>([]);
+  const [simulation, setSimulation] = useState<Simulation>();
   const assumedYieldIdsRef = useRef<Array<string>>([]);
   const monthlyDepositIdsRef = useRef<Array<string>>([]);
   const { simulation_id } = useParams();
-  const [isFetching, setIsFetching] = React.useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
     // AssumedYields

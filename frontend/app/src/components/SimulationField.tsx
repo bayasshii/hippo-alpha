@@ -1,4 +1,9 @@
-import React, { useState, useCallback } from "react";
+import {
+  useState,
+  useCallback,
+  type ChangeEvent,
+  type MouseEvent
+} from "react";
 import { Flex } from "./Flex";
 import { Link } from "react-router-dom";
 import { ErrorMessage } from "./ErrorMessage";
@@ -39,7 +44,7 @@ export const SimulationField = (props: Props) => {
   const [simulation, setSimulation] = useState<Simulation>(
     props.simulation || { title: "タイトル", principal: 100000 }
   );
-  const [maxYear, setMaxYear] = React.useState<number>(30);
+  const [maxYear, setMaxYear] = useState<number>(30);
   const [errors, setErrors] = useState<ErrorMessages>({
     title: [],
     principal: [],
@@ -55,7 +60,7 @@ export const SimulationField = (props: Props) => {
   const { postSimulation } = usePostSimulation();
 
   const onChangeAssumedYieldsRate = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>, key: number) => {
+    (e: ChangeEvent<HTMLInputElement>, key: number) => {
       // 前からkey番目のrateを変更する
       const newAssumedYields: Array<number> = assumedYields?.map(
         (assumedYield, index) => {
@@ -69,7 +74,7 @@ export const SimulationField = (props: Props) => {
   );
 
   const onChangeMonthlyDepositsAmount = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>, key: number) => {
+    (e: ChangeEvent<HTMLInputElement>, key: number) => {
       // TODO:送信前にフロントでもバリデーションしないとグラフがすごいことになる
       const newMonthlyDeposits: Array<number> = monthlyDeposits?.map(
         (monthlyDeposit, index) => {
@@ -103,7 +108,7 @@ export const SimulationField = (props: Props) => {
   );
 
   const onChangeMaxYear = useCallback(
-    async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    async (e: ChangeEvent<HTMLSelectElement>) => {
       setMaxYear(Number(e.target.value));
       balanceYears(Number(e.target.value));
     },
@@ -111,7 +116,7 @@ export const SimulationField = (props: Props) => {
   );
 
   const saveData = useCallback(
-    () => async (e: React.MouseEvent<HTMLButtonElement>) => {
+    () => async (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       // 以下validation
       const titleErrors: Array<string> = stringValidations({

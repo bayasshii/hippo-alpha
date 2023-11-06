@@ -1,10 +1,11 @@
+import { type ChangeEvent } from "react";
 import { Flex } from "./Flex";
 
 type Props = {
   assumedYields: Array<number>;
   maxYear: number;
   onChangeAssumedYieldsRate: (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement>,
     order: number
   ) => void;
 };

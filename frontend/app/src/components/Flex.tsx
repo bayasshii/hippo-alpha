@@ -1,5 +1,7 @@
+import { type ReactNode } from "react";
+
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
   direction?: "row" | "column";
   justify?: "flex-start" | "flex-end" | "center" | "space-between";
   align?: "flex-start" | "flex-end" | "center" | "stretch" | "baseline";

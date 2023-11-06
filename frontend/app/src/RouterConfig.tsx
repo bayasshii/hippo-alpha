@@ -1,10 +1,9 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { New } from "./pages/New";
 import { List } from "./pages/List";
 import { Edit } from "./pages/Edit";
 
-export const RouterConfig: React.VFC = () => {
+export const RouterConfig = () => {
   return (
     <>
       <BrowserRouter>

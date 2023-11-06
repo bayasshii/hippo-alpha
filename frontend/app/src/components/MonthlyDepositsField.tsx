@@ -1,11 +1,11 @@
-import { MonthlyDeposit } from "../types/MonthlyDeposit";
+import { type ChangeEvent } from "react";
 import { Flex } from "./Flex";
 
 type Props = {
   monthlyDeposits: Array<number>;
   maxYear: number;
   onChangeMonthlyDepositsAmount: (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement>,
     order: number
   ) => void;
 };
