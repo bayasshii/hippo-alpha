@@ -1,3 +1,5 @@
+import { calculateAnnualData } from "../helper/calculateAnnualData";
+import { AnnualSimulation } from "../types/AnnualSimulation";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -31,67 +33,48 @@ export const options = {
 
 type Props = {
   principal: number;
-  assumedYields: Array<number>;
-  monthlyDeposits: Array<number>;
-  years: number;
+  annualSimulations: Array<AnnualSimulation>;
 };
-export const Chart = ({
-  principal,
-  assumedYields = [],
-  monthlyDeposits = [],
-  years
-}: Props) => {
-  const annualDeposits = monthlyDeposits?.map((item) => item * 12);
-  const monthlyDepositsResult: Array<number> = Array(years + 1)
-    .fill(1)
-    .map((_, index) => {
-      if (index === 0) {
-        return Number(principal);
-      }
-      const principals: number = annualDeposits
-        .slice(0, index)
-        .reduce((a, b) => Number(a) + Number(b), principal);
-      return principals;
-    });
+export const Chart = ({ principal, annualSimulations }: Props) => {
+  console.log("annualSimulations", annualSimulations);
+  console.log("principal", principal);
+
+  const maxYear = annualSimulations.length;
+
+  // 年利率の配列にマッピング
+  const annualRates = annualSimulations.map(
+    (annualSimulation) => annualSimulation.rate
+  );
+  // 月々の積立額の配列にマッピング
+  const monthlyDeposits = annualSimulations.map(
+    (annualSimulation) => annualSimulation.monthly_deposit
+  );
+
+  // 年ごとの元本と運用収益を計算
+  const { principals, yields } = calculateAnnualData(
+    principal,
+    annualRates,
+    monthlyDeposits
+  );
 
   const labels = [
-    "今年",
-    ...Array(years)
+    "今",
+    ...Array(maxYear)
       .fill(0)
       .map((_, index) => `${index + 1}年後`)
   ];
-
-  // ちゃんとやるなら月毎に計算しなきゃいけない
-  const summary = Array(years + 1)
-    .fill(1)
-    .map((_, index) => {
-      if (index === 0) {
-        return 0;
-      }
-      return (
-        monthlyDepositsResult
-          .slice(0, index)
-          .reduce(
-            (a, b, i) =>
-              Number(a) +
-              annualDeposits[i] +
-              (Number(b) * assumedYields[i]) / 100,
-            monthlyDepositsResult[0]
-          ) - monthlyDepositsResult[index]
-      );
-    });
 
   const data = {
     labels,
     datasets: [
       {
         label: "元本",
-        data: monthlyDepositsResult,
+        data: principals,
         backgroundColor: "rgba(255, 99, 132, 0.5)"
       },
       {
         label: "運用収益",
-        data: summary,
+        data: yields,
         backgroundColor: "rgba(53, 162, 235, 0.5)"
       }
     ]
@@ -99,8 +82,7 @@ export const Chart = ({
   return (
     <>
       <p>
-        {years}年後には
-        {monthlyDepositsResult.slice(-1)[0] + summary.slice(-1)[0]}
+        {maxYear}年後には {principals.slice(-1)[0] + yields.slice(-1)[0]}
         円になってるよ
       </p>
       <Bar options={options} data={data} />

@@ -8,18 +8,14 @@ import { Flex } from "./Flex";
 import { Link } from "react-router-dom";
 import { ErrorMessage } from "./ErrorMessage";
 import { Chart } from "./Chart";
-import { AssumedYieldsField } from "./AssumedYieldsField";
-import { MonthlyDepositsField } from "./MonthlyDepositsField";
+import { AnnualSimulation } from "../types/AnnualSimulation";
 import { Simulation } from "../types/Simulation";
 import { useStringValidation } from "../hooks/useStringValidation";
 import { useNumberValidation } from "../hooks/useNumberValidation";
 import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
-import { usePostAssumedYield } from "../hooks/usePostAssumedYield";
-import { useDeleteAssumedYield } from "../hooks/useDeleteAssumedYield";
-import { useDeleteMonthlyDeposit } from "../hooks/useDeleteMonthlyDeposit";
-import { usePostMonthlyDeposit } from "../hooks/usePostMonthlyDeposit";
 import { usePostSimulation } from "../hooks/usePostSimulation";
-import { convertData } from "../helper/convertData";
+import { AnnualSimulationsField } from "./AnnualSimulationsField";
+import { useUpdateAnnualSimulation } from "../hooks/useUpdateAnnualSimulation";
 
 type ErrorMessages = {
   title: Array<string>;
@@ -29,21 +25,24 @@ type ErrorMessages = {
 type Props = {
   simulation_id?: number;
   simulation?: Simulation;
-  assumedYields?: Array<number>;
-  monthlyDeposits?: Array<number>;
-  deletableAssumedYieldIds?: Array<string>;
-  deletableMonthlyDepositIds?: Array<string>;
+  annualSimulations?: Array<AnnualSimulation>;
 };
+const defaultAnnualSimulations: Array<AnnualSimulation> = Array(30)
+  .fill({})
+  .map((_, index) => ({
+    monthly_deposit: 10000,
+    rate: 3,
+    year: index
+  }));
+
 export const SimulationField = (props: Props) => {
-  const [assumedYields, setAssumedYields] = useState<Array<number>>(
-    props.assumedYields || Array(30).fill(3)
-  );
-  const [monthlyDeposits, setMonthlyDeposits] = useState<Array<number>>(
-    props.monthlyDeposits || Array(30).fill(10000)
-  );
   const [simulation, setSimulation] = useState<Simulation>(
     props.simulation || { title: "タイトル", principal: 100000 }
   );
+  const [saving, setSaving] = useState<boolean>(false);
+  const [annualSimulations, setAnnualSimulations] = useState<
+    Array<AnnualSimulation>
+  >(props.annualSimulations || defaultAnnualSimulations);
   const [maxYear, setMaxYear] = useState<number>(30);
   const [errors, setErrors] = useState<ErrorMessages>({
     title: [],
@@ -53,71 +52,37 @@ export const SimulationField = (props: Props) => {
   const { stringValidations } = useStringValidation();
   const { numberValidations } = useNumberValidation();
   const { updateSimulation } = useUpdateSimulation();
-  const { postAssumedYield } = usePostAssumedYield();
-  const { deleteAssumedYield } = useDeleteAssumedYield();
-  const { deleteMonthlyDeposit } = useDeleteMonthlyDeposit();
-  const { postMonthlyDeposit } = usePostMonthlyDeposit();
   const { postSimulation } = usePostSimulation();
-
-  const onChangeAssumedYieldsRate = useCallback(
-    (e: ChangeEvent<HTMLInputElement>, key: number) => {
-      // 前からkey番目のrateを変更する
-      const newAssumedYields: Array<number> = assumedYields?.map(
-        (assumedYield, index) => {
-          if (index === key) return Number(e.target.value);
-          return assumedYield;
-        }
-      );
-      setAssumedYields(newAssumedYields);
-    },
-    [assumedYields]
-  );
-
-  const onChangeMonthlyDepositsAmount = useCallback(
-    (e: ChangeEvent<HTMLInputElement>, key: number) => {
-      // TODO:送信前にフロントでもバリデーションしないとグラフがすごいことになる
-      const newMonthlyDeposits: Array<number> = monthlyDeposits?.map(
-        (monthlyDeposit, index) => {
-          if (index === key) return Number(e.target.value);
-          return monthlyDeposit;
-        }
-      );
-      setMonthlyDeposits(newMonthlyDeposits);
-    },
-    [monthlyDeposits]
-  );
-
-  const balanceYears = useCallback(
-    (years: number) => {
-      const assumedYieldsDif = years - assumedYields.length;
-      if (assumedYieldsDif > 0) {
-        const newAssumedYields = assumedYields.concat(
-          Array(assumedYieldsDif).fill(assumedYields.slice(-1)[0])
-        );
-        setAssumedYields(newAssumedYields);
-      }
-      const monthlyDepositsDif = years - monthlyDeposits.length;
-      if (monthlyDepositsDif > 0) {
-        const newMonthlyDeposits = monthlyDeposits.concat(
-          Array(monthlyDepositsDif).fill(monthlyDeposits.slice(-1)[0])
-        );
-        setMonthlyDeposits(newMonthlyDeposits);
-      }
-    },
-    [assumedYields, monthlyDeposits]
-  );
+  const { updateAnnualSimulation } = useUpdateAnnualSimulation();
 
   const onChangeMaxYear = useCallback(
     async (e: ChangeEvent<HTMLSelectElement>) => {
       setMaxYear(Number(e.target.value));
-      balanceYears(Number(e.target.value));
     },
-    [balanceYears]
+    []
+  );
+
+  const onChangeAnnualSimulations = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>, year: number, key: string) => {
+      const newAnnualSimulations = annualSimulations.map((item, index) => {
+        // 一致しない年数のデータはそのまま返す
+        if (index !== year) return item;
+        return {
+          ...item,
+          // monthly_depositかrate
+          [key]: Number(e.target.value)
+        };
+      });
+      setAnnualSimulations(newAnnualSimulations);
+    },
+    [annualSimulations]
   );
 
   const saveData = useCallback(
     () => async (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
+      setSaving(true);
+
       // 以下validation
       const titleErrors: Array<string> = stringValidations({
         value: simulation?.title,
@@ -150,51 +115,25 @@ export const SimulationField = (props: Props) => {
       };
       const postData = async () => {
         try {
-          const updateRelationData = async (id: number) => {
-            // コンバートの仕方が強引。ここまでロジック絡むならもう専用のものを作ったら良さそう
-            const assumedYieldsConverted = convertData(
-              assumedYields,
-              "rate",
-              id
-            );
-            assumedYieldsConverted.forEach((assumedYield: any) => {
-              postAssumedYield(assumedYield);
-            });
-            const monthlyDepositsConverted = convertData(
-              monthlyDeposits,
-              "amount",
-              id
-            );
-            monthlyDepositsConverted.forEach((monthlyDeposit: any) => {
-              postMonthlyDeposit(monthlyDeposit);
-            });
-          };
-
           if (props.simulation_id) {
             updateSimulation(newData, String(props.simulation_id));
-            await props.deletableAssumedYieldIds?.forEach((assumedYield) => {
-              deleteAssumedYield(assumedYield);
+            annualSimulations.forEach((annualSimulation) => {
+              updateAnnualSimulation(annualSimulation);
             });
-            await props.deletableMonthlyDepositIds?.forEach(
-              (monthlyDeposit) => {
-                deleteMonthlyDeposit(monthlyDeposit);
-              }
-            );
-            updateRelationData(props.simulation_id);
-            //  window.location.href = `/${props.simulation_id}`;
           } else {
             const response = await postSimulation(newData);
             const id = response.data.id; // ここでIDを取得
-            updateRelationData(id);
             window.location.href = `/${id}`;
           }
         } catch (e) {
           console.log("保存時のエラー", e);
         }
       };
-      await postData();
+      postData().then(() => {
+        setSaving(false);
+      });
     },
-    [simulation, assumedYields, monthlyDeposits]
+    [simulation, maxYear, annualSimulations]
   );
 
   return (
@@ -244,25 +183,20 @@ export const SimulationField = (props: Props) => {
         </select>
         <ErrorMessage messages={errors.years} />
       </Flex>
+      <AnnualSimulationsField
+        annualSimulations={annualSimulations}
+        maxYear={maxYear}
+        onChange={onChangeAnnualSimulations}
+      />
       {simulation && (
         <Chart
-          principal={simulation?.principal}
-          assumedYields={assumedYields}
-          monthlyDeposits={monthlyDeposits}
-          years={maxYear}
+          principal={Number(simulation.principal)}
+          annualSimulations={annualSimulations.slice(0, maxYear)}
         />
       )}
-      <AssumedYieldsField
-        assumedYields={assumedYields.slice(0, maxYear)}
-        maxYear={maxYear}
-        onChangeAssumedYieldsRate={onChangeAssumedYieldsRate}
-      />
-      <MonthlyDepositsField
-        monthlyDeposits={monthlyDeposits.slice(0, maxYear)}
-        maxYear={maxYear}
-        onChangeMonthlyDepositsAmount={onChangeMonthlyDepositsAmount}
-      />
-      <button onClick={saveData()}>変更を保存</button>
+      <button onClick={saveData()}>
+        {saving ? "セーブ中でござる" : "変更を保存"}
+      </button>
     </Flex>
   );
 };

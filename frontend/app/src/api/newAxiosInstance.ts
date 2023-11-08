@@ -1,7 +1,7 @@
 import axios from "axios";
 const DEFAULT_API_CONFIG = {
   baseURL: "http://localhost:3001",
-  timeout: 1000,
+  timeout: 5000,
   mode: "cors",
   credentials: "include",
   headers: {
