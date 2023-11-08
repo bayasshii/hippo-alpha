@@ -16,6 +16,7 @@ import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
 import { usePostSimulation } from "../hooks/usePostSimulation";
 import { AnnualSimulationsField } from "./AnnualSimulationsField";
 import { useUpdateAnnualSimulation } from "../hooks/useUpdateAnnualSimulation";
+import { usePostAnnualSimulation } from "../hooks/usePostAnnualSimulation";
 
 type ErrorMessages = {
   title: Array<string>;
@@ -54,6 +55,7 @@ export const SimulationField = (props: Props) => {
   const { updateSimulation } = useUpdateSimulation();
   const { postSimulation } = usePostSimulation();
   const { updateAnnualSimulation } = useUpdateAnnualSimulation();
+  const { postAnnualSimulation } = usePostAnnualSimulation();
 
   const onChangeMaxYear = useCallback(
     async (e: ChangeEvent<HTMLSelectElement>) => {
@@ -123,6 +125,13 @@ export const SimulationField = (props: Props) => {
           } else {
             const response = await postSimulation(newData);
             const id = response.data.id; // ここでIDを取得
+            annualSimulations.forEach((annualSimulation) => {
+              postAnnualSimulation({
+                ...annualSimulation,
+                simulation_id: id
+              });
+            });
+            // IDを取得したらリダイレクト
             window.location.href = `/${id}`;
           }
         } catch (e) {

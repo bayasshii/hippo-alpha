@@ -1,6 +1,7 @@
 class AnnualSimulationsController < ApplicationController
 	def index
-		annual_simulations = AnnualSimulation.order(:id)
+		simulation_id = params[:simulation_id]
+		annual_simulations = AnnualSimulation.where(simulation_id: simulation_id).order(:year)
 		render json: annual_simulations
 	end
 
@@ -32,6 +33,6 @@ class AnnualSimulationsController < ApplicationController
 	private
 
 	def annual_simulation_params
-		params.require(:annual_simulation).permit(:year, :rate, :monthly_deposit)
+		params.require(:annual_simulation).permit(:year, :rate, :monthly_deposit, :simulation_id)
 	end
 end

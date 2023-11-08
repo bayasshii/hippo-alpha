@@ -9,7 +9,6 @@ export const useUpdateAnnualSimulation = () => {
         postAPIData(`/annual_simulations/${newData.id}`, {
           annual_simulation: newData
         });
-        console.log(newData);
       } catch (e) {
         console.error(e);
         throw new Error("更新に失敗しました");

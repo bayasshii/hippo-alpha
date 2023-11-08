@@ -36,9 +36,6 @@ type Props = {
   annualSimulations: Array<AnnualSimulation>;
 };
 export const Chart = ({ principal, annualSimulations }: Props) => {
-  console.log("annualSimulations", annualSimulations);
-  console.log("principal", principal);
-
   const maxYear = annualSimulations.length;
 
   // 年利率の配列にマッピング
