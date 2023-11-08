@@ -28,7 +28,7 @@ type Props = {
   simulation?: Simulation;
   annualSimulations?: Array<AnnualSimulation>;
 };
-const defaultAnnualSimulations: Array<AnnualSimulation> = Array(30)
+const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
   .fill({})
   .map((_, index) => ({
     monthly_deposit: 10000,
