@@ -4,7 +4,6 @@ import { AnnualSimulation } from "../types/AnnualSimulation";
 
 type Props = {
   annualSimulations: Array<AnnualSimulation>;
-  maxYear: number;
   onChange: (
     e: ChangeEvent<HTMLInputElement>,
     year: number,
@@ -14,9 +13,9 @@ type Props = {
 
 export const AnnualSimulationsField = ({
   annualSimulations = [],
-  maxYear,
   onChange
 }: Props) => {
+  const maxYear = annualSimulations.length;
   return (
     <Flex style={{ width: `${100 / maxYear}%` }}>
       積立額

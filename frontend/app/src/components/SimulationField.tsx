@@ -193,8 +193,7 @@ export const SimulationField = (props: Props) => {
         <ErrorMessage messages={errors.years} />
       </Flex>
       <AnnualSimulationsField
-        annualSimulations={annualSimulations}
-        maxYear={maxYear}
+        annualSimulations={annualSimulations.slice(0, maxYear)}
         onChange={onChangeAnnualSimulations}
       />
       {simulation && (
