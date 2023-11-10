@@ -4,19 +4,19 @@ import {
   type ChangeEvent,
   type MouseEvent
 } from "react";
-import { Flex } from "./Flex";
+import { Flex } from "@/components/Flex";
 import { Link } from "react-router-dom";
-import { ErrorMessage } from "./ErrorMessage";
-import { Chart } from "./Chart";
-import { AnnualSimulation } from "../types/AnnualSimulation";
-import { Simulation } from "../types/Simulation";
-import { useStringValidation } from "../hooks/useStringValidation";
-import { useNumberValidation } from "../hooks/useNumberValidation";
-import { useUpdateSimulation } from "../hooks/useUpdateSimulation";
-import { usePostSimulation } from "../hooks/usePostSimulation";
-import { AnnualSimulationsField } from "./AnnualSimulationsField";
-import { useUpdateAnnualSimulation } from "../hooks/useUpdateAnnualSimulation";
-import { usePostAnnualSimulation } from "../hooks/usePostAnnualSimulation";
+import { ErrorMessage } from "@/components/ErrorMessage";
+import { Chart } from "@/components/Chart";
+import { AnnualSimulation } from "@/types/AnnualSimulation";
+import { Simulation } from "@/types/Simulation";
+import { useStringValidation } from "@/hooks/useStringValidation";
+import { useNumberValidation } from "@/hooks/useNumberValidation";
+import { useUpdateSimulation } from "@/hooks/useUpdateSimulation";
+import { usePostSimulation } from "@/hooks/usePostSimulation";
+import { AnnualSimulationsField } from "@/components/AnnualSimulationsField";
+import { useUpdateAnnualSimulation } from "@/hooks/useUpdateAnnualSimulation";
+import { usePostAnnualSimulation } from "@/hooks/usePostAnnualSimulation";
 
 type ErrorMessages = {
   title: Array<string>;

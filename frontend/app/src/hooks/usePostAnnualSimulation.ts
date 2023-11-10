@@ -1,5 +1,5 @@
-import { AnnualSimulation } from "../types/AnnualSimulation";
-import { postAPIData } from "../api/postAPIData";
+import { AnnualSimulation } from "@/types/AnnualSimulation";
+import { postAPIData } from "@/api/postAPIData";
 import { useCallback } from "react";
 
 export const usePostAnnualSimulation = () => {

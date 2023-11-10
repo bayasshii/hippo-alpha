@@ -1,5 +1,5 @@
-import { calculateAnnualData } from "../helper/calculateAnnualData";
-import { AnnualSimulation } from "../types/AnnualSimulation";
+import { calculateAnnualData } from "@/helper/calculateAnnualData";
+import { AnnualSimulation } from "@/types/AnnualSimulation";
 import {
   Chart as ChartJS,
   CategoryScale,

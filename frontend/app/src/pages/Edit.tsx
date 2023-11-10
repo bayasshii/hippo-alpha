@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { getAPIData } from "../api/getAPIData";
+import { useEffect, useState } from "react";
+import { getAPIData } from "@/api/getAPIData";
 import { useParams } from "react-router-dom";
-import { Simulation } from "../types/Simulation";
+import { Simulation } from "@/types/Simulation";
 import { SimulationField } from "../components/SimulationField";
 import { AnnualSimulation } from "@/types/AnnualSimulation";
 
