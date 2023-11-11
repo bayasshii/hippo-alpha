@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAPIData } from "@/api/getAPIData";
-import { Simulation } from "@/types/Simulation";
+import { getAPIData } from "@/utils/api/getAPIData";
+import { Simulation } from "@/feature/simulations/Simulation";
 import { Link } from "react-router-dom";
 
 export const List = () => {

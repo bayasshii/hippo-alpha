@@ -2,6 +2,7 @@ type AnnualData = {
   principals: number[]; // 元本の年間データ
   yields: number[]; // 利益の年間データ
 };
+
 export const calculateAnnualData = (
   principal: number, // 初期元本
   annual_rates: number[], // 年間利率の配列

@@ -1,5 +1,5 @@
-import { calculateAnnualData } from "@/helper/calculateAnnualData";
-import { AnnualSimulation } from "@/types/AnnualSimulation";
+import { calculateAnnualData } from "@/feature/simulations/calculateAnnualData";
+import { AnnualSimulation } from "@/feature/simulations/Simulation";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -35,7 +35,7 @@ type Props = {
   principal: number;
   annualSimulations: Array<AnnualSimulation>;
 };
-export const Chart = ({ principal, annualSimulations }: Props) => {
+export const SimulationChart = ({ principal, annualSimulations }: Props) => {
   const maxYear = annualSimulations.length;
 
   // 年利率の配列にマッピング

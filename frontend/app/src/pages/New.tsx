@@ -1,5 +1,4 @@
-import { SimulationField } from "@/components/SimulationField";
-
+import { SimulationDetail } from "@/feature/simulations/SimulationDetail";
 export const New = () => {
-  return <SimulationField />;
+  return <SimulationDetail />;
 };

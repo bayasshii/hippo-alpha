@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ToastTypes, TOAST_TYPE } from "@/components/ToastProvider";
+import { ToastTypes, TOAST_TYPE } from "@/utils/toast/ToastProvider";
 
 type Props = {
   visible: boolean;

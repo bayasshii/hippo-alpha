@@ -1,4 +1,4 @@
-import { postAPI } from "@/api/postAPI";
+import { postAPI } from "@/utils/api/postAPI";
 import { ToastContext } from "@/components/ToastProvider";
 import { useCallback, useContext, useState } from "react";
 

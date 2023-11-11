@@ -8,10 +8,9 @@ import {
 import { Flex } from "@/components/Flex";
 import { Link } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { Chart } from "@/components/Chart";
-import { AnnualSimulation } from "@/types/AnnualSimulation";
-import { Simulation } from "@/types/Simulation";
-import { AnnualSimulationsField } from "@/components/AnnualSimulationsField";
+import { SimulationChart } from "@/feature/simulations/SimulationChart";
+import { Simulation, AnnualSimulation } from "@/feature/simulations/Simulation";
+import { AnnualSimulationsField } from "@/feature/simulations/AnnualSimulationsField";
 import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
 
@@ -28,7 +27,7 @@ const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
     year: index
   }));
 
-export const SimulationField = (props: Props) => {
+export const SimulationDetail = (props: Props) => {
   const [simulation, setSimulation] = useState<Simulation>(
     props.simulation || { title: "タイトル", principal: 100000 }
   );
@@ -198,7 +197,7 @@ export const SimulationField = (props: Props) => {
         onChange={onChangeAnnualSimulations}
       />
       {simulation && (
-        <Chart
+        <SimulationChart
           principal={Number(simulation.principal)}
           annualSimulations={annualSimulations.slice(0, maxYear)}
         />

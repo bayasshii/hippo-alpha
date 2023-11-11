@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { getAPIData } from "@/api/getAPIData";
+import { getAPIData } from "@/utils/api/getAPIData";
 import { useParams } from "react-router-dom";
-import { Simulation } from "@/types/Simulation";
-import { SimulationField } from "../components/SimulationField";
-import { AnnualSimulation } from "@/types/AnnualSimulation";
+import { Simulation, AnnualSimulation } from "@/feature/simulations/Simulation";
+import { SimulationDetail } from "@/feature/simulations/SimulationDetail";
 
 // fetchしてくるのがメインのコンポーネント
-// フロントはSimulationField.tsxに切り出している
 export const Edit = () => {
   const [simulation, setSimulation] = useState<Simulation>();
   const [annualSimulations, setAnnualSimulations] =
@@ -42,7 +40,7 @@ export const Edit = () => {
     <>
       {isFetching ? (
         simulation?.title ? (
-          <SimulationField
+          <SimulationDetail
             simulation={simulation}
             annualSimulations={annualSimulations}
             simulation_id={Number(simulation_id!)}

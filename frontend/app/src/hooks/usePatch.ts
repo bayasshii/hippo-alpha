@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from "react";
 import { ToastContext } from "@/components/ToastProvider";
-import { patchAPI } from "../api/patchAPI"; // なぜか絶対パスが使えない
+import { patchAPI } from "../utils/api/patchAPI"; // なぜか絶対パスが使えない
 
 type UsePatch = [
   (newData: Record<string, unknown>) => Promise<void>,

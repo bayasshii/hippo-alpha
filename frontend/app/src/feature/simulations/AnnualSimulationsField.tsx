@@ -1,6 +1,6 @@
 import { type ChangeEvent } from "react";
 import { Flex } from "@/components/Flex";
-import { AnnualSimulation } from "@/types/AnnualSimulation";
+import { AnnualSimulation } from "@/feature/simulations/Simulation";
 
 type Props = {
   annualSimulations: Array<AnnualSimulation>;
