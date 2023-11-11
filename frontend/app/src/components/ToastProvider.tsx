@@ -1,6 +1,20 @@
-import { createContext, FC, ReactNode, useEffect, useState } from "react";
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState
+} from "react";
 import { createPortal } from "react-dom";
 import { Toast } from "./Toast";
+
+export const TOAST_TYPE = {
+  NORMAL: "normal",
+  ERROR: "error",
+  SUCCESS: "success"
+} as const;
+export type ToastTypes = (typeof TOAST_TYPE)[keyof typeof TOAST_TYPE];
 
 type Props = {
   children: ReactNode;
@@ -8,6 +22,7 @@ type Props = {
 
 type ToastDataType = {
   message: string;
+  type?: ToastTypes;
 };
 
 type ContextType = (toastData: ToastDataType) => void;
@@ -17,28 +32,37 @@ export const ToastContext = createContext<ContextType | undefined>(undefined);
 export const ToastProvider: FC<Props> = ({ children }) => {
   const [message, setMessage] = useState("");
   const [showPortal, setShowPortal] = useState(false);
-
-  const showToast = ({ message }: ToastDataType) => {
-    setMessage(message);
-  };
+  const [visible, setVisible] = useState(false);
+  const [toastType, setToastType] = useState<ToastTypes>(TOAST_TYPE.NORMAL);
+  const el = document.getElementById("root");
 
   useEffect(() => {
     setShowPortal(true);
   }, []);
 
-  if (!showPortal) {
-    return null;
-  }
+  const showToast = ({ message, type = "normal" }: ToastDataType) => {
+    setVisible(true);
+    setMessage(message);
+    setToastType(type);
+  };
 
-  const el = document.getElementById("root");
-  if (!el) {
-    return null;
-  }
+  const hideToast = useCallback(() => setVisible(false), []);
+
+  if (!showPortal) return null;
+  if (!el) return null;
 
   return (
     <ToastContext.Provider value={showToast}>
       {children}
-      {createPortal(<Toast message={message} />, el)}
+      {createPortal(
+        <Toast
+          visible={visible}
+          hideToast={hideToast}
+          message={message}
+          type={toastType}
+        />,
+        el
+      )}
     </ToastContext.Provider>
   );
 };
