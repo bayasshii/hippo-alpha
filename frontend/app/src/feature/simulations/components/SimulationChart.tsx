@@ -1,5 +1,5 @@
-import { calculateAnnualData } from "@/feature/simulations/calculateAnnualData";
-import { AnnualSimulation } from "@/feature/simulations/Simulation";
+import { calculateAnnualData } from "@/feature/simulations/helpers/calculateAnnualData";
+import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
 import {
   Chart as ChartJS,
   CategoryScale,

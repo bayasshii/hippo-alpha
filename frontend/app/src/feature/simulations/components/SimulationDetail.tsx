@@ -8,9 +8,10 @@ import {
 import { Flex } from "@/components/Flex";
 import { Link } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { SimulationChart } from "@/feature/simulations/SimulationChart";
-import { Simulation, AnnualSimulation } from "@/feature/simulations/Simulation";
-import { AnnualSimulationsField } from "@/feature/simulations/AnnualSimulationsField";
+import { SimulationChart } from "@/feature/simulations/components/SimulationChart";
+import { Simulation } from "@/feature/simulations/types/Simulation";
+import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
+import { AnnualSimulationsField } from "@/feature/simulations/components/AnnualSimulationsField";
 import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
 

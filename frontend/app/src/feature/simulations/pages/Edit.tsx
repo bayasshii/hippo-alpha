@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { getAPIData } from "@/utils/api/getAPIData";
 import { useParams } from "react-router-dom";
-import { Simulation, AnnualSimulation } from "@/feature/simulations/Simulation";
-import { SimulationDetail } from "@/feature/simulations/SimulationDetail";
+import { Simulation } from "@/feature/simulations/types/Simulation";
+import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
+import { SimulationDetail } from "@/feature/simulations/components/SimulationDetail";
 
 // fetchしてくるのがメインのコンポーネント
 export const Edit = () => {
