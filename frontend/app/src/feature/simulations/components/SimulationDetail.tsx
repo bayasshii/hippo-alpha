@@ -14,6 +14,7 @@ import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
 import { AnnualSimulationsField } from "@/feature/simulations/components/AnnualSimulationsField";
 import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
+import { useToast } from "@/utils/toast/useToast";
 
 type Props = {
   simulation_id?: number;
@@ -51,6 +52,8 @@ export const SimulationDetail = (props: Props) => {
     isLoadingPatchAnnualSimulation,
     patchAnnualSimulationErrors
   ] = usePatch("annual_simulation");
+
+  const [setToast] = useToast();
 
   const isLoading: boolean = useMemo(() => {
     return (
@@ -118,10 +121,15 @@ export const SimulationDetail = (props: Props) => {
         try {
           if (props.simulation_id) {
             // patchの処理
-            patchSimulation({ ...newSimulation, id: props.simulation_id });
-            annualSimulations.forEach((annualSimulation) => {
-              patchAnnualSimulation(annualSimulation);
+            await patchSimulation({
+              ...newSimulation,
+              id: props.simulation_id
             });
+            await Promise.all(
+              annualSimulations.map((annualSimulation) =>
+                patchAnnualSimulation(annualSimulation)
+              )
+            );
           } else {
             // postの処理
             const response = await postSimulation(newSimulation);
@@ -138,11 +146,11 @@ export const SimulationDetail = (props: Props) => {
             // 保存しきってからリダイレクト
             window.location.href = `/${id}`;
           }
-        } catch (e) {
-          console.log("保存時のエラー", e);
+        } catch (error) {
+          throw error;
         }
       };
-      await postData();
+      await setToast(postData);
     },
     [simulation, maxYear, annualSimulations]
   );

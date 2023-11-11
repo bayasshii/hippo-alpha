@@ -7,6 +7,7 @@ type Props = {
   message: string;
   type: ToastTypes;
 };
+
 export const Toast = ({ visible, hideToast, message, type }: Props) => {
   const colorStyle = useMemo(() => {
     switch (type) {

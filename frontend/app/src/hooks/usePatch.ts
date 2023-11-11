@@ -1,6 +1,5 @@
-import { useCallback, useContext, useState } from "react";
-import { ToastContext } from "@/components/ToastProvider";
-import { patchAPI } from "../utils/api/patchAPI"; // なぜか絶対パスが使えない
+import { useCallback, useState } from "react";
+import { patchAPI } from "@/utils/api/patchAPI"; // なぜか絶対パスが使えない
 
 type UsePatch = [
   (newData: Record<string, unknown>) => Promise<void>,
@@ -9,9 +8,9 @@ type UsePatch = [
 ];
 
 export const usePatch = (path: string): UsePatch => {
+  // TODO: 複数呼び出された時にローディングを管理するためにはどうすればいいか。useToastみたくuseLoadingみたいなのが必要な気がする
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const showToast = useContext(ToastContext);
 
   const patch = useCallback(
     async (newData: Record<string, unknown>) => {
@@ -28,15 +27,14 @@ export const usePatch = (path: string): UsePatch => {
           }
 
           setErrors({}); // 成功した場合はエラーを空にする
-          showToast && showToast({ message: "成功しました", type: "success" });
           return response;
         })
-        .catch((e: any) => {
-          showToast &&
-            showToast({ message: "エラーが発生しました", type: "error" });
+        .catch((error: any) => {
+          console.log(error);
+          throw error;
         });
     },
-    [path, showToast]
+    [path]
   );
 
   return [patch, loading, errors];

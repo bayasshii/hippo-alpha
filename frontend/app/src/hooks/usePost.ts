@@ -1,6 +1,5 @@
 import { postAPI } from "@/utils/api/postAPI";
-import { ToastContext } from "@/components/ToastProvider";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useState } from "react";
 
 type UsePost = [
   (newData: Record<string, unknown>) => Promise<any>,
@@ -10,8 +9,6 @@ type UsePost = [
 export const usePost = (path: string): UsePost => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
-
-  const showToast = useContext(ToastContext);
 
   const post = useCallback(
     async (newData: Record<string, unknown>) => {
@@ -27,16 +24,13 @@ export const usePost = (path: string): UsePost => {
             throw error;
           }
 
-          showToast && showToast({ message: "成功しました", type: "success" });
           return response;
         })
         .catch((error) => {
-          showToast &&
-            showToast({ message: "エラーが発生しました", type: "error" });
           return error.response;
         });
     },
-    [path, showToast]
+    [path]
   );
 
   return [post, loading, errors];

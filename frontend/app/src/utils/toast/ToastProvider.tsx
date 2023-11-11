@@ -7,7 +7,7 @@ import {
   useState
 } from "react";
 import { createPortal } from "react-dom";
-import { Toast } from "./Toast";
+import { Toast } from "@/components/Toast";
 
 export const TOAST_TYPE = {
   NORMAL: "normal",
