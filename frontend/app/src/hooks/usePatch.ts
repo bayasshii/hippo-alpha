@@ -1,5 +1,6 @@
+import { useCallback, useContext, useState } from "react";
+import { ToastContext } from "@/components/ToastProvider";
 import { patchAPI } from "../api/patchAPI"; // なぜか絶対パスが使えない
-import { useCallback, useState } from "react";
 
 type UsePatch = [
   (newData: Record<string, unknown>) => Promise<void>,
@@ -10,6 +11,7 @@ type UsePatch = [
 export const usePatch = (path: string): UsePatch => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const showToast = useContext(ToastContext);
 
   const patch = useCallback(
     async (newData: Record<string, unknown>) => {
@@ -28,10 +30,10 @@ export const usePatch = (path: string): UsePatch => {
         })
         .catch((e: any) => {
           setLoading(false);
-          throw new Error("更新に失敗しました");
+          showToast && showToast({ message: "エラーが発生しました" });
         });
     },
-    [path]
+    [path, showToast]
   );
 
   return [patch, loading, errors];

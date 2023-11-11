@@ -5,14 +5,12 @@ import { Edit } from "@/pages/Edit";
 
 export const RouterConfig = () => {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<List />} />
-          <Route path="new" element={<New />} />
-          <Route path=":simulation_id" element={<Edit />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<List />} />
+        <Route path="new" element={<New />} />
+        <Route path=":simulation_id" element={<Edit />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
