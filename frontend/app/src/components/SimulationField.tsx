@@ -83,7 +83,6 @@ export const SimulationField = (props: Props) => {
     patchAnnualSimulationErrors,
     postAnnualSimulationErrors
   ]);
-  console.log(errors);
 
   const onChangeMaxYear = useCallback(
     async (e: ChangeEvent<HTMLSelectElement>) => {
@@ -107,8 +106,6 @@ export const SimulationField = (props: Props) => {
     },
     [annualSimulations]
   );
-
-  console.log(annualSimulations);
 
   const saveData = useCallback(
     () => async (e: MouseEvent<HTMLButtonElement>) => {
@@ -149,8 +146,6 @@ export const SimulationField = (props: Props) => {
     },
     [simulation, maxYear, annualSimulations]
   );
-
-  console.log(patchSimulationErrors);
 
   return (
     <Flex direction="column" gap={2}>
