@@ -12,11 +12,9 @@ import { AnnualSimulation } from "@/types/AnnualSimulation";
 import { Simulation } from "@/types/Simulation";
 import { useStringValidation } from "@/hooks/useStringValidation";
 import { useNumberValidation } from "@/hooks/useNumberValidation";
-import { useUpdateSimulation } from "@/hooks/useUpdateSimulation";
-import { usePostSimulation } from "@/hooks/usePostSimulation";
 import { AnnualSimulationsField } from "@/components/AnnualSimulationsField";
-import { useUpdateAnnualSimulation } from "@/hooks/useUpdateAnnualSimulation";
-import { usePostAnnualSimulation } from "@/hooks/usePostAnnualSimulation";
+import { usePost } from "@/hooks/usePost";
+import { usePatch } from "@/hooks/usePatch";
 
 type ErrorMessages = {
   title: Array<string>;
@@ -50,12 +48,15 @@ export const SimulationField = (props: Props) => {
     principal: [],
     years: []
   });
+
   const { stringValidations } = useStringValidation();
   const { numberValidations } = useNumberValidation();
-  const { updateSimulation } = useUpdateSimulation();
-  const { postSimulation } = usePostSimulation();
-  const { updateAnnualSimulation } = useUpdateAnnualSimulation();
-  const { postAnnualSimulation } = usePostAnnualSimulation();
+  const [postSimulation, isLoadingPostSimulation, postSimulationErrors] =
+    usePost("simulation");
+  const [patchSimulation, loadinggSimulation, simulationnErrors] =
+    usePatch("simulation");
+  const [postAnnualSimulation] = usePost("annual_simulation");
+  const [patchAnnualSimulation] = usePatch("annual_simulation");
 
   const onChangeMaxYear = useCallback(
     async (e: ChangeEvent<HTMLSelectElement>) => {
@@ -111,27 +112,27 @@ export const SimulationField = (props: Props) => {
       if (titleErrors.length > 0 || principalErrors.length > 0) return;
 
       // 以下post
-      const newData: Simulation = {
+      const newSimulation: Simulation = {
         title: simulation?.title || "",
-        principal: simulation?.principal || 0
+        principal: simulation?.principal || 0,
+        id: String(props.simulation_id)
       };
       const postData = async () => {
         try {
           if (props.simulation_id) {
-            updateSimulation(newData, String(props.simulation_id));
+            patchSimulation(newSimulation);
             annualSimulations.forEach((annualSimulation) => {
-              updateAnnualSimulation(annualSimulation);
+              patchAnnualSimulation(annualSimulation);
             });
           } else {
-            const response = await postSimulation(newData);
-            const id = response.data.id; // ここでIDを取得
+            const response = await postSimulation(newSimulation);
+            const id = response.id; // ここでIDを取得
             annualSimulations.forEach((annualSimulation) => {
               postAnnualSimulation({
                 ...annualSimulation,
                 simulation_id: id
               });
             });
-            // IDを取得したらリダイレクト
             window.location.href = `/${id}`;
           }
         } catch (e) {
