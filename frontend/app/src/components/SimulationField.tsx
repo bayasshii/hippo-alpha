@@ -1,6 +1,7 @@
 import {
   useState,
   useCallback,
+  useMemo,
   type ChangeEvent,
   type MouseEvent
 } from "react";
@@ -10,17 +11,10 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Chart } from "@/components/Chart";
 import { AnnualSimulation } from "@/types/AnnualSimulation";
 import { Simulation } from "@/types/Simulation";
-import { useStringValidation } from "@/hooks/useStringValidation";
-import { useNumberValidation } from "@/hooks/useNumberValidation";
 import { AnnualSimulationsField } from "@/components/AnnualSimulationsField";
 import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
 
-type ErrorMessages = {
-  title: Array<string>;
-  principal: Array<string>;
-  years: Array<string>;
-};
 type Props = {
   simulation_id?: number;
   simulation?: Simulation;
@@ -38,25 +32,58 @@ export const SimulationField = (props: Props) => {
   const [simulation, setSimulation] = useState<Simulation>(
     props.simulation || { title: "タイトル", principal: 100000 }
   );
-  const [saving, setSaving] = useState<boolean>(false);
   const [annualSimulations, setAnnualSimulations] = useState<
     Array<AnnualSimulation>
   >(props.annualSimulations || defaultAnnualSimulations);
   const [maxYear, setMaxYear] = useState<number>(30);
-  const [errors, setErrors] = useState<ErrorMessages>({
-    title: [],
-    principal: [],
-    years: []
-  });
 
-  const { stringValidations } = useStringValidation();
-  const { numberValidations } = useNumberValidation();
   const [postSimulation, isLoadingPostSimulation, postSimulationErrors] =
     usePost("simulation");
-  const [patchSimulation, loadinggSimulation, simulationnErrors] =
+  const [patchSimulation, isLoadingPatchSimulation, patchSimulationErrors] =
     usePatch("simulation");
-  const [postAnnualSimulation] = usePost("annual_simulation");
-  const [patchAnnualSimulation] = usePatch("annual_simulation");
+  const [
+    postAnnualSimulation,
+    isLoadingPostAnnualSimulation,
+    postAnnualSimulationErrors
+  ] = usePost("annual_simulation");
+  const [
+    patchAnnualSimulation,
+    isLoadingPatchAnnualSimulation,
+    patchAnnualSimulationErrors
+  ] = usePatch("annual_simulation");
+
+  const isLoading: boolean = useMemo(() => {
+    return (
+      isLoadingPostSimulation ||
+      isLoadingPatchSimulation ||
+      isLoadingPostAnnualSimulation ||
+      isLoadingPatchAnnualSimulation
+    );
+  }, [
+    isLoadingPostSimulation,
+    isLoadingPatchSimulation,
+    isLoadingPostAnnualSimulation,
+    isLoadingPatchAnnualSimulation
+  ]);
+
+  const errors = useMemo(() => {
+    return {
+      title: patchSimulationErrors?.title || postSimulationErrors?.title,
+      principal:
+        patchSimulationErrors?.principal || postSimulationErrors?.principal,
+      rate:
+        patchAnnualSimulationErrors?.rate || postAnnualSimulationErrors?.rate,
+      monthly_deposit:
+        patchAnnualSimulationErrors?.monthly_deposit ||
+        postAnnualSimulationErrors?.monthly_deposit
+    };
+  }, [
+    patchSimulationErrors,
+    postSimulationErrors,
+    patchAnnualSimulationErrors,
+    postAnnualSimulationErrors
+  ]);
+  console.log(errors);
 
   const onChangeMaxYear = useCallback(
     async (e: ChangeEvent<HTMLSelectElement>) => {
@@ -84,34 +111,6 @@ export const SimulationField = (props: Props) => {
   const saveData = useCallback(
     () => async (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      setSaving(true);
-
-      // 以下validation
-      const titleErrors: Array<string> = stringValidations({
-        value: simulation?.title,
-        maxLength: 50
-      });
-      const principalErrors: Array<string> = numberValidations({
-        value: Number(simulation?.principal),
-        max: 1000000000000, // 1兆
-        min: 0,
-        isInteger: true
-      });
-      const yearsErrors: Array<string> = numberValidations({
-        value: maxYear,
-        max: 101, // 最大100年
-        min: 0,
-        isInteger: true
-      });
-      setErrors({
-        title: titleErrors,
-        principal: principalErrors,
-        years: yearsErrors
-      });
-      // エラーがあればreturn
-      if (titleErrors.length > 0 || principalErrors.length > 0) return;
-
-      // 以下post
       const newSimulation: Simulation = {
         title: simulation?.title || "",
         principal: simulation?.principal || 0,
@@ -121,9 +120,9 @@ export const SimulationField = (props: Props) => {
         try {
           if (props.simulation_id) {
             patchSimulation(newSimulation);
-            annualSimulations.forEach((annualSimulation) => {
-              patchAnnualSimulation(annualSimulation);
-            });
+            // annualSimulations.forEach((annualSimulation) => {
+            //   patchAnnualSimulation(annualSimulation);
+            // });
           } else {
             const response = await postSimulation(newSimulation);
             const id = response.id; // ここでIDを取得
@@ -139,12 +138,12 @@ export const SimulationField = (props: Props) => {
           console.log("保存時のエラー", e);
         }
       };
-      postData().then(() => {
-        setSaving(false);
-      });
+      postData();
     },
     [simulation, maxYear, annualSimulations]
   );
+
+  console.log(patchSimulationErrors);
 
   return (
     <Flex direction="column" gap={2}>
@@ -160,7 +159,7 @@ export const SimulationField = (props: Props) => {
           }}
           value={simulation?.title || ""}
         />
-        <ErrorMessage messages={errors.title} />
+        <ErrorMessage messages={errors?.title} />
       </Flex>
       <Flex direction="column">
         <label htmlFor="principal">元本</label>
@@ -174,7 +173,7 @@ export const SimulationField = (props: Props) => {
               principal: Number(e.target.value)
             });
           }}
-          value={simulation?.principal || 0}
+          value={simulation?.principal}
         />
         <ErrorMessage messages={errors.principal} />
       </Flex>
@@ -191,7 +190,6 @@ export const SimulationField = (props: Props) => {
           <option value="50">50年</option>
           <option value="100">100年</option>
         </select>
-        <ErrorMessage messages={errors.years} />
       </Flex>
       <AnnualSimulationsField
         annualSimulations={annualSimulations.slice(0, maxYear)}
@@ -204,7 +202,7 @@ export const SimulationField = (props: Props) => {
         />
       )}
       <button onClick={saveData()}>
-        {saving ? "セーブ中でござる" : "変更を保存"}
+        {isLoading ? "保存中" : "変更を保存"}
       </button>
     </Flex>
   );

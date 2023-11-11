@@ -8,7 +8,6 @@ type UsePost = [
 ];
 export const usePost = (path: string): UsePost => {
   const [loading, setLoading] = useState(false);
-  // Formのname属性をkeyに、エラーメッセージをvalueにしたオブジェクトを返したい
   const [errors, setErrors] = useState<Record<string, string[]>>({});
 
   const post = useCallback(
@@ -18,12 +17,15 @@ export const usePost = (path: string): UsePost => {
       postAPI(path, newData)
         .then((response) => {
           setLoading(false);
-          console.log(response);
+          if (response.status !== 200) {
+            const error = new Error();
+            setErrors(response.data);
+            throw error;
+          }
           return response.data;
         })
         .catch((e) => {
           setLoading(false);
-          console.error(e);
           throw new Error("作成に失敗しました");
         });
     },

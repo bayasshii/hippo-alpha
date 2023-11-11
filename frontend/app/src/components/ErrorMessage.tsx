@@ -1,8 +1,8 @@
 type Props = {
-  messages: Array<string>;
+  messages?: Array<string>;
 };
 export const ErrorMessage = ({ messages }: Props) => {
-  if (messages.length === 0) return null;
+  if (!messages) return null;
   return (
     <>
       {messages.map((message, key) => (

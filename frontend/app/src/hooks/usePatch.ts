@@ -9,7 +9,6 @@ type UsePatch = [
 
 export const usePatch = (path: string): UsePatch => {
   const [loading, setLoading] = useState(false);
-  // Formのname属性をkeyに、エラーメッセージをvalueにしたオブジェクトを返したい
   const [errors, setErrors] = useState<Record<string, string[]>>({});
 
   const patch = useCallback(
@@ -19,12 +18,17 @@ export const usePatch = (path: string): UsePatch => {
       patchAPI(path, newData)
         .then((response: any) => {
           setLoading(false);
+          if (response.status === 422) {
+            const error = new Error();
+            setErrors(response.data);
+            throw error;
+          }
           console.log(response);
+          return response.data;
         })
         .catch((e: any) => {
           setLoading(false);
-          console.error(e);
-          throw new Error("作成に失敗しました");
+          throw new Error("更新に失敗しました");
         });
     },
     [path]

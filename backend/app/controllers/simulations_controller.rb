@@ -25,7 +25,7 @@ class SimulationsController < ApplicationController
     if simulation.update(simulation_params)
       render json: simulation
     else
-      render json: simulation.errors
+      render json: simulation.errors, status: :unprocessable_entity
     end
   end
 
