@@ -108,37 +108,44 @@ export const SimulationField = (props: Props) => {
     [annualSimulations]
   );
 
+  console.log(annualSimulations);
+
   const saveData = useCallback(
     () => async (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       const newSimulation: Simulation = {
         title: simulation?.title || "",
-        principal: simulation?.principal || 0,
-        id: String(props.simulation_id)
+        principal: simulation?.principal || 0
       };
       const postData = async () => {
         try {
           if (props.simulation_id) {
-            patchSimulation(newSimulation);
-            // annualSimulations.forEach((annualSimulation) => {
-            //   patchAnnualSimulation(annualSimulation);
-            // });
-          } else {
-            const response = await postSimulation(newSimulation);
-            const id = response.id; // ここでIDを取得
+            // patchの処理
+            patchSimulation({ ...newSimulation, id: props.simulation_id });
             annualSimulations.forEach((annualSimulation) => {
-              postAnnualSimulation({
-                ...annualSimulation,
-                simulation_id: id
-              });
+              patchAnnualSimulation(annualSimulation);
             });
+          } else {
+            // postの処理
+            const response = await postSimulation(newSimulation);
+            const id = response.data.id; // ここでIDを取得
+            await Promise.all(
+              annualSimulations.map((annualSimulation) =>
+                postAnnualSimulation({
+                  ...annualSimulation,
+                  simulation_id: id
+                })
+              )
+            );
+
+            // 保存しきってからリダイレクト
             window.location.href = `/${id}`;
           }
         } catch (e) {
           console.log("保存時のエラー", e);
         }
       };
-      postData();
+      await postData();
     },
     [simulation, maxYear, annualSimulations]
   );

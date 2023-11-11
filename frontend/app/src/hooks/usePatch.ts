@@ -17,20 +17,23 @@ export const usePatch = (path: string): UsePatch => {
     async (newData: Record<string, unknown>) => {
       setLoading(true);
 
-      patchAPI(path, newData)
+      return patchAPI(path, newData)
         .then((response: any) => {
           setLoading(false);
+
           if (response.status === 422) {
             const error = new Error();
             setErrors(response.data);
             throw error;
           }
-          console.log(response);
-          return response.data;
+
+          setErrors({}); // 成功した場合はエラーを空にする
+          showToast && showToast({ message: "成功しました", type: "success" });
+          return response;
         })
         .catch((e: any) => {
-          setLoading(false);
-          showToast && showToast({ message: "エラーが発生しました" });
+          showToast &&
+            showToast({ message: "エラーが発生しました", type: "error" });
         });
     },
     [path, showToast]

@@ -13,7 +13,7 @@ export const Toast = ({ visible, hideToast, message, type }: Props) => {
       case TOAST_TYPE.ERROR:
         return { background: "red" };
       case TOAST_TYPE.SUCCESS:
-        return { background: "green" };
+        return { background: "lightblue" };
       default:
         return { background: "lightgrey" };
     }
