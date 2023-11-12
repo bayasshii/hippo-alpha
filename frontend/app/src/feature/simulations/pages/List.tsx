@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getAPIData } from "@/utils/api/getAPIData";
 import { Simulation } from "@/feature/simulations/types/Simulation";
 import { Link } from "react-router-dom";
+import { Header } from "@/components/Header";
 
 export const List = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -19,6 +20,7 @@ export const List = () => {
 
   return (
     <div>
+      <Header />
       <Link to="/new">New</Link>
 
       {isLoading ? (

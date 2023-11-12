@@ -12,8 +12,8 @@ export const RouterConfig = () => {
         <Route index element={<List />} />
         <Route path="new" element={<New />} />
         <Route path=":simulation_id" element={<Edit />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/signin" element={<Signin />} />
+        <Route path="signup" element={<Signup />} />
+        <Route path="signin" element={<Signin />} />
       </Routes>
     </BrowserRouter>
   );

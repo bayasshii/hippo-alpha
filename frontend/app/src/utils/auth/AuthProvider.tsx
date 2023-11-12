@@ -5,19 +5,25 @@ type Props = {
   children: ReactNode;
 };
 
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+const defaultAuthContext = {
+  loading: true,
+  setLoading: () => {},
+  isSignedIn: false,
+  setIsSignedIn: () => {},
+  currentUser: {},
+  setCurrentUser: () => {}
+};
 
 interface AuthContextType {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isSignedIn: boolean;
   setIsSignedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  currentUser: any; // ここはあなたのユーザーオブジェクトの型に置き換えてください
-  setCurrentUser: React.Dispatch<React.SetStateAction<any>>; // ここも同様に
+  currentUser: any; // ユーザーの型を入れる
+  setCurrentUser: React.Dispatch<React.SetStateAction<any>>;
 }
 
+export const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 export const AuthProvider: FC<Props> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -27,12 +33,12 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     try {
       const res = await getCurrentUser();
 
-      if (res?.data.isLogin === true) {
+      if (res?.data.is_login) {
         setIsSignedIn(true);
         setCurrentUser(res?.data.data);
-        console.log(res?.data.data);
+        console.log("current user", res?.data.data);
       } else {
-        console.log("no current user");
+        console.log("no current user", res);
       }
     } catch (e) {
       console.log(e);

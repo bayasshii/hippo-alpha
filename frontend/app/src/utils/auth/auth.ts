@@ -26,7 +26,7 @@ export const signOut = () => {
 };
 
 // ログインユーザーの取得
-export const getCurrentUser = () => {
+export const getCurrentUser = async () => {
   if (
     !Cookies.get("_access_token") ||
     !Cookies.get("_client") ||
@@ -34,13 +34,17 @@ export const getCurrentUser = () => {
   )
     return;
 
+  console.log("ほげ！");
+
   const instance = newAxiosInstance();
 
-  return instance.get("/auth/sessions", {
+  const result = await instance.get("/auth/sessions", {
     headers: {
       "access-token": Cookies.get("_access_token"),
       client: Cookies.get("_client"),
       uid: Cookies.get("_uid")
     }
   });
+  console.log("クッキーをゲットした値", result?.data);
+  return result;
 };

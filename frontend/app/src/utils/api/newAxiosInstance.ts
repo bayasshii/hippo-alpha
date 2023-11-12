@@ -3,7 +3,8 @@ const DEFAULT_API_CONFIG = {
   baseURL: "http://localhost:3001",
   timeout: 5000,
   mode: "cors",
-  credentials: "include",
+  credentials: "include", // クッキー使うならあった方がいい
+  withCredentials: true,
   headers: {
     ContentType: "application/json",
     Accept: "application/json"
