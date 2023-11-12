@@ -181,7 +181,9 @@ export const SimulationDetail = (props: Props) => {
           annualSimulations={annualSimulations.slice(0, maxYear)}
         />
       )}
-      <button onClick={saveData}>{loading ? "保存中" : "変更を保存"}</button>
+      <button onClick={saveData} disabled={loading}>
+        {loading ? "保存中" : "変更を保存"}
+      </button>
     </Flex>
   );
 };
