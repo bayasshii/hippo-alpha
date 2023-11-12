@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, type ChangeEvent } from "react";
 import { Flex } from "@/components/Flex";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { SimulationChart } from "@/feature/simulations/components/SimulationChart";
 import { Simulation } from "@/feature/simulations/types/Simulation";
@@ -10,7 +10,6 @@ import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
 import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/utils/toast/useToast";
-
 type Props = {
   simulation_id?: number;
   simulation?: Simulation;
@@ -41,6 +40,7 @@ export const SimulationDetail = (props: Props) => {
     usePatch("annual_simulation");
   const [setToast] = useToast();
   const [loading, setLoading] = useLoading();
+  const navigate = useNavigate();
 
   const errors = useMemo(() => {
     return {
@@ -115,7 +115,7 @@ export const SimulationDetail = (props: Props) => {
           );
 
           // 保存しきってからリダイレクト
-          window.location.href = `/${id}`;
+          navigate(`/${id}`);
         }
       } catch (error) {
         throw error;
