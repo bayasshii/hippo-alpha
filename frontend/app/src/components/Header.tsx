@@ -28,7 +28,7 @@ export const Header = () => {
     try {
       const res = await signOut();
       if (res.status === 200) {
-        navigation("/signin");
+        navigation("/login");
       }
     } catch (e) {
       console.log(e);
@@ -38,8 +38,8 @@ export const Header = () => {
   return (
     <header style={{ background: "lightgrey" }}>
       <h1>My App</h1>
-      <Link to="/signin">ログイン</Link>
-      <Link to="/signup">サインアップ</Link>
+      <Link to="/login">ログイン</Link>
+      <Link to="/new_user">アカウント作成</Link>
       <button onClick={handleSignOut}>ログアウト</button>
       <p>名前：{currentUser?.name}</p>
       {isLogin ? <p>ログイン中</p> : <p>ログインしていません</p>}

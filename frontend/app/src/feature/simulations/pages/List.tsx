@@ -18,7 +18,6 @@ export const List = () => {
     } else {
       const { currentUser } = authContext;
       setCurrentUser(currentUser);
-      console.log("currentUser", currentUser);
     }
   }, [authContext]);
 

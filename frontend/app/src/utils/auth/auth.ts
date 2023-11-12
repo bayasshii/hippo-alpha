@@ -1,18 +1,6 @@
 import Cookies from "js-cookie";
 import { newAxiosInstance } from "@/utils/api/newAxiosInstance";
 
-// サインアップ
-export const signUp = (params: any) => {
-  const instance = newAxiosInstance();
-  return instance.post("/auth", params);
-};
-
-// サインイン
-export const signIn = (params: any) => {
-  const instance = newAxiosInstance();
-  return instance.post("/auth/sign_in", params);
-};
-
 // サインアウト
 export const signOut = () => {
   const instance = newAxiosInstance();

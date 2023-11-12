@@ -1,30 +1,30 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { signUp } from "@/utils/auth/auth";
+import { usePost } from "@/hooks/usePost";
+import { ErrorMessage } from "@/components/ErrorMessage";
+import { useLoading } from "@/hooks/useLoading";
 
-export const Signup = () => {
+export const New = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const confirmSuccessUrl = "http://localhost:3000";
+  const [postUserNew, postUserNewErrors] = usePost("/auth");
+  const [loading, setLoading] = useLoading();
 
-  const generateParams = () => {
-    const signUpParams = {
+  const handleUserNew = async (e: any) => {
+    e.preventDefault();
+    const params = {
       name: name,
       email: email,
       password: password,
       password_confirmation: passwordConfirmation,
       confirm_success_url: confirmSuccessUrl
     };
-    return signUpParams;
-  };
 
-  const handleSignUpSubmit = async (e: any) => {
-    e.preventDefault();
-    const params = generateParams();
     try {
-      await signUp(params);
+      await setLoading(() => postUserNew(params));
       alert("confirm email");
     } catch (e) {
       console.log(e);
@@ -44,6 +44,7 @@ export const Signup = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+          <ErrorMessage messages={postUserNewErrors?.name} />
         </div>
         <div>
           <label htmlFor="email">メールアドレス</label>
@@ -54,6 +55,7 @@ export const Signup = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+          <ErrorMessage messages={postUserNewErrors?.email} />
         </div>
         <div>
           <label htmlFor="password">パスワード</label>
@@ -64,6 +66,7 @@ export const Signup = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <ErrorMessage messages={postUserNewErrors?.password} />
         </div>
         <div>
           <label htmlFor="password_confirmation">パスワード確認</label>
@@ -74,6 +77,7 @@ export const Signup = () => {
             value={passwordConfirmation}
             onChange={(e) => setPasswordConfirmation(e.target.value)}
           />
+          <ErrorMessage messages={postUserNewErrors?.password_confirmation} />
         </div>
         <div>
           <input
@@ -83,11 +87,15 @@ export const Signup = () => {
             value={confirmSuccessUrl}
           />
         </div>
-        <button type="submit" onClick={(e) => handleSignUpSubmit(e)}>
+        <button
+          type="submit"
+          disabled={loading}
+          onClick={(e) => handleUserNew(e)}
+        >
           Submit
         </button>
       </form>
-      <Link to="/signin">サインインへ</Link>
+      <Link to="/login">サインインへ</Link>
     </>
   );
 };

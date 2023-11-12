@@ -124,7 +124,7 @@ export const SimulationDetail = (props: Props) => {
     };
     // TODO: なんかもっと上手いことまとめられそうな気はする
     setToast(() => setLoading(asyncData));
-  }, [simulation, maxYear, annualSimulations]);
+  }, [simulation, maxYear, annualSimulations]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Flex direction="column" gap={2}>

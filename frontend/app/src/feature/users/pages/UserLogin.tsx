@@ -1,39 +1,34 @@
 import Cookies from "js-cookie";
 import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
-import { signIn } from "@/utils/auth/auth";
 import { AuthContext } from "@/utils/auth/AuthProvider";
+import { usePost } from "@/hooks/usePost";
+import { ErrorMessage } from "@/components/ErrorMessage";
+import { useLoading } from "@/hooks/useLoading";
 
-export const Signin = () => {
+export const Login = () => {
   const { setIsSignedIn, setCurrentUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [postUserLogin, postUserLoginErrors] = usePost("/auth/sign_in");
   const navigation = useNavigate();
+  const [loading, setLoading] = useLoading();
 
-  const generateParams = () => {
-    const signInParams = {
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
+    const params = {
       email: email,
       password: password
     };
-    return signInParams;
-  };
-
-  const handleSignIn = async (e: any) => {
-    e.preventDefault();
-    const params = generateParams();
 
     try {
-      const res = await signIn(params);
+      const res = await setLoading(() => postUserLogin(params));
       if (res.status === 200) {
         Cookies.set("_access_token", res.headers["access-token"]);
         Cookies.set("_client", res.headers["client"]);
         Cookies.set("_uid", res.headers["uid"]);
-
         setIsSignedIn(true);
         setCurrentUser(res.data.data);
-
         navigation("/");
       }
     } catch (e) {
@@ -42,7 +37,7 @@ export const Signin = () => {
   };
   return (
     <>
-      <p>サインインページです</p>
+      <p>ログインページ</p>
       <form>
         <div>
           <label htmlFor="email">メールアドレス</label>
@@ -53,6 +48,7 @@ export const Signin = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+          <ErrorMessage messages={postUserLoginErrors?.email} />
         </div>
         <div>
           <label htmlFor="password">パスワード</label>
@@ -63,12 +59,17 @@ export const Signin = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <ErrorMessage messages={postUserLoginErrors?.password} />
         </div>
-        <button type="submit" onClick={(e) => handleSignIn(e)}>
+        <button
+          type="submit"
+          disabled={loading}
+          onClick={(e) => handleLogin(e)}
+        >
           Submit
         </button>
       </form>
-      <Link to="/signup">サインアップへ</Link>
+      <Link to="new_user">アカウント作成へ</Link>
     </>
   );
 };
