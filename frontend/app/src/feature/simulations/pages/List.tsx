@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { getAPIData } from "@/utils/api/getAPIData";
+import { getAPI } from "@/utils/api/getAPI";
 import { Simulation } from "@/feature/simulations/types/Simulation";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
@@ -24,7 +24,7 @@ export const List = () => {
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
-      getAPIData("/simulations", { user_id: currentUser?.id })
+      getAPI("/simulations", { user_id: currentUser?.id })
         .then((response) => {
           if (response?.status !== 200) {
             // 最初サインアップする前から500番のエラー出るのなんか可哀想
@@ -43,6 +43,7 @@ export const List = () => {
   }, [currentUser]);
 
   if (isLoading) return <p>loading...</p>;
+  if (!currentUser) return <Header />;
 
   return (
     <div>

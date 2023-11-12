@@ -32,12 +32,12 @@ export const SimulationDetail = (props: Props) => {
   >(props.annualSimulations || defaultAnnualSimulations);
   const [maxYear, setMaxYear] = useState<number>(30);
 
-  const [postSimulation, postSimulationErrors] = usePost("simulation");
-  const [patchSimulation, patchSimulationErrors] = usePatch("simulation");
+  const [postSimulation, postSimulationErrors] = usePost("simulations");
+  const [patchSimulation, patchSimulationErrors] = usePatch("simulations");
   const [postAnnualSimulation, postAnnualSimulationErrors] =
-    usePost("annual_simulation");
+    usePost("annual_simulations");
   const [patchAnnualSimulation, patchAnnualSimulationErrors] =
-    usePatch("annual_simulation");
+    usePatch("annual_simulations");
   const [setToast] = useToast();
   const [loading, setLoading] = useLoading();
   const navigate = useNavigate();
@@ -128,7 +128,7 @@ export const SimulationDetail = (props: Props) => {
 
   return (
     <Flex direction="column" gap={2}>
-      <Link to="/">もどる</Link>
+      <a href="/">もどる</a>
       <Flex direction="column">
         <label htmlFor="title">タイトル</label>
         <input

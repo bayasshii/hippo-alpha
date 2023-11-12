@@ -1,18 +1,21 @@
-import { postAPI } from "@/utils/api/postAPI";
 import { useCallback, useState } from "react";
+import { newAxiosInstance } from "@/utils/api/newAxiosInstance";
 
 type UsePost = [
-  (newData: Record<string, unknown>) => Promise<any>,
+  (params: Record<string, unknown>) => Promise<any>,
   Record<string, string[]>
 ];
 
 export const usePost = (path: string): UsePost => {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const instance = newAxiosInstance();
 
   const post = useCallback(
-    async (newData: Record<string, unknown>) => {
-      return postAPI(path, newData)
-        .then((response) => {
+    async (params: Record<string, unknown>) => {
+      return instance
+        .post(path, params)
+        .then((response: any) => {
+          console.log(response);
           if (response.status !== 200) {
             const error = new Error();
             setErrors(response.data);
@@ -21,11 +24,11 @@ export const usePost = (path: string): UsePost => {
 
           return response;
         })
-        .catch((error) => {
+        .catch((error: any) => {
           return error.response;
         });
     },
-    [path]
+    [path, instance]
   );
 
   return [post, errors];

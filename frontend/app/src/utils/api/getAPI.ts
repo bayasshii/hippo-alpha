@@ -1,12 +1,9 @@
 import { newAxiosInstance } from "./newAxiosInstance";
 
-export const postAPI = async (
-  path: string,
-  params: Record<string, unknown>
-) => {
+export const getAPI = async (path: string, query?: Object) => {
   const instance = newAxiosInstance();
   try {
-    const response = await instance.post(`/${path}s`, { [path]: params });
+    const response = await instance.get(path, { params: query });
     return response;
   } catch (error: any) {
     return error.response;

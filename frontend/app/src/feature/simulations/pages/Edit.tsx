@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAPIData } from "@/utils/api/getAPIData";
+import { getAPI } from "@/utils/api/getAPI";
 import { useParams } from "react-router-dom";
 import { Simulation } from "@/feature/simulations/types/Simulation";
 import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
@@ -16,11 +16,11 @@ export const Edit = () => {
   useEffect(() => {
     // Simulations
     const fetchSimulations = async () => {
-      const response = await getAPIData(`/simulations/${simulation_id}`);
+      const response = await getAPI(`/simulations/${simulation_id}`);
       setSimulation(response?.data);
     };
     const fetchAnnualSimulations = async () => {
-      const response = await getAPIData("/annual_simulations", {
+      const response = await getAPI("/annual_simulations", {
         simulation_id: simulation_id
       });
       if (Array.isArray(response?.data)) {

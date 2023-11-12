@@ -1,4 +1,4 @@
-import { deleteAPI } from "@/utils/api/deleteAPI";
+import { newAxiosInstance } from "@/utils/api/newAxiosInstance";
 import { useCallback, useState } from "react";
 
 type UseDelete = [(id: string) => Promise<any>, Record<string, string[]>];
@@ -8,10 +8,12 @@ export const useDelete = (
   headers?: { headers: Record<string, string | undefined> }
 ): UseDelete => {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const instance = newAxiosInstance();
 
   const doDelete = useCallback(
     async (id: string) => {
-      return deleteAPI(path + "/" + id, headers)
+      return instance
+        .delete(path + "/" + id, headers)
         .then((response: any) => {
           if (response.status !== 200) {
             const error = new Error();

@@ -10,7 +10,7 @@ export const Login = () => {
   const { setIsSignedIn, setCurrentUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [postUserLogin, postUserLoginErrors] = usePost("/auth/sign_in");
+  const [postUserLogin, postUserLoginErrors] = usePost("auth/sign_in");
   const navigation = useNavigate();
   const [loading, setLoading] = useLoading();
 
@@ -20,10 +20,9 @@ export const Login = () => {
       email: email,
       password: password
     };
-
     try {
-      const res = await setLoading(() => postUserLogin(params));
-      if (res.status === 200) {
+      const res = await postUserLogin(params);
+      if (res?.status === 200) {
         Cookies.set("_access_token", res.headers["access-token"]);
         Cookies.set("_client", res.headers["client"]);
         Cookies.set("_uid", res.headers["uid"]);
@@ -69,7 +68,7 @@ export const Login = () => {
           Submit
         </button>
       </form>
-      <Link to="new_user">アカウント作成へ</Link>
+      <Link to="/new_user">アカウント作成へ</Link>
     </>
   );
 };
