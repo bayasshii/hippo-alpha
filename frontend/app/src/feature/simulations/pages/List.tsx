@@ -23,23 +23,26 @@ export const List = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    const fetchData = async () => {
-      getAPI("/simulations", { user_id: currentUser?.id })
-        .then((response) => {
-          if (response?.status !== 200) {
-            // 最初サインアップする前から500番のエラー出るのなんか可哀想
-            throw new Error("Error!");
-          }
-          setData(response?.data as Array<Simulation>);
-        })
-        .catch((e) => {
-          console.log(e);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    };
-    fetchData();
+    if (currentUser) {
+      const fetchData = async () => {
+        getAPI("/simulations", { user_id: currentUser?.id })
+          .then((response) => {
+            if (response?.status !== 200) {
+              // 最初サインアップする前から500番のエラー出るのなんか可哀想
+              throw new Error("Error!");
+            }
+            if (response?.data.length === 0) return;
+            setData(response?.data as Array<Simulation>);
+          })
+          .catch((e) => {
+            console.log(e);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      };
+      fetchData();
+    }
   }, [currentUser]);
 
   if (isLoading) return <p>loading...</p>;

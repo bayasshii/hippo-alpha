@@ -46,11 +46,18 @@ export const Header = () => {
 
   return (
     <header style={{ background: "lightgrey" }}>
-      <h1>My App</h1>
-      <Link to="/login">ログイン</Link>
-      <Link to="/new_user">アカウント作成</Link>
-      <button onClick={handleSignOut}>ログアウト</button>
-      <p>名前：{currentUser?.name}</p>
+      <h1>Hippo Alpha</h1>
+      {currentUser ? (
+        <>
+          <button onClick={handleSignOut}>ログアウト</button>
+          <p>名前：{currentUser?.name}</p>
+        </>
+      ) : (
+        <>
+          <Link to="/login">ログイン</Link>
+          <Link to="/new_user">アカウント作成</Link>
+        </>
+      )}
       {isLogin ? <p>ログイン中</p> : <p>ログインしていません</p>}
     </header>
   );
