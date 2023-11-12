@@ -20,16 +20,19 @@ module Api
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    # Only loads a smaller set of middleware suitable for API only apps.
-    # Middleware like session, flash, cookies can be added back manually.
-    # Skip views, helpers and assets when generating a new resource.
+    # APIモードにする
     config.api_only = true
 
+    config.session_store :cookie_store, key: '_interslice_session'
+    config.middleware.use ActionDispatch::Cookies # Required for all session management
+    config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
+    config.middleware.use ActionDispatch::Flash
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins ENV["FRONTEND_ORIGIN"]
-        resource "localhost:3000",
-                 headers: :any,
+        origins 'localhost:3000'
+        resource '*',
+                 headers: :any, # 何でこんな改行しないとrubocopが怒るんだろう
+                 expose: ['access-token', 'expiry', 'token-type', 'uid', 'client'],
                  methods: [:get, :post, :patch, :delete, :options, :head]
       end
     end
