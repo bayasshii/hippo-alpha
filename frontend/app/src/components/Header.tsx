@@ -1,13 +1,21 @@
 import { AuthContext } from "@/utils/auth/AuthProvider";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { signOut } from "@/utils/auth/auth";
 import { useNavigate } from "react-router-dom";
+import { useDelete } from "@/hooks/useDelete";
+import Cookies from "js-cookie";
 
 export const Header = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<any>({});
   const navigation = useNavigate();
+  const [signOut, signOutErrors] = useDelete("/auth", {
+    headers: {
+      "access-token": Cookies.get("_access_token"),
+      client: Cookies.get("_client"),
+      uid: Cookies.get("_uid")
+    }
+  });
 
   const authContext = useContext(AuthContext);
 
@@ -26,7 +34,8 @@ export const Header = () => {
     e.preventDefault();
 
     try {
-      const res = await signOut();
+      const res = await signOut("sign_out");
+      console.log(res);
       if (res.status === 200) {
         navigation("/login");
       }
