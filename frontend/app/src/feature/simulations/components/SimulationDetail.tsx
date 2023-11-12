@@ -123,7 +123,7 @@ export const SimulationDetail = (props: Props) => {
     };
     // TODO: なんかもっと上手いことまとめられそうな気はする
     setToast(() => setLoading(asyncData));
-  }, [simulation, maxYear, annualSimulations, setLoading, setToast]);
+  }, [simulation, maxYear, annualSimulations]);
 
   return (
     <Flex direction="column" gap={2}>
