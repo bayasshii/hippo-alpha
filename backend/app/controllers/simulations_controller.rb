@@ -1,6 +1,7 @@
 class SimulationsController < ApplicationController
   def index
-    simulations = Simulation.order(:id)
+    user_id = params[:user_id]
+    simulations = Simulation.where(user_id:).order(:id)
     render json: simulations
   end
 
@@ -32,6 +33,6 @@ class SimulationsController < ApplicationController
   private
 
   def simulation_params
-    params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit)
+    params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit, :user_id)
   end
 end

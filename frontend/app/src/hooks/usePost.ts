@@ -13,6 +13,7 @@ export const usePost = (path: string): UsePost => {
     async (newData: Record<string, unknown>) => {
       return postAPI(path, newData)
         .then((response) => {
+          console.log("response", newData);
           if (response.status !== 200) {
             const error = new Error();
             setErrors(response.data);

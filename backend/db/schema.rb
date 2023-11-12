@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_12_060054) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_08_082708) do
   create_table "annual_simulations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "monthly_deposit", null: false
     t.integer "rate", null: false
@@ -24,8 +24,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_12_060054) do
   create_table "simulations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title", null: false
     t.string "principal", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_simulations_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -54,4 +56,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_12_060054) do
   end
 
   add_foreign_key "annual_simulations", "simulations"
+  add_foreign_key "simulations", "users"
 end

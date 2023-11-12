@@ -1,6 +1,13 @@
+
+user1 = User.create!(
+    name: 'user1',
+    email: 'hogehoge@hoge.com',
+)
+
 simulation1 = Simulation.create!(
     title: 'title⭐️test1',
     principal: 3000000,
+    user_id: 1
 )
 
 # yearを100年分作成

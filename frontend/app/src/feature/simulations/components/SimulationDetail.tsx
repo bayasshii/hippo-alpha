@@ -25,7 +25,7 @@ const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
 
 export const SimulationDetail = (props: Props) => {
   const [simulation, setSimulation] = useState<Simulation>(
-    props.simulation || { title: "タイトル", principal: 100000 }
+    props.simulation || { title: "タイトル", principal: 100000, user_id: "1" }
   );
   const [annualSimulations, setAnnualSimulations] = useState<
     Array<AnnualSimulation>
@@ -86,7 +86,8 @@ export const SimulationDetail = (props: Props) => {
   const saveData = useCallback(async () => {
     const newSimulation: Simulation = {
       title: simulation?.title || "",
-      principal: simulation?.principal || 0
+      principal: simulation?.principal || 0,
+      user_id: simulation?.user_id || ""
     };
     const asyncData = async () => {
       try {
