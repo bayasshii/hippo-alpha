@@ -35,7 +35,6 @@ export const Header = () => {
 
     try {
       const res = await signOut("sign_out");
-      console.log(res);
       if (res.status === 200) {
         navigation("/login");
       }
