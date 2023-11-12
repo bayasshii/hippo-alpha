@@ -12,12 +12,10 @@ export const useLoading = (): UseLoadingReturn => {
     setLoading(true);
     return apiCall().then(
       (res) => {
-        console.log("呼び出されたよ");
         setLoading(false);
         return res;
       },
       (err) => {
-        console.log("エラーだよ", err);
         setLoading(false);
         throw err;
       }

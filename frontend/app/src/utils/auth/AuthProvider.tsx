@@ -32,13 +32,9 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   const handleGetCurrentUser = async () => {
     try {
       const res = await getCurrentUser();
-
       if (res?.data.is_login) {
         setIsSignedIn(true);
         setCurrentUser(res?.data.data);
-        console.log("current user", res?.data.data);
-      } else {
-        console.log("no current user", res);
       }
     } catch (e) {
       console.log(e);

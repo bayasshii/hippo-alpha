@@ -34,8 +34,6 @@ export const getCurrentUser = async () => {
   )
     return;
 
-  console.log("ほげ！");
-
   const instance = newAxiosInstance();
 
   const result = await instance.get("/auth/sessions", {
@@ -45,6 +43,5 @@ export const getCurrentUser = async () => {
       uid: Cookies.get("_uid")
     }
   });
-  console.log("クッキーをゲットした値", result?.data);
   return result;
 };
