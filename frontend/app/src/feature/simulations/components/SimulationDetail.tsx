@@ -1,10 +1,4 @@
-import {
-  useState,
-  useCallback,
-  useMemo,
-  type ChangeEvent,
-  type MouseEvent
-} from "react";
+import { useState, useCallback, useMemo, type ChangeEvent } from "react";
 import { Flex } from "@/components/Flex";
 import { Link } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -14,6 +8,7 @@ import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
 import { AnnualSimulationsField } from "@/feature/simulations/components/AnnualSimulationsField";
 import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
+import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/utils/toast/useToast";
 
 type Props = {
@@ -38,36 +33,14 @@ export const SimulationDetail = (props: Props) => {
   >(props.annualSimulations || defaultAnnualSimulations);
   const [maxYear, setMaxYear] = useState<number>(30);
 
-  const [postSimulation, isLoadingPostSimulation, postSimulationErrors] =
-    usePost("simulation");
-  const [patchSimulation, isLoadingPatchSimulation, patchSimulationErrors] =
-    usePatch("simulation");
-  const [
-    postAnnualSimulation,
-    isLoadingPostAnnualSimulation,
-    postAnnualSimulationErrors
-  ] = usePost("annual_simulation");
-  const [
-    patchAnnualSimulation,
-    isLoadingPatchAnnualSimulation,
-    patchAnnualSimulationErrors
-  ] = usePatch("annual_simulation");
-
+  const [postSimulation, postSimulationErrors] = usePost("simulation");
+  const [patchSimulation, patchSimulationErrors] = usePatch("simulation");
+  const [postAnnualSimulation, postAnnualSimulationErrors] =
+    usePost("annual_simulation");
+  const [patchAnnualSimulation, patchAnnualSimulationErrors] =
+    usePatch("annual_simulation");
   const [setToast] = useToast();
-
-  const isLoading: boolean = useMemo(() => {
-    return (
-      isLoadingPostSimulation ||
-      isLoadingPatchSimulation ||
-      isLoadingPostAnnualSimulation ||
-      isLoadingPatchAnnualSimulation
-    );
-  }, [
-    isLoadingPostSimulation,
-    isLoadingPatchSimulation,
-    isLoadingPostAnnualSimulation,
-    isLoadingPatchAnnualSimulation
-  ]);
+  const [loading, setLoading] = useLoading();
 
   const errors = useMemo(() => {
     return {
@@ -110,50 +83,47 @@ export const SimulationDetail = (props: Props) => {
     [annualSimulations]
   );
 
-  const saveData = useCallback(
-    () => async (e: MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      const newSimulation: Simulation = {
-        title: simulation?.title || "",
-        principal: simulation?.principal || 0
-      };
-      const postData = async () => {
-        try {
-          if (props.simulation_id) {
-            // patchの処理
-            await patchSimulation({
-              ...newSimulation,
-              id: props.simulation_id
-            });
-            await Promise.all(
-              annualSimulations.map((annualSimulation) =>
-                patchAnnualSimulation(annualSimulation)
-              )
-            );
-          } else {
-            // postの処理
-            const response = await postSimulation(newSimulation);
-            const id = response.data.id; // ここでIDを取得
-            await Promise.all(
-              annualSimulations.map((annualSimulation) =>
-                postAnnualSimulation({
-                  ...annualSimulation,
-                  simulation_id: id
-                })
-              )
-            );
+  const saveData = useCallback(async () => {
+    const newSimulation: Simulation = {
+      title: simulation?.title || "",
+      principal: simulation?.principal || 0
+    };
+    const asyncData = async () => {
+      try {
+        if (props.simulation_id) {
+          // patchの処理
+          await patchSimulation({
+            ...newSimulation,
+            id: props.simulation_id
+          });
+          await Promise.all(
+            annualSimulations.map((annualSimulation) =>
+              patchAnnualSimulation(annualSimulation)
+            )
+          );
+        } else {
+          // postの処理
+          const response = await postSimulation(newSimulation);
+          const id = response.data.id; // ここでIDを取得
+          await Promise.all(
+            annualSimulations.map((annualSimulation) =>
+              postAnnualSimulation({
+                ...annualSimulation,
+                simulation_id: id
+              })
+            )
+          );
 
-            // 保存しきってからリダイレクト
-            window.location.href = `/${id}`;
-          }
-        } catch (error) {
-          throw error;
+          // 保存しきってからリダイレクト
+          window.location.href = `/${id}`;
         }
-      };
-      await setToast(postData);
-    },
-    [simulation, maxYear, annualSimulations]
-  );
+      } catch (error) {
+        throw error;
+      }
+    };
+    // TODO: なんかもっと上手いことまとめられそうな気はする
+    setToast(() => setLoading(asyncData));
+  }, [simulation, maxYear, annualSimulations, setLoading, setToast]);
 
   return (
     <Flex direction="column" gap={2}>
@@ -211,9 +181,7 @@ export const SimulationDetail = (props: Props) => {
           annualSimulations={annualSimulations.slice(0, maxYear)}
         />
       )}
-      <button onClick={saveData()}>
-        {isLoading ? "保存中" : "変更を保存"}
-      </button>
+      <button onClick={saveData}>{loading ? "保存中" : "変更を保存"}</button>
     </Flex>
   );
 };
