@@ -20,7 +20,7 @@ export const Signin = () => {
     return signInParams;
   };
 
-  const handleSignInSubmit = async (e: any) => {
+  const handleSignIn = async (e: any) => {
     e.preventDefault();
     const params = generateParams();
 
@@ -65,7 +65,7 @@ export const Signin = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="submit" onClick={(e) => handleSignInSubmit(e)}>
+        <button type="submit" onClick={(e) => handleSignIn(e)}>
           Submit
         </button>
       </form>
