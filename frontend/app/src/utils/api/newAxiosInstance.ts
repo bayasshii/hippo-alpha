@@ -1,6 +1,7 @@
 import axios from "axios";
 const DEFAULT_API_CONFIG = {
-  baseURL: "http://localhost:3001",
+  // .envのAPI_URLを参照
+  baseURL: process.env.REACT_APP_API_URL,
   timeout: 5000,
   mode: "cors",
   credentials: "include", // クッキー使うならあった方がいい
