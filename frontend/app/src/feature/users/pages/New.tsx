@@ -9,7 +9,7 @@ export const New = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const confirmSuccessUrl = "http://localhost:3000";
+  const confirmSuccessUrl = process.env.REACT_APP_URL;
   const [postUserNew, postUserNewErrors] = usePost("/auth");
   const [loading, setLoading] = useLoading();
 
