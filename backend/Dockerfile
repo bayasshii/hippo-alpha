@@ -14,3 +14,6 @@ RUN gem update --system ${RUBYGEMS_VERSION} && \
 bundle install
 
 COPY . /api
+
+RUN ["apt-get", "update"]
+RUN ["apt-get", "install", "-y", "vim"]
