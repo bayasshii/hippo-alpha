@@ -2,7 +2,7 @@ import axios from "axios";
 const DEFAULT_API_CONFIG = {
   // .envのAPI_URLを参照
   baseURL: process.env.REACT_APP_API_URL,
-  timeout: 5000,
+  timeout: 10000,
   mode: "cors",
   credentials: "include", // クッキー使うならあった方がいい
   withCredentials: true,
