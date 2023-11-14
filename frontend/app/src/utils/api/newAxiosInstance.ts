@@ -20,9 +20,7 @@ export const newAxiosInstance = () => {
       return response;
     },
     (error) => {
-      if (process.env.NODE_ENV === "development") {
-        console.log("devMode-error：", error);
-      }
+      console.log("error：", error);
       return Promise.reject(error);
     }
   );
