@@ -12,6 +12,9 @@ export const usePost = (path: string): UsePost => {
 
   const post = useCallback(
     async (params: Record<string, unknown>) => {
+      console.log("path", path);
+      console.log("params", params);
+
       return instance
         .post(path, params)
         .then((response: any) => {
