@@ -15,7 +15,7 @@ test:
   database: api_test
 
 production:
-   <<: *default
+  <<: *default
   database: hippo_alpha
   username: <%= ENV['DB_USERNAME_PROD'] %>
   host: <%= ENV['DB_HOST_PROD'] %>
