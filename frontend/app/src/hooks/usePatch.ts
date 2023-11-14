@@ -12,7 +12,7 @@ export const usePatch = (path: string): UsePatch => {
 
   const patch = useCallback(
     async (params: Record<string, unknown>) => {
-      return instance
+      const re = instance
         .post(`/${path}/${params?.id}`, params)
         .then((response: any) => {
           if (response.status === 422) {
@@ -28,6 +28,8 @@ export const usePatch = (path: string): UsePatch => {
           console.log(error);
           throw error;
         });
+      console.log(re);
+      return re;
     },
     [path, instance]
   );
