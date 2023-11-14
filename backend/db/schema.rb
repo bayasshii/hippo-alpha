@@ -10,6 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+# ActiveRecord の ORM
+# ORM の役割 = db の操作をプログラムで簡単にできるようにするやつ
+
 ActiveRecord::Schema[7.0].define(version: 2023_11_08_082708) do
   create_table "annual_simulations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "monthly_deposit", null: false
@@ -55,6 +58,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_08_082708) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  # 外部キー
   add_foreign_key "annual_simulations", "simulations"
-  add_foreign_key "simulations", "users"
+   "simulatioadd_foreign_keyns", "users" # ここで、users と simulations が db レベルで紐づく
 end

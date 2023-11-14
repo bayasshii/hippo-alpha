@@ -31,7 +31,7 @@ module Api
       allow do
         origins 'localhost:3000'
         resource '*',
-                 headers: :any, # 何でこんな改行しないとrubocopが怒るんだろう
+                 headers: :any, # 何でこんな改行しないとrubocopが怒るんだろう # 一行にたくさんあると読みづらいっていうルールがあるからやね。閾値は変えられる。「rubocop line length 変更」で検索検索！
                  expose: ['access-token', 'expiry', 'token-type', 'uid', 'client'],
                  methods: [:get, :post, :patch, :delete, :options, :head]
       end
