@@ -35,6 +35,6 @@ class SimulationsController < ApplicationController
 
   def simulation_params
     # create, updateの時もuser_idを受け取らないようにする
-    params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit    params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit, :user_id)
+    params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit, :user_id)
   end
 end
