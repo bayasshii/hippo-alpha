@@ -1,12 +1,13 @@
 class SimulationsController < ApplicationController
+  before_action :authenticate_user!, only: [:index, :show, :new]
+
   def index
-    user_id = params[:user_id]
-    simulations = Simulation.where(user_id:).order(:id)
+    simulations = current_user.simulations.order(:id)
     render json: simulations
   end
 
   def show
-    simulation = Simulation.find(params[:id])
+    simulation = current_user.simulations.find(params[:id])
     render json: simulation
   rescue ActiveRecord::RecordNotFound
     render json: { error: 'Simulation not found' }, status: :not_found
@@ -33,6 +34,7 @@ class SimulationsController < ApplicationController
   private
 
   def simulation_params
-    params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit, :user_id)
+    # create, updateの時もuser_idを受け取らないようにする
+    params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit    params.require(:simulation).permit(:title, :principal, :assumed_yields, :monthly_deposit, :user_id)
   end
 end
