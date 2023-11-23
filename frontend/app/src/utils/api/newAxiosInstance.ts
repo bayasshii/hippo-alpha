@@ -1,6 +1,7 @@
 import axios from "axios";
+import Cookies from "js-cookie";
+
 const DEFAULT_API_CONFIG = {
-  // .envのAPI_URLを参照
   baseURL: process.env.REACT_APP_API_URL,
   timeout: 10000,
   mode: "cors",
@@ -8,7 +9,11 @@ const DEFAULT_API_CONFIG = {
   withCredentials: true,
   headers: {
     ContentType: "application/json",
-    Accept: "application/json"
+    Accept: "application/json",
+    // ↓この辺はユーザーのログイン情報のロジックだし、ここで呼び出すのは適切じゃなさげな気がする
+    "access-token": Cookies.get("_access_token"),
+    client: Cookies.get("_client"),
+    uid: Cookies.get("_uid")
   }
 };
 
