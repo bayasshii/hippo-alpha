@@ -1,7 +1,8 @@
-
 user1 = User.create!(
     name: 'user1',
-    email: 'hogehoge@hoge.com',
+    email: 'hogehoge@hogehoge.com',
+    password: 'testtest',
+    confirmed_at: DateTime.now
 )
 
 simulation1 = Simulation.create!(
