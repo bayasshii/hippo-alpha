@@ -19,8 +19,7 @@ RUN ["apt-get", "update"]
 RUN ["apt-get", "install", "-y", "vim"]
 
 # アセットのプリコンパイル
-RUN RAILS_ENV=production bundle exec rails assets:precompile
-
+RUN RAILS_ENV=production bundle exec rails webpacker:compile
 # データベースのマイグレーション
 RUN RAILS_ENV=production bundle exec rails db:migrate
 
