@@ -18,7 +18,4 @@ COPY . /api
 RUN ["apt-get", "update"]
 RUN ["apt-get", "install", "-y", "vim"]
 
-# データベースのマイグレーション
-RUN RAILS_ENV=production bundle exec rails db:migrate
-
 CMD ["rails", "server", "-e", "production", "-b", "0.0.0.0"]
