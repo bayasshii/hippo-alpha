@@ -1,4 +1,5 @@
 class SimulationsController < ApplicationController
+  # フロントでいい感じにheaderに認証情報を渡すようにする
   before_action :authenticate_user!, only: [:index, :show, :new]
 
   def index
