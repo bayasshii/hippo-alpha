@@ -1,4 +1,10 @@
-import { useState, useCallback, useMemo, type ChangeEvent } from "react";
+import {
+  useState,
+  useCallback,
+  useMemo,
+  type ChangeEvent,
+  useContext
+} from "react";
 import { Flex } from "@/components/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -10,6 +16,8 @@ import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
 import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/utils/toast/useToast";
+import { AuthContext } from "@/utils/auth/AuthProvider";
+
 type Props = {
   simulation_id?: number;
   simulation?: Simulation;
@@ -24,8 +32,13 @@ const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
   }));
 
 export const SimulationDetail = (props: Props) => {
+  const { currentUser } = useContext(AuthContext);
   const [simulation, setSimulation] = useState<Simulation>(
-    props.simulation || { title: "タイトル", principal: 100000, user_id: "1" }
+    props.simulation || {
+      title: "タイトル",
+      principal: 100000,
+      user_id: currentUser?.id || ""
+    }
   );
   const [annualSimulations, setAnnualSimulations] = useState<
     Array<AnnualSimulation>

@@ -8,18 +8,7 @@ import { AuthContext } from "@/utils/auth/AuthProvider";
 export const List = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [data, setData] = useState<Array<Simulation>>([]);
-  const [currentUser, setCurrentUser] = useState<any>({});
-  const authContext = useContext(AuthContext);
-
-  useEffect(() => {
-    if (!authContext) {
-      // AuthContextがundefinedの場合の処理をここに書く
-      // 例えば、エラーメッセージを表示するなど
-    } else {
-      const { currentUser } = authContext;
-      setCurrentUser(currentUser);
-    }
-  }, [authContext]);
+  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
     setIsLoading(true);
