@@ -3,6 +3,7 @@ set -e
 
 rm -f /api/tmp/pids/server.pid
 
+bundle exec rails db:migrate:reset # 一旦DBをリセット(userの認証周りの開発終わるまで
 bundle exec rails db:migrate
 
 exec "$@"
