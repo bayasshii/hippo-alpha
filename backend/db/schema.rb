@@ -55,6 +55,4 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_08_082708) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
-  add_foreign_key "annual_simulations", "simulations"
-  add_foreign_key "simulations", "users"
 end
