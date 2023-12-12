@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { getAPI } from "@/utils/api/getAPI";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Simulation } from "@/feature/simulations/types/Simulation";
 import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
 import { SimulationDetail } from "@/feature/simulations/components/SimulationDetail";
+import { Flex } from "@/components/Flex";
 
 // fetchしてくるのがメインのコンポーネント
 export const Edit = () => {
@@ -47,7 +48,10 @@ export const Edit = () => {
             simulation_id={Number(simulation_id!)}
           />
         ) : (
-          <p>NoData</p>
+          <Flex direction="column" gap={2}>
+            <Link to="/">もどる</Link>
+            <p>データがないか閲覧権限がないです</p>
+          </Flex>
         )
       ) : (
         <p>loading...</p>
