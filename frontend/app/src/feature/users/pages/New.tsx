@@ -33,7 +33,7 @@ export const New = () => {
 
   return (
     <>
-      <h1>ユーザー登録</h1>
+      <h1>アカウント登録</h1>
       <form>
         <div>
           <label htmlFor="email">ニックネーム</label>
@@ -92,7 +92,7 @@ export const New = () => {
           disabled={loading}
           onClick={(e) => handleUserNew(e)}
         >
-          Submit
+          アカウントを登録
         </button>
       </form>
       <Link to="/login">サインインへ</Link>

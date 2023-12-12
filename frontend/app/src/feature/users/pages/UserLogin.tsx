@@ -63,7 +63,7 @@ export const Login = () => {
           disabled={loading}
           onClick={(e) => handleLogin(e)}
         >
-          Submit
+          ログイン
         </button>
       </form>
       <Link to="/new_user">アカウント作成へ</Link>
