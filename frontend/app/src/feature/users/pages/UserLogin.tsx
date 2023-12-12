@@ -30,9 +30,7 @@ export const Login = () => {
         setCurrentUser(res.data.data);
         navigation("/");
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
   return (
     <>
