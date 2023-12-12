@@ -12,7 +12,6 @@ export const List = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log(currentUser);
     if (currentUser) {
       const fetchData = async () => {
         getAPI("/simulations", { user_id: currentUser.id })
@@ -34,6 +33,8 @@ export const List = () => {
           });
       };
       fetchData();
+    } else {
+      setIsLoading(false);
     }
   }, [currentUser]);
 
