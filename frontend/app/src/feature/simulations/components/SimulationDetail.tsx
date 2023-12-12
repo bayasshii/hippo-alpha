@@ -100,7 +100,7 @@ export const SimulationDetail = (props: Props) => {
     const newSimulation: Simulation = {
       title: simulation?.title || "",
       principal: simulation?.principal || 0,
-      user_id: simulation?.user_id || ""
+      user_id: currentUser?.id || "" // 新規作成の時だけcurrentUserを渡すようにしたいかも
     };
     const asyncData = async () => {
       try {
