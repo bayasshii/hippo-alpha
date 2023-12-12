@@ -6,9 +6,10 @@ type UsePatch = [
   Record<string, string[]>
 ];
 
+const instance = newAxiosInstance();
+
 export const usePatch = (path: string): UsePatch => {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const instance = newAxiosInstance();
 
   const patch = useCallback(
     async (params: Record<string, unknown>) => {

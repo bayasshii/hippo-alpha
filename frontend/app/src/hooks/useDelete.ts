@@ -3,12 +3,13 @@ import { useCallback, useState } from "react";
 
 type UseDelete = [(id: string) => Promise<any>, Record<string, string[]>];
 
+const instance = newAxiosInstance();
+
 export const useDelete = (
   path: string,
   headers?: { headers: Record<string, string | undefined> }
 ): UseDelete => {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const instance = newAxiosInstance();
 
   const doDelete = useCallback(
     async (id: string) => {

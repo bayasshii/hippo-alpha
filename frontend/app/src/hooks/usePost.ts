@@ -6,9 +6,10 @@ type UsePost = [
   Record<string, string[]>
 ];
 
+const instance = newAxiosInstance();
+
 export const usePost = (path: string): UsePost => {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const instance = newAxiosInstance();
 
   const post = useCallback(
     async (params: Record<string, unknown>) => {

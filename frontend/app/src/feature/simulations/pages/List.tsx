@@ -18,8 +18,6 @@ export const List = () => {
           .then((response) => {
             if (response?.status !== 200) {
               // 最初サインアップする前から500番のエラー出るのなんか可哀想
-              console.log(currentUser);
-
               throw new Error("Error!");
             }
             if (response?.data.length === 0) return;
