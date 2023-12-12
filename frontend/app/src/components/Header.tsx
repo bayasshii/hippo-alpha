@@ -1,13 +1,11 @@
 import { AuthContext } from "@/utils/auth/AuthProvider";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDelete } from "@/hooks/useDelete";
 import Cookies from "js-cookie";
 
 export const Header = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<any>({});
   const navigation = useNavigate();
   const [signOut, signOutErrors] = useDelete("/auth", {
     headers: {
@@ -16,23 +14,10 @@ export const Header = () => {
       uid: Cookies.get("_uid")
     }
   });
-
-  const authContext = useContext(AuthContext);
-
-  useEffect(() => {
-    if (!authContext) {
-      // AuthContextがundefinedの場合の処理をここに書く
-      // 例えば、エラーメッセージを表示するなど
-    } else {
-      const { isSignedIn, currentUser } = authContext;
-      setIsLogin(isSignedIn);
-      setCurrentUser(currentUser);
-    }
-  }, [authContext]);
+  const { isSignedIn, currentUser } = useContext(AuthContext);
 
   const handleSignOut = async (e: any) => {
     e.preventDefault();
-
     try {
       const res = await signOut("sign_out");
       if (res.status === 200) {
@@ -57,7 +42,7 @@ export const Header = () => {
           <Link to="/new_user">アカウント作成</Link>
         </>
       )}
-      {isLogin ? <p>ログイン中</p> : <p>ログインしていません</p>}
+      {isSignedIn ? <p>ログイン中</p> : <p>ログインしていません</p>}
     </header>
   );
 };
