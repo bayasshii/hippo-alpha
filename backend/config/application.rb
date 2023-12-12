@@ -27,14 +27,5 @@ module Api
     config.middleware.use ActionDispatch::Cookies # Required for all session management
     config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
     config.middleware.use ActionDispatch::Flash
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins 'localhost:3000'
-        resource '*',
-                 headers: :any, # 何でこんな改行しないとrubocopが怒るんだろう
-                 expose: ['access-token', 'expiry', 'token-type', 'uid', 'client'],
-                 methods: [:get, :post, :patch, :delete, :options, :head]
-      end
-    end
   end
 end
