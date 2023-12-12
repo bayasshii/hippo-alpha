@@ -17,6 +17,8 @@ COPY . /api
 
 RUN ["apt-get", "update"]
 
+COPY entrypoint.sh.production /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh.production
 ENTRYPOINT ["entrypoint.sh.production"]
 
 CMD ["rails", "server", "-e", "production", "-b", "0.0.0.0"]
