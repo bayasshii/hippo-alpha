@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 
 export const Header = () => {
   const navigation = useNavigate();
+  const { currentUser } = useContext(AuthContext);
   const [signOut, signOutErrors] = useDelete("/auth", {
     headers: {
       "access-token": Cookies.get("_access_token"),
@@ -14,7 +15,6 @@ export const Header = () => {
       uid: Cookies.get("_uid")
     }
   });
-  const { isSignedIn, currentUser } = useContext(AuthContext);
 
   const handleSignOut = async (e: any) => {
     e.preventDefault();
@@ -33,19 +33,13 @@ export const Header = () => {
 
   return (
     <header>
-      <h1>Hippo Alphaほげ</h1>
-      {currentUser ? (
+      <h1>Hippo Alpha</h1>
+      {currentUser && (
         <>
           <button onClick={handleSignOut}>ログアウト</button>
           <p>名前：{currentUser?.name}</p>
         </>
-      ) : (
-        <>
-          <Link to="/login">ログイン</Link>
-          <Link to="/new_user">アカウント作成</Link>
-        </>
       )}
-      {isSignedIn ? <p>ログイン中</p> : <p>ログインしていませんよ</p>}
     </header>
   );
 };

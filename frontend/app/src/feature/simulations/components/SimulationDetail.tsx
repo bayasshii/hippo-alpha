@@ -1,10 +1,4 @@
-import {
-  useState,
-  useCallback,
-  useMemo,
-  type ChangeEvent,
-  useContext
-} from "react";
+import { useState, useCallback, useMemo, type ChangeEvent } from "react";
 import { Flex } from "@/components/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -16,7 +10,6 @@ import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
 import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/utils/toast/useToast";
-import { AuthContext } from "@/utils/auth/AuthProvider";
 
 type Props = {
   simulation_id?: number;

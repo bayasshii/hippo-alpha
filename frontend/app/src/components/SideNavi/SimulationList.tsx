@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { getAPI } from "@/utils/api/getAPI";
 import { Simulation } from "@/feature/simulations/types/Simulation";
 import { Link } from "react-router-dom";
-import { Header } from "@/components/Header";
 import { AuthContext } from "@/utils/auth/AuthProvider";
 import { Flex } from "../Flex";
 
@@ -38,7 +37,6 @@ export const SimulationList = () => {
   }, [currentUser]);
 
   if (isLoading) return <p>loading...</p>;
-  if (!currentUser) return <Header />;
 
   return (
     <Flex gap={2} direction="column">

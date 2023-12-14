@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { usePost } from "@/hooks/usePost";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { useLoading } from "@/hooks/useLoading";
+import { Flex } from "@/components/Flex";
 
 export const New = () => {
   const [name, setName] = useState("");
