@@ -1,5 +1,5 @@
 import { FC, ReactNode, createContext, useEffect, useState } from "react";
-import { getCurrentUser } from "@/utils/auth/auth";
+import { getCurrentUser } from "@/utils/auth/getCurrentUser";
 
 type Props = {
   children: ReactNode;

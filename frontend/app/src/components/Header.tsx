@@ -21,6 +21,9 @@ export const Header = () => {
     try {
       const res = await signOut("sign_out");
       if (res.status === 200) {
+        Cookies.remove("_access_token");
+        Cookies.remove("_client");
+        Cookies.remove("_uid");
         navigation("/login");
       }
     } catch (e) {
