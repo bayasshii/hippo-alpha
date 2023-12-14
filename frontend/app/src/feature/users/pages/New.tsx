@@ -32,7 +32,7 @@ export const New = () => {
   };
 
   return (
-    <>
+    <Flex direction="column">
       <h1>アカウント登録</h1>
       <form>
         <div>
@@ -96,6 +96,6 @@ export const New = () => {
         </button>
       </form>
       <Link to="/login">サインインへ</Link>
-    </>
+    </Flex>
   );
 };

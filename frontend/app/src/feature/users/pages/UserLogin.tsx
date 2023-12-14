@@ -5,6 +5,7 @@ import { AuthContext } from "@/utils/auth/AuthProvider";
 import { usePost } from "@/hooks/usePost";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { useLoading } from "@/hooks/useLoading";
+import { Flex } from "@/components/Flex";
 
 export const Login = () => {
   const { setIsSignedIn, setCurrentUser } = useContext(AuthContext);
@@ -33,7 +34,7 @@ export const Login = () => {
     } catch (e) {}
   };
   return (
-    <>
+    <Flex direction="column">
       <p>ログインページ</p>
       <form>
         <div>
@@ -67,6 +68,6 @@ export const Login = () => {
         </button>
       </form>
       <Link to="/new_user">アカウント作成へ</Link>
-    </>
+    </Flex>
   );
 };

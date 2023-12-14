@@ -4,8 +4,11 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDelete } from "@/hooks/useDelete";
 import Cookies from "js-cookie";
+import { SimulationList } from "@/components/SideNavi/SimulationList";
+import { Flex } from "../Flex";
+import { Header } from "./Header";
 
-export const Header = () => {
+export const SideNavi = () => {
   const navigation = useNavigate();
   const [signOut, signOutErrors] = useDelete("/auth", {
     headers: {
@@ -32,20 +35,9 @@ export const Header = () => {
   };
 
   return (
-    <header style={{ background: "lightgrey" }}>
-      <h1>Hippo Alpha</h1>
-      {currentUser ? (
-        <>
-          <button onClick={handleSignOut}>ログアウト</button>
-          <p>名前：{currentUser?.name}</p>
-        </>
-      ) : (
-        <>
-          <Link to="/login">ログイン</Link>
-          <Link to="/new_user">アカウント作成</Link>
-        </>
-      )}
-      {isSignedIn ? <p>ログイン中</p> : <p>ログインしていません</p>}
-    </header>
+    <Flex direction="column" style={{ background: "lightgrey" }}>
+      <Header />
+      <SimulationList />
+    </Flex>
   );
 };
