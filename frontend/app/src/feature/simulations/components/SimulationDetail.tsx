@@ -32,12 +32,10 @@ const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
   }));
 
 export const SimulationDetail = (props: Props) => {
-  const { currentUser } = useContext(AuthContext);
   const [simulation, setSimulation] = useState<Simulation>(
     props.simulation || {
       title: "タイトル",
-      principal: 100000,
-      user_id: currentUser?.id || ""
+      principal: 100000
     }
   );
   const [annualSimulations, setAnnualSimulations] = useState<
@@ -99,8 +97,7 @@ export const SimulationDetail = (props: Props) => {
   const saveData = useCallback(async () => {
     const newSimulation: Simulation = {
       title: simulation?.title || "",
-      principal: simulation?.principal || 0,
-      user_id: currentUser?.id || "" // 新規作成の時だけcurrentUserを渡すようにしたいかも
+      principal: simulation?.principal || 0
     };
     const asyncData = async () => {
       try {

@@ -16,7 +16,7 @@ export const usePost = (path: string): UsePost => {
       return instance
         .post(path, params)
         .then((response: any) => {
-          if (response.status !== 200) {
+          if (response.status !== 200 && response.status !== 201) {
             const error = new Error();
             setErrors(response.data);
             throw error;

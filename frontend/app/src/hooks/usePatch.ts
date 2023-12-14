@@ -29,7 +29,6 @@ export const usePatch = (path: string): UsePatch => {
           console.log(error);
           throw error;
         });
-      console.log(re);
       return re;
     },
     [path, instance]
