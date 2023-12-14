@@ -1,11 +1,14 @@
 import { SimulationList } from "@/components/SideNavi/SimulationList";
 import { Flex } from "../Flex";
-import { Header } from "./Header";
+import { User } from "./User";
 
 export const SideNavi = () => {
   return (
-    <Flex direction="column" style={{ background: "lightgrey" }}>
-      <Header />
+    <Flex
+      direction="column"
+      style={{ background: "lightgrey", maxWidth: "300px", minWidth: "300px" }}
+    >
+      <User />
       <SimulationList />
     </Flex>
   );

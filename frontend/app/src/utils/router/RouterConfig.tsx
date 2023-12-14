@@ -5,6 +5,7 @@ import { New as NewUser } from "@/feature/users/pages/New";
 import { Login } from "@/feature/users/pages/UserLogin";
 import { SideNavi } from "@/components/SideNavi";
 import { Flex } from "@/components/Flex";
+import { Edit as UserEdit } from "@/feature/users/pages/Edit";
 
 export const RouterConfig = () => {
   return (
@@ -17,6 +18,7 @@ export const RouterConfig = () => {
           <Route path=":simulation_id" element={<Edit />} />
           <Route path="new_user" element={<NewUser />} />
           <Route path="login" element={<Login />} />
+          <Route path="user/edit" element={<UserEdit />} />
         </Routes>
       </Flex>
     </BrowserRouter>

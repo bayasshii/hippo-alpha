@@ -131,7 +131,6 @@ export const SimulationDetail = (props: Props) => {
 
   return (
     <Flex direction="column" gap={2}>
-      <Link to="/">もどる</Link>
       <Flex direction="column">
         <label htmlFor="title">タイトル</label>
         <input
