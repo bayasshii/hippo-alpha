@@ -29,6 +29,7 @@ export const SideNavi = () => {
             backgroundColor: "#F5F5F5",
             color: "#56555A",
             fontSize: "1rem",
+            lineHeight: 1.5,
             padding: "1rem",
             borderRadius: "1rem",
             width: "100%",
