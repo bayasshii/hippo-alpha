@@ -179,7 +179,7 @@ export const SimulationDetail = (props: Props) => {
               label="元本"
               type="number"
               name="principal"
-              onChange={(e) => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setSimulation({
                   ...simulation!,
                   principal: Number(e.target.value)
