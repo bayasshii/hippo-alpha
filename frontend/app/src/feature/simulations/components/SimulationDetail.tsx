@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, type ChangeEvent } from "react";
 import { Flex } from "@/components/Flex";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { SimulationChart } from "@/feature/simulations/components/SimulationChart";
 import { Simulation } from "@/feature/simulations/types/Simulation";
@@ -10,6 +10,9 @@ import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
 import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/utils/toast/useToast";
+import { EditableText } from "@/components/EditableText";
+import { FormField } from "@/components/FormField";
+import { SelectField } from "@/components/SelectField";
 
 type Props = {
   simulation_id?: number;
@@ -132,23 +135,18 @@ export const SimulationDetail = (props: Props) => {
   return (
     <Flex direction="column" gap={2} style={{ width: "100%" }}>
       <Flex direction="row" justify="space-between" gap={2}>
-        <Flex direction="column" style={{ flexGrow: 1 }}>
-          <input
-            aria-label="シミュレーションのタイトル"
-            type="text"
-            id="title"
-            name="title"
+        <Flex direction="column">
+          <EditableText
             onChange={(e) => {
               setSimulation({ ...simulation!, title: e.target.value });
             }}
-            style={{
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              lineHeight: 1.5,
-              padding: "0.5rem",
-              borderRadius: "0.5rem"
+            onBlur={(e) => {
+              setSimulation({ ...simulation!, title: e.target.value });
             }}
+            label="シミュレーションのタイトル"
+            type="text"
             value={simulation?.title || ""}
+            as="h1"
           />
           <ErrorMessage messages={errors?.title} />
         </Flex>
@@ -175,12 +173,11 @@ export const SimulationDetail = (props: Props) => {
         p={2}
         style={{ backgroundColor: "#fff", borderRadius: "1.5rem" }}
       >
-        <Flex direction="row">
+        <Flex direction="row" gap={1}>
           <Flex direction="column">
-            <label htmlFor="principal">元本</label>
-            <input
+            <FormField
+              label="元本"
               type="number"
-              id="principal"
               name="principal"
               onChange={(e) => {
                 setSimulation({
@@ -189,23 +186,21 @@ export const SimulationDetail = (props: Props) => {
                 });
               }}
               value={simulation?.principal}
+              errorMessages={errors.principal}
             />
-            <ErrorMessage messages={errors.principal} />
           </Flex>
-          <Flex direction="column">
-            <label htmlFor="maxYear">年数</label>
-            <select
-              id="maxYear"
-              name="maxYear"
-              onChange={(e) => onChangeMaxYear(e)}
-              value={maxYear}
-            >
-              <option value="10">10年</option>
-              <option value="30">30年</option>
-              <option value="50">50年</option>
-              <option value="100">100年</option>
-            </select>
-          </Flex>
+          <SelectField
+            name="maxYear"
+            label="年数"
+            options={[
+              { value: 10, label: "10年" },
+              { value: 30, label: "30年" },
+              { value: 50, label: "50年" },
+              { value: 100, label: "100年" }
+            ]}
+            onChange={(e) => onChangeMaxYear(e)}
+            value={maxYear}
+          />
         </Flex>
         <AnnualSimulationsField
           annualSimulations={annualSimulations.slice(0, maxYear)}
