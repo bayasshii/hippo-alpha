@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { RouterConfig } from "@/utils/router/RouterConfig";
 import { ToastProvider } from "@/utils/toast/ToastProvider";
 import { AuthProvider } from "./utils/auth/AuthProvider";
+import "@/styles/reset.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

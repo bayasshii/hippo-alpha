@@ -6,7 +6,12 @@ export const SideNavi = () => {
   return (
     <Flex
       direction="column"
-      style={{ background: "lightgrey", maxWidth: "300px", minWidth: "300px" }}
+      style={{
+        background: "lightgrey",
+        maxWidth: "300px",
+        minWidth: "300px",
+        flexGrow: 1
+      }}
     >
       <User />
       <SimulationList />
