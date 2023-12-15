@@ -1,16 +1,11 @@
-import { ChangeEvent } from "react";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Flex } from "@/components/Flex";
-import { Select } from "@/components/Select";
+import { Select, SelectProps } from "@/components/Select";
 
 type Props = {
   label: string;
-  name: string;
-  value: string | number;
-  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   errorMessages?: Array<string>;
-  options?: Array<{ value: string | number; label: string }>;
-};
+} & SelectProps;
 
 export const SelectField = ({
   label,

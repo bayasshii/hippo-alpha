@@ -11,7 +11,7 @@ import { usePatch } from "@/hooks/usePatch";
 import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/utils/toast/useToast";
 import { EditableText } from "@/components/EditableText";
-import { FormField } from "@/components/FormField";
+import { InputField } from "@/components/InputField";
 import { SelectField } from "@/components/SelectField";
 
 type Props = {
@@ -174,32 +174,32 @@ export const SimulationDetail = (props: Props) => {
         style={{ backgroundColor: "#fff", borderRadius: "1.5rem" }}
       >
         <Flex direction="row" gap={1}>
-          <Flex direction="column">
-            <FormField
-              label="元本"
-              type="number"
-              name="principal"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                setSimulation({
-                  ...simulation!,
-                  principal: Number(e.target.value)
-                });
-              }}
-              value={simulation?.principal}
-              errorMessages={errors.principal}
-            />
-          </Flex>
+          <InputField
+            label="元本"
+            type="number"
+            name="principal"
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setSimulation({
+                ...simulation!,
+                principal: Number(e.target.value)
+              });
+            }}
+            value={simulation?.principal}
+            errorMessages={errors.principal}
+            suffix="円"
+          />
           <SelectField
             name="maxYear"
             label="年数"
             options={[
-              { value: 10, label: "10年" },
-              { value: 30, label: "30年" },
-              { value: 50, label: "50年" },
-              { value: 100, label: "100年" }
+              { value: 10, label: "10" },
+              { value: 30, label: "30" },
+              { value: 50, label: "50" },
+              { value: 100, label: "100" }
             ]}
             onChange={(e) => onChangeMaxYear(e)}
             value={maxYear}
+            suffix="年"
           />
         </Flex>
         <AnnualSimulationsField

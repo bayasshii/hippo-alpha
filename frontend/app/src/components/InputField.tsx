@@ -1,16 +1,11 @@
-import { ChangeEvent } from "react";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { Input } from "@/components/Input";
+import { Input, InputProps } from "@/components/Input";
 import { Flex } from "@/components/Flex";
 
 type Props = {
   label: string;
-  name: string;
-  type: string;
-  value: string | number;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   errorMessages?: Array<string>;
-};
+} & InputProps;
 
 export const InputField = ({
   label,
