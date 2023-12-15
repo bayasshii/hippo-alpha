@@ -39,17 +39,15 @@ export const SimulationList = () => {
   if (isLoading) return <p>loading...</p>;
 
   return (
-    <Flex gap={2} direction="column">
-      <Link to="/new">New</Link>
+    <Flex gap={1} direction="column">
       {data.length !== 0 &&
         data?.map((item: Simulation, key) => (
           <Link
             to={`/${item.id}`}
             key={key}
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", color: "#fff", flexDirection: "column" }}
           >
             <span>{item.title}</span>
-            <span>{item.principal}</span>
           </Link>
         ))}
     </Flex>

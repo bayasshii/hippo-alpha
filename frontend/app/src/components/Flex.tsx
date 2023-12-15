@@ -20,6 +20,7 @@ type Props = {
   mr?: number;
   mb?: number;
   ml?: number;
+  as?: "div" | "span" | "nav";
   style?: Record<string, string | number>;
 };
 
@@ -43,11 +44,12 @@ export const Flex = ({
   mr,
   mb,
   ml,
+  as = "div",
   style = {},
   ...props
-}: Props) => (
-  <div
-    style={{
+}: Props) => {
+  const flexProps = {
+    style: {
       display: "flex",
       ...(direction && { flexDirection: direction }),
       ...(justify && { justifyContent: justify }),
@@ -64,9 +66,17 @@ export const Flex = ({
         }rem ${ml || mx || m || 0}rem`
       }),
       ...style
-    }}
-    {...props}
-  >
-    {children}
-  </div>
-);
+    },
+    ...props
+  };
+  switch (as) {
+    case "div":
+      return <div {...flexProps}>{children}</div>;
+    case "span":
+      return <span {...flexProps}>{children}</span>;
+    case "nav":
+      return <nav {...flexProps}>{children}</nav>;
+    default:
+      return <>{children}</>;
+  }
+};

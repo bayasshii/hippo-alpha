@@ -12,18 +12,27 @@ export const RouterConfig = () => {
     <BrowserRouter>
       <Flex
         direction="row"
-        gap={2}
+        // todo: あんまりここにスタイルとか書きたくない
         style={{
           width: "100%",
           minHeight: "100vh",
           maxHeight: "100vh",
-          backgroundColor: "white"
+          backgroundColor: "#56555A"
         }}
       >
         <Flex>
           <SideNavi />
         </Flex>
-        <Flex style={{ width: "100%", overflowY: "auto" }}>
+        <Flex
+          px={2}
+          py={2.5}
+          style={{
+            width: "100%",
+            overflowY: "auto",
+            backgroundColor: "#F5F5F5",
+            borderRadius: "2rem 0 0 2rem"
+          }}
+        >
           <Routes>
             <Route index element={<NewSimulation />} />
             <Route path="new" element={<NewSimulation />} />
