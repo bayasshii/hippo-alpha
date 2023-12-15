@@ -130,63 +130,101 @@ export const SimulationDetail = (props: Props) => {
   }, [simulation, maxYear, annualSimulations]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Flex direction="column" gap={2}>
-      <Flex direction="column">
-        <label htmlFor="title">タイトル</label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          onChange={(e) => {
-            setSimulation({ ...simulation!, title: e.target.value });
+    <Flex direction="column" gap={2} style={{ width: "100%" }}>
+      <Flex direction="row" justify="space-between" gap={2}>
+        <Flex direction="column" style={{ flexGrow: 1 }}>
+          <input
+            aria-label="シミュレーションのタイトル"
+            type="text"
+            id="title"
+            name="title"
+            onChange={(e) => {
+              setSimulation({ ...simulation!, title: e.target.value });
+            }}
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+              lineHeight: 1.5,
+              padding: "0.5rem",
+              borderRadius: "0.5rem"
+            }}
+            value={simulation?.title || ""}
+          />
+          <ErrorMessage messages={errors?.title} />
+        </Flex>
+        <button
+          onClick={saveData}
+          disabled={loading}
+          style={{
+            backgroundColor: "#56555A",
+            color: "#fff",
+            fontSize: "1rem",
+            lineHeight: 1.5,
+            padding: "0.75rem",
+            borderRadius: "1rem",
+            minWidth: "7rem",
+            textAlign: "center"
           }}
-          value={simulation?.title || ""}
-        />
-        <ErrorMessage messages={errors?.title} />
-      </Flex>
-      <Flex direction="column">
-        <label htmlFor="principal">元本</label>
-        <input
-          type="number"
-          id="principal"
-          name="principal"
-          onChange={(e) => {
-            setSimulation({
-              ...simulation!,
-              principal: Number(e.target.value)
-            });
-          }}
-          value={simulation?.principal}
-        />
-        <ErrorMessage messages={errors.principal} />
-      </Flex>
-      <Flex direction="column">
-        <label htmlFor="maxYear">年数</label>
-        <select
-          id="maxYear"
-          name="maxYear"
-          onChange={(e) => onChangeMaxYear(e)}
-          value={maxYear}
         >
-          <option value="10">10年</option>
-          <option value="30">30年</option>
-          <option value="50">50年</option>
-          <option value="100">100年</option>
-        </select>
+          {loading ? "保存中" : "保存"}
+        </button>
       </Flex>
-      <AnnualSimulationsField
-        annualSimulations={annualSimulations.slice(0, maxYear)}
-        onChange={onChangeAnnualSimulations}
-      />
-      {simulation && (
-        <SimulationChart
-          principal={Number(simulation.principal)}
+      <Flex
+        direction="column"
+        gap={2}
+        p={2}
+        style={{ backgroundColor: "#fff", borderRadius: "1.5rem" }}
+      >
+        <Flex direction="row">
+          <Flex direction="column">
+            <label htmlFor="principal">元本</label>
+            <input
+              type="number"
+              id="principal"
+              name="principal"
+              onChange={(e) => {
+                setSimulation({
+                  ...simulation!,
+                  principal: Number(e.target.value)
+                });
+              }}
+              value={simulation?.principal}
+            />
+            <ErrorMessage messages={errors.principal} />
+          </Flex>
+          <Flex direction="column">
+            <label htmlFor="maxYear">年数</label>
+            <select
+              id="maxYear"
+              name="maxYear"
+              onChange={(e) => onChangeMaxYear(e)}
+              value={maxYear}
+            >
+              <option value="10">10年</option>
+              <option value="30">30年</option>
+              <option value="50">50年</option>
+              <option value="100">100年</option>
+            </select>
+          </Flex>
+        </Flex>
+        <AnnualSimulationsField
           annualSimulations={annualSimulations.slice(0, maxYear)}
+          onChange={onChangeAnnualSimulations}
         />
+      </Flex>
+      {simulation && (
+        <Flex
+          direction="column"
+          gap={2}
+          p={2}
+          style={{ backgroundColor: "#fff", borderRadius: "1.5rem" }}
+        >
+          <SimulationChart
+            principal={Number(simulation.principal)}
+            annualSimulations={annualSimulations.slice(0, maxYear)}
+          />
+        </Flex>
       )}
-      <button onClick={saveData} disabled={loading}>
-        {loading ? "保存中" : "変更を保存"}
-      </button>
     </Flex>
   );
 };
