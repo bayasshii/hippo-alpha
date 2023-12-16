@@ -1,3 +1,6 @@
+import { Flex } from "@/components/Flex";
+import { Select } from "@/components/Select";
+import { SelectField } from "@/components/SelectField";
 import { calculateAnnualData } from "@/feature/simulations/helpers/calculateAnnualData";
 import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
 import {
@@ -9,6 +12,7 @@ import {
   Tooltip,
   Legend
 } from "chart.js";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 ChartJS.register(
   CategoryScale,
@@ -36,7 +40,11 @@ type Props = {
   annualSimulations: Array<AnnualSimulation>;
 };
 export const SimulationChart = ({ principal, annualSimulations }: Props) => {
-  const maxYear = annualSimulations.length;
+  const [maxYear, setMaxYear] = useState<number>(100);
+  useEffect(() => {
+    setMaxYear(annualSimulations.length);
+  }, [annualSimulations]);
+  annualSimulations = annualSimulations.slice(0, maxYear);
 
   // 年利率の配列にマッピング
   const annualRates = annualSimulations.map(
@@ -76,12 +84,34 @@ export const SimulationChart = ({ principal, annualSimulations }: Props) => {
       }
     ]
   };
+
+  const onChangeMaxYear = useCallback(
+    async (e: ChangeEvent<HTMLSelectElement>) => {
+      setMaxYear(Number(e.target.value));
+    },
+    []
+  );
+
   return (
     <>
-      <p>
-        {maxYear}年後には {principals.slice(-1)[0] + yields.slice(-1)[0]}
-        円になってるよ
-      </p>
+      <Flex gap={0.25} align="center">
+        <Select
+          name="max_year"
+          options={[
+            { value: 10, label: "10" },
+            { value: 30, label: "30" },
+            { value: 50, label: "50" },
+            { value: 100, label: "100" }
+          ]}
+          onChange={(e) => onChangeMaxYear(e)}
+          value={maxYear}
+          suffix="年"
+        />
+        <p>
+          後には {principals.slice(-1)[0] + yields.slice(-1)[0]}
+          円になってるよ
+        </p>
+      </Flex>
       <Bar options={options} data={data} />
     </>
   );

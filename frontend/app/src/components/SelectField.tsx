@@ -17,7 +17,7 @@ export const SelectField = ({
   ...props
 }: Props) => {
   return (
-    <Flex direction="column" gap={0.25}>
+    <Flex direction="column" gap={0.25} align="flex-start">
       <label htmlFor={name} style={{ fontSize: "0.75rem", color: "#56555A" }}>
         {label}
       </label>

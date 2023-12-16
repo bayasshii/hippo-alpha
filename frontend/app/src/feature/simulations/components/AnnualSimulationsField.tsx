@@ -39,13 +39,14 @@ export const AnnualSimulationsField = ({
             onChange={(e) => onChange(e, index, "end_year")}
             // TODO: 上下の値が変更されるのはblurでやりたい。
             suffix="年目"
-            styles={{ paddingRight: "1.25rem" }}
+            styles={{ paddingRight: "1.25rem", width: "6rem" }}
           />
           <Input
             type="number"
             name="monthly_deposit"
             value={annualSimulation.monthly_deposit}
             onChange={(e) => onChange(e, index, "monthly_deposit")}
+            styles={{ width: "10rem" }}
             prefix="月"
             suffix="円"
           />
@@ -54,6 +55,7 @@ export const AnnualSimulationsField = ({
             name="rate"
             value={annualSimulation.rate}
             onChange={(e) => onChange(e, index, "rate")}
+            styles={{ width: "6rem" }}
             suffix="%"
           />
           <button onClick={() => onClickAdd(index)}>

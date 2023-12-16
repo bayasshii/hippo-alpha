@@ -49,8 +49,6 @@ export const SimulationDetail = (props: Props) => {
     ConvertAnnualSimulation[]
   >([]);
 
-  const [maxYear, setMaxYear] = useState<number>(100);
-
   useEffect(() => {
     if (props.simulation) {
       setSimulation(props.simulation);
@@ -94,13 +92,6 @@ export const SimulationDetail = (props: Props) => {
     patchAnnualSimulationErrors,
     postAnnualSimulationErrors
   ]);
-
-  const onChangeMaxYear = useCallback(
-    async (e: ChangeEvent<HTMLSelectElement>) => {
-      setMaxYear(Number(e.target.value));
-    },
-    []
-  );
 
   const onChangeAnnualSimulations = useCallback(
     (e: ChangeEvent<HTMLInputElement>, index: number, key: string) => {
@@ -247,7 +238,7 @@ export const SimulationDetail = (props: Props) => {
     };
     // TODO: なんかもっと上手いことまとめられそうな気はする
     setToast(() => setLoading(asyncData));
-  }, [simulation, maxYear, annualSimulations]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [simulation, annualSimulations]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Flex direction="column" gap={2} style={{ width: "100%" }}>
@@ -290,37 +281,22 @@ export const SimulationDetail = (props: Props) => {
         p={2}
         style={{ backgroundColor: "#fff", borderRadius: "1.5rem" }}
       >
-        <Flex direction="row" gap={1}>
-          <InputField
-            label="元本"
-            type="number"
-            name="principal"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              setSimulation({
-                ...simulation!,
-                principal: Number(e.target.value)
-              });
-            }}
-            value={simulation?.principal}
-            errorMessages={errors.principal}
-            suffix="円"
-          />
-          <SelectField
-            name="maxYear"
-            label="年数"
-            options={[
-              { value: 10, label: "10" },
-              { value: 30, label: "30" },
-              { value: 50, label: "50" },
-              { value: 100, label: "100" }
-            ]}
-            onChange={(e) => onChangeMaxYear(e)}
-            value={maxYear}
-            suffix="年"
-          />
-        </Flex>
+        <InputField
+          label="元本"
+          type="number"
+          name="principal"
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            setSimulation({
+              ...simulation!,
+              principal: Number(e.target.value)
+            });
+          }}
+          value={simulation?.principal}
+          errorMessages={errors.principal}
+          suffix="円"
+        />
         <AnnualSimulationsField
-          annualSimulations={annualSimulations.slice(0, maxYear)}
+          annualSimulations={annualSimulations}
           onChange={onChangeAnnualSimulations}
           onClickAdd={onClickAddAnnualSimulations}
           onClickDelete={onClickDeleteAnnualSimulations}
@@ -333,12 +309,11 @@ export const SimulationDetail = (props: Props) => {
           p={2}
           style={{ backgroundColor: "#fff", borderRadius: "1.5rem" }}
         >
-          ほげ
           <SimulationChart
             principal={Number(simulation.principal)}
             annualSimulations={convertAnnualSimulationsForBack(
               annualSimulations
-            ).slice(0, maxYear)}
+            )}
           />
         </Flex>
       )}
