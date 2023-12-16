@@ -7,7 +7,7 @@ export const User = () => {
   const { currentUser } = useContext(AuthContext);
   return (
     <Link
-      to="/user/edit"
+      to={currentUser?.name ? "/user/edit" : "/login"}
       style={{
         color: "#fff",
         display: "flex",

@@ -55,7 +55,7 @@ export const Input = ({
           padding: "0.5rem",
           color: "#56555A",
           textAlign: "right",
-          width: "8rem",
+          width: "15rem",
           ...styles
         }}
         {...props}

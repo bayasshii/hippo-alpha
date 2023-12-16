@@ -6,6 +6,7 @@ import { usePost } from "@/hooks/usePost";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { useLoading } from "@/hooks/useLoading";
 import { Flex } from "@/components/Flex";
+import { InputField } from "@/components/InputField";
 
 export const Login = () => {
   const { setIsSignedIn, setCurrentUser } = useContext(AuthContext);
@@ -34,40 +35,46 @@ export const Login = () => {
     } catch (e) {}
   };
   return (
-    <Flex direction="column">
-      <p>ログインページ</p>
+    <Flex direction="column" gap={2}>
+      <h1 style={{ color: "#56555A", fontSize: "1.5rem" }}>ログイン</h1>
       <form>
-        <div>
-          <label htmlFor="email">メールアドレス</label>
-          <input
+        <Flex direction="column" gap={1}>
+          <InputField
+            label="メールアドレス"
             type="email"
-            id="email"
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            errorMessages={postUserLoginErrors?.email}
           />
-          <ErrorMessage messages={postUserLoginErrors?.email} />
-        </div>
-        <div>
-          <label htmlFor="password">パスワード</label>
-          <input
+          <InputField
+            label="パスワード"
             type="password"
-            id="password"
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            errorMessages={postUserLoginErrors?.password}
           />
-          <ErrorMessage messages={postUserLoginErrors?.password} />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          onClick={(e) => handleLogin(e)}
-        >
-          ログイン
-        </button>
+          <button
+            type="submit"
+            disabled={loading}
+            onClick={(e) => handleLogin(e)}
+            style={{
+              backgroundColor: "#56555A",
+              color: "#fff",
+              fontSize: "1rem",
+              lineHeight: 1.5,
+              padding: "0.75rem",
+              borderRadius: "1rem",
+              minWidth: "7rem",
+              textAlign: "center"
+            }}
+          >
+            ログイン
+          </button>
+        </Flex>
       </form>
-      <Link to="/new_user">アカウント作成へ</Link>
+      <Link to="/new_user">アカウント登録へ</Link>
     </Flex>
   );
 };

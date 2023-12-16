@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { usePost } from "@/hooks/usePost";
-import { ErrorMessage } from "@/components/ErrorMessage";
 import { useLoading } from "@/hooks/useLoading";
 import { Flex } from "@/components/Flex";
+import { InputField } from "@/components/InputField";
 
 export const New = () => {
   const [name, setName] = useState("");
@@ -33,70 +33,70 @@ export const New = () => {
   };
 
   return (
-    <Flex direction="column">
-      <h1>アカウント登録</h1>
+    <Flex direction="column" gap={2}>
+      <h1 style={{ color: "#56555A", fontSize: "1.5rem" }}>アカウント登録</h1>
       <form>
-        <div>
-          <label htmlFor="email">ニックネーム</label>
-          <input
+        <Flex direction="column" gap={1}>
+          <InputField
+            label="名前"
             type="name"
-            id="name"
             name="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            errorMessages={postUserNewErrors?.name}
           />
-          <ErrorMessage messages={postUserNewErrors?.name} />
-        </div>
-        <div>
-          <label htmlFor="email">メールアドレス</label>
-          <input
+          <InputField
+            label="メールアドレス"
             type="email"
-            id="email"
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            errorMessages={postUserNewErrors?.email}
           />
-          <ErrorMessage messages={postUserNewErrors?.email} />
-        </div>
-        <div>
-          <label htmlFor="password">パスワード</label>
-          <input
+          <InputField
+            label="パスワード"
             type="password"
-            id="password"
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            errorMessages={postUserNewErrors?.password}
           />
-          <ErrorMessage messages={postUserNewErrors?.password} />
-        </div>
-        <div>
-          <label htmlFor="password_confirmation">パスワード確認</label>
-          <input
+          <InputField
+            label="パスワード確認"
             type="password"
-            id="password_confirmation"
             name="password_confirmation"
             value={passwordConfirmation}
             onChange={(e) => setPasswordConfirmation(e.target.value)}
+            errorMessages={postUserNewErrors?.password_confirmation}
           />
-          <ErrorMessage messages={postUserNewErrors?.password_confirmation} />
-        </div>
-        <div>
-          <input
-            type="hidden"
-            id="confirm_success_url"
-            name="confirm_success_url"
-            value={confirmSuccessUrl}
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          onClick={(e) => handleUserNew(e)}
-        >
-          アカウントを登録
-        </button>
+          <div>
+            <input
+              type="hidden"
+              id="confirm_success_url"
+              name="confirm_success_url"
+              value={confirmSuccessUrl}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            onClick={(e) => handleUserNew(e)}
+            style={{
+              backgroundColor: "#56555A",
+              color: "#fff",
+              fontSize: "1rem",
+              lineHeight: 1.5,
+              padding: "0.75rem",
+              borderRadius: "1rem",
+              minWidth: "7rem",
+              textAlign: "center"
+            }}
+          >
+            アカウントを登録
+          </button>
+        </Flex>
       </form>
-      <Link to="/login">サインインへ</Link>
+      <Link to="/login">ログインへ</Link>
     </Flex>
   );
 };

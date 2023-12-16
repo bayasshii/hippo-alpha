@@ -35,11 +35,27 @@ export const Edit = () => {
   };
   return (
     <Flex direction="column">
-      hoge
       {currentUser ? (
-        <button onClick={handleSignOut}>ログアウト</button>
+        <button
+          onClick={handleSignOut}
+          style={{
+            backgroundColor: "#56555A",
+            color: "#fff",
+            fontSize: "1rem",
+            lineHeight: 1.5,
+            padding: "0.75rem",
+            borderRadius: "1rem",
+            minWidth: "7rem",
+            textAlign: "center"
+          }}
+        >
+          ログアウト
+        </button>
       ) : (
-        <Link to="/login">ログイン</Link>
+        <>
+          <Link to="/login">ログイン</Link>
+          <Link to="/user_new">ログイン</Link>
+        </>
       )}
     </Flex>
   );

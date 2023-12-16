@@ -34,7 +34,7 @@ export const RouterConfig = () => {
           }}
         >
           <Routes>
-            <Route index element={<NewSimulation />} />
+            <Route index element={<></>} />
             <Route path="new" element={<NewSimulation />} />
             <Route path=":simulation_id" element={<Edit />} />
             <Route path="new_user" element={<NewUser />} />
