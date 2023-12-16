@@ -8,6 +8,7 @@ export type InputProps = {
   onBlur?: (event: ChangeEvent<HTMLInputElement>) => void;
   prefix?: ReactNode;
   suffix?: ReactNode;
+  styles?: React.CSSProperties;
 };
 
 export const Input = ({
@@ -18,6 +19,7 @@ export const Input = ({
   onBlur,
   prefix,
   suffix,
+  styles,
   ...props
 }: InputProps) => {
   return (
@@ -53,7 +55,8 @@ export const Input = ({
           padding: "0.5rem",
           color: "#56555A",
           textAlign: "right",
-          width: "8rem"
+          width: "8rem",
+          ...styles
         }}
         {...props}
       />

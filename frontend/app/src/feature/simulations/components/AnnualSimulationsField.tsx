@@ -39,6 +39,7 @@ export const AnnualSimulationsField = ({
             onChange={(e) => onChange(e, index, "end_year")}
             // TODO: 上下の値が変更されるのはblurでやりたい。
             suffix="年目"
+            styles={{ paddingRight: "1.25rem" }}
           />
           <Input
             type="number"
