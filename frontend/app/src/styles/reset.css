@@ -241,6 +241,10 @@ textarea {
   text-transform: inherit; /* 2 */
 }
 
+::-webkit-inner-spin-button {
+  appearance: none;
+}
+
 /**
  * Correct cursors for clickable elements.
  */

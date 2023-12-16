@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Flex } from "@/components/Flex";
 
 type Props = {
@@ -13,37 +13,19 @@ type Props = {
 
 export const EditableText = ({
   value,
-  unit,
   onChange,
   onBlur,
   as,
   type,
   label
 }: Props): React.ReactElement => {
-  const textProps = useMemo(() => {
-    return {
-      style: {
-        color: "transparent",
-        fontSize: "1.25rem",
-        fontWeight: "normal",
-        lineHeight: 1
-      }
-    };
-  }, []);
+  const [displayValue, setDisplayValue] = useState(value);
+  useEffect(() => {
+    setDisplayValue(value);
+  }, [value]);
 
-  const Text = useMemo(() => {
-    switch (as) {
-      case "p":
-        return <p {...textProps}>{value}</p>;
-      case "h1":
-        return <h1 {...textProps}>{value}</h1>;
-      case "h2":
-        return <h2 {...textProps}>{value}</h2>;
-      case "h3":
-        return <h3 {...textProps}>{value}</h3>;
-    }
-  }, [as, value, textProps]);
-
+  console.log(value);
+  console.log(displayValue);
   return (
     <Flex style={{ position: "relative", height: "100%" }} align="center">
       <input
@@ -65,7 +47,16 @@ export const EditableText = ({
           lineHeight: 1
         }}
       />
-      {Text}
+      <h1
+        style={{
+          color: "transparent",
+          fontSize: "1.25rem",
+          fontWeight: "normal",
+          lineHeight: 1
+        }}
+      >
+        {displayValue}
+      </h1>
     </Flex>
   );
 };

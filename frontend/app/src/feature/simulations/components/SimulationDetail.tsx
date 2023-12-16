@@ -43,12 +43,13 @@ const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
   }));
 
 export const SimulationDetail = (props: Props) => {
-  const [simulation, setSimulation] = useState<Simulation>(defaultSimulation);
+  const [simulation, setSimulation] = useState<Simulation>(
+    props.simulation || defaultSimulation
+  );
   const [annualSimulations, setAnnualSimulations] = useState<
     ConvertAnnualSimulation[]
   >([]);
   const [maxYear, setMaxYear] = useState<number>(100);
-
   const onChangeMaxYear = useCallback(
     async (e: ChangeEvent<HTMLSelectElement>) => {
       setMaxYear(Number(e.target.value));
@@ -136,9 +137,8 @@ export const SimulationDetail = (props: Props) => {
           }
           // end_yearがkeyでないならそのまま返す
           return item;
-        } else {
-          return item;
         }
+        return item;
       });
       setAnnualSimulations(newAnnualSimulations as ConvertAnnualSimulation[]); // 力技
     },
@@ -155,7 +155,6 @@ export const SimulationDetail = (props: Props) => {
       );
       const start_year = annualSimulations[index].start_year + diff;
       const end_year = annualSimulations[index].end_year;
-      console.log(start_year, end_year, diff);
       // index番目以降のデータの年数を+1する
       const newAnnualSimulations = annualSimulations.map((item, i) => {
         if (i === index) {
@@ -265,7 +264,7 @@ export const SimulationDetail = (props: Props) => {
             }}
             label="シミュレーションのタイトル"
             type="text"
-            value={simulation?.title || ""}
+            value={simulation.title || ""}
             as="h1"
           />
           <ErrorMessage messages={errors?.title} />

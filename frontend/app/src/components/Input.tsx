@@ -42,6 +42,7 @@ export const Input = ({
           {prefix}
         </span>
       )}
+
       <input
         id={name}
         name={name}
@@ -52,7 +53,7 @@ export const Input = ({
         style={{
           border: "1px solid #ddd",
           borderRadius: "0.5rem",
-          padding: "0.5rem",
+          padding: "0.5rem 1.5rem 0.5rem 0.5rem",
           color: "#56555A",
           textAlign: "right",
           width: "15rem",
@@ -60,6 +61,7 @@ export const Input = ({
         }}
         {...props}
       />
+
       {suffix && (
         <span
           style={{

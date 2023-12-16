@@ -76,7 +76,7 @@ export const AnnualSimulationsField = ({
               onChange={(e) => onChange(e, index, "end_year")}
               // TODO: 上下の値が変更されるのはblurでやりたい。
               suffix="年目"
-              styles={{ paddingRight: "1.25rem", width: "6rem" }}
+              styles={{ paddingRight: "2.25rem", width: "6rem" }}
             />
           )}
           <Input
@@ -121,30 +121,28 @@ export const AnnualSimulationsField = ({
           >
             <AddIcon />
           </button>
-          {annualSimulations.length >= 2 && (
-            <button
-              onClick={() => onClickDelete(index)}
-              disabled={index === 0}
-              style={{
-                backgroundColor: "#F5F5F5",
-                borderRadius: "0.5rem",
-                maxHeight: "2.25rem",
-                minHeight: "2.25rem",
-                maxWidth: "2.25rem",
-                minWidth: "2.25rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                ...(index === 0 && {
-                  // disabledの時。本当はちゃんとdisabled属性を選択したいがstyle直当てだからできない
-                  opacity: 0.4,
-                  cursor: "not-allowed"
-                })
-              }}
-            >
-              <DeleteIcon />
-            </button>
-          )}
+          <button
+            onClick={() => onClickDelete(index)}
+            disabled={index === 0}
+            style={{
+              backgroundColor: "#F5F5F5",
+              borderRadius: "0.5rem",
+              maxHeight: "2.25rem",
+              minHeight: "2.25rem",
+              maxWidth: "2.25rem",
+              minWidth: "2.25rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              ...(index === 0 && {
+                // disabledの時。本当はちゃんとdisabled属性を選択したいがstyle直当てだからできない
+                opacity: 0.4,
+                cursor: "not-allowed"
+              })
+            }}
+          >
+            <DeleteIcon />
+          </button>
         </Flex>
       ))}
     </Flex>
