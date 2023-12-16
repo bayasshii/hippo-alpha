@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { getAPI } from "@/utils/api/getAPI";
 import { Simulation } from "@/feature/simulations/types/Simulation";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { AuthContext } from "@/utils/auth/AuthProvider";
 import { Flex } from "../Flex";
 
@@ -9,6 +9,10 @@ export const SimulationList = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [data, setData] = useState<Array<Simulation>>([]);
   const { currentUser } = useContext(AuthContext);
+
+  // useParamsでとってきたい
+  const location = useLocation();
+  const id = location.pathname.split("/")[1];
 
   useEffect(() => {
     setIsLoading(true);
@@ -45,7 +49,16 @@ export const SimulationList = () => {
           <Link
             to={`/${item.id}`}
             key={key}
-            style={{ display: "flex", color: "#fff", flexDirection: "column" }}
+            style={{
+              display: "flex",
+              color: "#ddd",
+              flexDirection: "column",
+              fontWeight: "normal",
+              ...(id == item.id && {
+                color: "#fff",
+                fontWeight: "bold"
+              })
+            }}
           >
             <span>{item.title}</span>
           </Link>
