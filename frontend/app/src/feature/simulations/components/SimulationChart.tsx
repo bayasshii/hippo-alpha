@@ -88,7 +88,7 @@ export const SimulationChart = ({
     <>
       <Flex gap={0.25} align="center">
         <p>
-          {maxYear}後には {principals.slice(-1)[0] + yields.slice(-1)[0]}
+          {maxYear}年後には {principals.slice(-1)[0] + yields.slice(-1)[0]}
           円になってるよ
         </p>
       </Flex>

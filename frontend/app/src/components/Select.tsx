@@ -35,7 +35,7 @@ export const Select = ({
         color: "#56555A",
         textAlign: "right",
         ...(suffix && { paddingRight: "1.5rem" }),
-        minWidth: "5rem"
+        minWidth: "8rem"
       }}
       {...props}
     >

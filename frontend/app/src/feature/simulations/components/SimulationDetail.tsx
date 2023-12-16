@@ -126,19 +126,17 @@ export const SimulationDetail = (props: Props) => {
           }
         }
         // index以降のデータはend_yearがkeyの場合は年数を更新する
-        else {
+        else if (i === index + 1) {
           if (key === "end_year") {
             // end_yearを更新する
-            const diff = item.end_year - item.start_year;
-            const newEndYear = beforeEndYear;
-            beforeEndYear = newEndYear + 1 + diff;
             return {
               ...item,
-              start_year: newEndYear + 1,
-              end_year: newEndYear + 1 + diff
+              start_year: beforeEndYear
             };
           }
           // end_yearがkeyでないならそのまま返す
+          return item;
+        } else {
           return item;
         }
       });
@@ -149,20 +147,30 @@ export const SimulationDetail = (props: Props) => {
 
   const onClickAddAnnualSimulations = useCallback(
     (index: number) => {
+      // 端数の場合は切り捨て
+      const diff = Math.floor(
+        (annualSimulations[index].end_year -
+          annualSimulations[index].start_year) /
+          2
+      );
+      const start_year = annualSimulations[index].start_year + diff;
       const end_year = annualSimulations[index].end_year;
+      console.log(start_year, end_year, diff);
       // index番目以降のデータの年数を+1する
       const newAnnualSimulations = annualSimulations.map((item, i) => {
-        if (i <= index) return item;
-        return {
-          ...item,
-          start_year: item.start_year + 1,
-          end_year: item.end_year + 1
-        };
+        if (i === index) {
+          return {
+            ...item,
+            start_year: item.start_year,
+            end_year: start_year
+          };
+        }
+        return item;
       });
       // newAnnualSimulationsのindex+1番目にデータを追加する
       newAnnualSimulations.splice(index + 1, 0, {
-        start_year: end_year + 1,
-        end_year: end_year + 1,
+        start_year: start_year,
+        end_year: end_year,
         monthly_deposit: 10000,
         rate: 3
       });
@@ -172,24 +180,18 @@ export const SimulationDetail = (props: Props) => {
     [annualSimulations]
   );
 
+  // 1行目のみ、消す時2行目のend_yearを更新する処理が必要。
+  // 現状は1行目をdisabledにすることでなんとかしてる
   const onClickDeleteAnnualSimulations = useCallback(
     (index: number) => {
-      // index番目以降のデータの年数を-yearsする
-      const years =
-        annualSimulations[index].end_year - annualSimulations[index].start_year;
-
-      console.log(
-        annualSimulations[index].end_year,
-        annualSimulations[index].start_year,
-        years
-      );
       const newAnnualSimulations = annualSimulations.map((item, i) => {
-        if (i <= index) return item;
-        return {
-          ...item,
-          start_year: item.start_year - years,
-          end_year: item.end_year - years
-        };
+        // 消した上の列のend_yearを更新する
+        if (i === index - 1)
+          return {
+            ...item,
+            end_year: annualSimulations[index].end_year
+          };
+        else return item;
       });
       // newAnnualSimulationsのindex番目を削除する
       newAnnualSimulations.splice(index, 1);
@@ -322,6 +324,7 @@ export const SimulationDetail = (props: Props) => {
           />
         </Flex>
         <AnnualSimulationsField
+          maxYear={maxYear}
           annualSimulations={annualSimulations}
           onChange={onChangeAnnualSimulations}
           onClickAdd={onClickAddAnnualSimulations}
