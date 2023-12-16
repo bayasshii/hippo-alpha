@@ -18,7 +18,6 @@ import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/utils/toast/useToast";
 import { EditableText } from "@/components/EditableText";
 import { InputField } from "@/components/InputField";
-import { SelectField } from "@/components/SelectField";
 import {
   ConvertAnnualSimulation,
   convertAnnualSimulationsForBack,
@@ -44,10 +43,17 @@ const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
 
 export const SimulationDetail = (props: Props) => {
   const [simulation, setSimulation] = useState<Simulation>(defaultSimulation);
-
   const [annualSimulations, setAnnualSimulations] = useState<
     ConvertAnnualSimulation[]
   >([]);
+  const [maxYear, setMaxYear] = useState<number>(100);
+
+  const onChangeMaxYear = useCallback(
+    async (e: ChangeEvent<HTMLSelectElement>) => {
+      setMaxYear(Number(e.target.value));
+    },
+    []
+  );
 
   useEffect(() => {
     if (props.simulation) {
@@ -55,15 +61,18 @@ export const SimulationDetail = (props: Props) => {
     }
     if (props.annualSimulations) {
       setAnnualSimulations(
-        convertAnnualSimulationsForFront(props.annualSimulations)
+        convertAnnualSimulationsForFront(
+          props.annualSimulations.slice(0, maxYear)
+        )
       );
-      console.log(props.annualSimulations);
     } else {
       setAnnualSimulations(
-        convertAnnualSimulationsForFront(defaultAnnualSimulations)
+        convertAnnualSimulationsForFront(
+          defaultAnnualSimulations.slice(0, maxYear)
+        )
       );
     }
-  }, [props.annualSimulations, props.simulation]);
+  }, [maxYear, props.annualSimulations, props.simulation]);
 
   const [postSimulation, postSimulationErrors] = usePost("simulations");
   const [patchSimulation, patchSimulationErrors] = usePatch("simulations");
@@ -312,8 +321,10 @@ export const SimulationDetail = (props: Props) => {
           <SimulationChart
             principal={Number(simulation.principal)}
             annualSimulations={convertAnnualSimulationsForBack(
-              annualSimulations
+              annualSimulations.slice(0, maxYear)
             )}
+            maxYear={maxYear}
+            onChangeMaxYear={onChangeMaxYear}
           />
         </Flex>
       )}

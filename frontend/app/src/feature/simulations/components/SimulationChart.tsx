@@ -38,14 +38,15 @@ export const options = {
 type Props = {
   principal: number;
   annualSimulations: Array<AnnualSimulation>;
+  maxYear: number;
+  onChangeMaxYear: (e: ChangeEvent<HTMLSelectElement>) => void;
 };
-export const SimulationChart = ({ principal, annualSimulations }: Props) => {
-  const [maxYear, setMaxYear] = useState<number>(100);
-  useEffect(() => {
-    setMaxYear(annualSimulations.length);
-  }, [annualSimulations]);
-  annualSimulations = annualSimulations.slice(0, maxYear);
-
+export const SimulationChart = ({
+  principal,
+  annualSimulations,
+  maxYear,
+  onChangeMaxYear
+}: Props) => {
   // 年利率の配列にマッピング
   const annualRates = annualSimulations.map(
     (annualSimulation) => annualSimulation.rate
@@ -84,13 +85,6 @@ export const SimulationChart = ({ principal, annualSimulations }: Props) => {
       }
     ]
   };
-
-  const onChangeMaxYear = useCallback(
-    async (e: ChangeEvent<HTMLSelectElement>) => {
-      setMaxYear(Number(e.target.value));
-    },
-    []
-  );
 
   return (
     <>
