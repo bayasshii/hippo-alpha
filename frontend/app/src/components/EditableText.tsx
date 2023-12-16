@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Flex } from "@/components/Flex";
 
 type Props = {
@@ -19,18 +19,13 @@ export const EditableText = ({
   type,
   label
 }: Props): React.ReactElement => {
-  const [displayValue, setDisplayValue] = useState(value);
-  useEffect(() => {
-    setDisplayValue(value);
-  }, [value]);
-
   console.log(value);
-  console.log(displayValue);
   return (
     <Flex style={{ position: "relative", height: "100%" }} align="center">
       <input
         aria-label={label}
         defaultValue={value}
+        value={value}
         onChange={onChange}
         onBlur={onBlur}
         type={type}
@@ -55,7 +50,7 @@ export const EditableText = ({
           lineHeight: 1
         }}
       >
-        {displayValue}
+        {value}
       </h1>
     </Flex>
   );
