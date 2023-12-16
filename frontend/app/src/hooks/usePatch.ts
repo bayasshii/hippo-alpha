@@ -17,6 +17,7 @@ export const usePatch = (path: string): UsePatch => {
         .post(`/${path}/${params?.id}`, params)
         .then((response: any) => {
           if (response.status === 422) {
+            console.log("エラーや！");
             const error = new Error();
             setErrors(response.data);
             throw error;

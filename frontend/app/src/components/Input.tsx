@@ -4,7 +4,8 @@ export type InputProps = {
   name: string;
   type: string;
   value: string | number;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (event: ChangeEvent<HTMLInputElement>) => void;
   prefix?: ReactNode;
   suffix?: ReactNode;
 };
@@ -14,6 +15,7 @@ export const Input = ({
   type,
   value,
   onChange,
+  onBlur,
   prefix,
   suffix,
   ...props
@@ -26,19 +28,32 @@ export const Input = ({
         position: "relative"
       }}
     >
-      {prefix && <span style={{ position: "absolute" }}>{prefix}</span>}
+      {prefix && (
+        <span
+          style={{
+            position: "absolute",
+            left: "0.5rem",
+            color: "#8D8B95",
+            fontSize: "0.75rem"
+          }}
+        >
+          {prefix}
+        </span>
+      )}
       <input
         id={name}
         name={name}
         type={type}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         style={{
           border: "1px solid #ddd",
           borderRadius: "0.5rem",
           padding: "0.5rem",
           color: "#56555A",
-          textAlign: "right"
+          textAlign: "right",
+          width: "8rem"
         }}
         {...props}
       />

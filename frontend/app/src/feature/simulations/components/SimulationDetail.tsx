@@ -19,6 +19,11 @@ import { useToast } from "@/utils/toast/useToast";
 import { EditableText } from "@/components/EditableText";
 import { InputField } from "@/components/InputField";
 import { SelectField } from "@/components/SelectField";
+import {
+  ConvertAnnualSimulation,
+  convertAnnualSimulationsForBack,
+  convertAnnualSimulationsForFront
+} from "../helpers/convertAnnualSimulations";
 
 type Props = {
   simulation_id?: number;
@@ -26,10 +31,9 @@ type Props = {
   annualSimulations?: Array<AnnualSimulation>;
 };
 const defaultSimulation: Simulation = {
-  title: "",
+  title: "仮タイトル",
   principal: 100000
 };
-
 const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
   .fill({})
   .map((_, index) => ({
@@ -40,17 +44,26 @@ const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
 
 export const SimulationDetail = (props: Props) => {
   const [simulation, setSimulation] = useState<Simulation>(defaultSimulation);
+
   const [annualSimulations, setAnnualSimulations] = useState<
-    Array<AnnualSimulation>
-  >(defaultAnnualSimulations);
-  const [maxYear, setMaxYear] = useState<number>(30);
+    ConvertAnnualSimulation[]
+  >([]);
+
+  const [maxYear, setMaxYear] = useState<number>(100);
 
   useEffect(() => {
     if (props.simulation) {
       setSimulation(props.simulation);
     }
     if (props.annualSimulations) {
-      setAnnualSimulations(props.annualSimulations);
+      setAnnualSimulations(
+        convertAnnualSimulationsForFront(props.annualSimulations)
+      );
+      console.log(props.annualSimulations);
+    } else {
+      setAnnualSimulations(
+        convertAnnualSimulationsForFront(defaultAnnualSimulations)
+      );
     }
   }, [props.annualSimulations, props.simulation]);
 
@@ -90,16 +103,95 @@ export const SimulationDetail = (props: Props) => {
   );
 
   const onChangeAnnualSimulations = useCallback(
-    async (e: ChangeEvent<HTMLInputElement>, year: number, key: string) => {
-      const newAnnualSimulations = annualSimulations.map((item, index) => {
-        // 一致しない年数のデータはそのまま返す
-        if (index !== year) return item;
+    (e: ChangeEvent<HTMLInputElement>, index: number, key: string) => {
+      let beforeEndYear = 0;
+      const newAnnualSimulations = annualSimulations.map((item, i) => {
+        // index以前のデータはそのまま返す
+        if (i < index) return item;
+        // index番目のデータは更新する
+        else if (i === index) {
+          if (key === "monthly_deposit" || key === "rate") {
+            return {
+              ...item,
+              [key]: Number(e.target.value)
+            };
+          }
+          if (key === "end_year") {
+            beforeEndYear = Number(e.target.value);
+            return {
+              ...item,
+              end_year: Number(e.target.value)
+            };
+          }
+        }
+        // index以降のデータはend_yearがkeyの場合は年数を更新する
+        else {
+          if (key === "end_year") {
+            // end_yearを更新する
+            const diff = item.end_year - item.start_year;
+            const newEndYear = beforeEndYear;
+            beforeEndYear = newEndYear + 1 + diff;
+            return {
+              ...item,
+              start_year: newEndYear + 1,
+              end_year: newEndYear + 1 + diff
+            };
+          }
+          // end_yearがkeyでないならそのまま返す
+          return item;
+        }
+      });
+      setAnnualSimulations(newAnnualSimulations as ConvertAnnualSimulation[]); // 力技
+    },
+    [annualSimulations]
+  );
+
+  const onClickAddAnnualSimulations = useCallback(
+    (index: number) => {
+      const end_year = annualSimulations[index].end_year;
+      // index番目以降のデータの年数を+1する
+      const newAnnualSimulations = annualSimulations.map((item, i) => {
+        if (i <= index) return item;
         return {
           ...item,
-          // monthly_depositかrate
-          [key]: Number(e.target.value)
+          start_year: item.start_year + 1,
+          end_year: item.end_year + 1
         };
       });
+      // newAnnualSimulationsのindex+1番目にデータを追加する
+      newAnnualSimulations.splice(index + 1, 0, {
+        start_year: end_year + 1,
+        end_year: end_year + 1,
+        monthly_deposit: 10000,
+        rate: 3
+      });
+
+      setAnnualSimulations(newAnnualSimulations);
+    },
+    [annualSimulations]
+  );
+
+  const onClickDeleteAnnualSimulations = useCallback(
+    (index: number) => {
+      // index番目以降のデータの年数を-yearsする
+      const years =
+        annualSimulations[index].end_year - annualSimulations[index].start_year;
+
+      console.log(
+        annualSimulations[index].end_year,
+        annualSimulations[index].start_year,
+        years
+      );
+      const newAnnualSimulations = annualSimulations.map((item, i) => {
+        if (i <= index) return item;
+        return {
+          ...item,
+          start_year: item.start_year - years,
+          end_year: item.end_year - years
+        };
+      });
+      // newAnnualSimulationsのindex番目を削除する
+      newAnnualSimulations.splice(index, 1);
       setAnnualSimulations(newAnnualSimulations);
     },
     [annualSimulations]
@@ -110,6 +202,16 @@ export const SimulationDetail = (props: Props) => {
       title: simulation?.title || "",
       principal: simulation?.principal || 0
     };
+    const newAnnualSimulations: Array<AnnualSimulation> =
+      convertAnnualSimulationsForBack(annualSimulations).map((item, index) => {
+        return {
+          ...item,
+          // 適当な順番でID渡すからIDの順番バラバラになるけどyearでソートするからいいかな
+          ...(props.annualSimulations && {
+            id: props.annualSimulations[index].id
+          })
+        };
+      });
     const asyncData = async () => {
       try {
         if (props.simulation_id) {
@@ -119,7 +221,7 @@ export const SimulationDetail = (props: Props) => {
             id: props.simulation_id
           });
           await Promise.all(
-            annualSimulations.map((annualSimulation) =>
+            newAnnualSimulations.map((annualSimulation) =>
               patchAnnualSimulation(annualSimulation)
             )
           );
@@ -128,7 +230,7 @@ export const SimulationDetail = (props: Props) => {
           const response = await postSimulation(newSimulation);
           const id = response.data.id; // ここでIDを取得
           await Promise.all(
-            annualSimulations.map((annualSimulation) =>
+            newAnnualSimulations.map((annualSimulation) =>
               postAnnualSimulation({
                 ...annualSimulation,
                 simulation_id: id
@@ -220,6 +322,8 @@ export const SimulationDetail = (props: Props) => {
         <AnnualSimulationsField
           annualSimulations={annualSimulations.slice(0, maxYear)}
           onChange={onChangeAnnualSimulations}
+          onClickAdd={onClickAddAnnualSimulations}
+          onClickDelete={onClickDeleteAnnualSimulations}
         />
       </Flex>
       {simulation && (
@@ -229,9 +333,12 @@ export const SimulationDetail = (props: Props) => {
           p={2}
           style={{ backgroundColor: "#fff", borderRadius: "1.5rem" }}
         >
+          ほげ
           <SimulationChart
             principal={Number(simulation.principal)}
-            annualSimulations={annualSimulations.slice(0, maxYear)}
+            annualSimulations={convertAnnualSimulationsForBack(
+              annualSimulations
+            ).slice(0, maxYear)}
           />
         </Flex>
       )}
