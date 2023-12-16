@@ -12,6 +12,7 @@ export const Edit = () => {
   const [annualSimulations, setAnnualSimulations] =
     useState<Array<AnnualSimulation>>();
   const { simulation_id } = useParams();
+  console.log(simulation_id);
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
@@ -25,6 +26,7 @@ export const Edit = () => {
         simulation_id: simulation_id
       });
       if (Array.isArray(response?.data)) {
+        console.log(response?.data);
         setAnnualSimulations(response.data);
       } else {
         console.error("Expected an array but received", response?.data);

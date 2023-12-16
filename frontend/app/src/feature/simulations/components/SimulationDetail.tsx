@@ -1,4 +1,10 @@
-import { useState, useCallback, useMemo, type ChangeEvent } from "react";
+import {
+  useState,
+  useCallback,
+  useMemo,
+  type ChangeEvent,
+  useEffect
+} from "react";
 import { Flex } from "@/components/Flex";
 import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -19,6 +25,11 @@ type Props = {
   simulation?: Simulation;
   annualSimulations?: Array<AnnualSimulation>;
 };
+const defaultSimulation: Simulation = {
+  title: "",
+  principal: 100000
+};
+
 const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
   .fill({})
   .map((_, index) => ({
@@ -28,16 +39,20 @@ const defaultAnnualSimulations: Array<AnnualSimulation> = Array(100)
   }));
 
 export const SimulationDetail = (props: Props) => {
-  const [simulation, setSimulation] = useState<Simulation>(
-    props.simulation || {
-      title: "タイトル",
-      principal: 100000
-    }
-  );
+  const [simulation, setSimulation] = useState<Simulation>(defaultSimulation);
   const [annualSimulations, setAnnualSimulations] = useState<
     Array<AnnualSimulation>
-  >(props.annualSimulations || defaultAnnualSimulations);
+  >(defaultAnnualSimulations);
   const [maxYear, setMaxYear] = useState<number>(30);
+
+  useEffect(() => {
+    if (props.simulation) {
+      setSimulation(props.simulation);
+    }
+    if (props.annualSimulations) {
+      setAnnualSimulations(props.annualSimulations);
+    }
+  }, [props.annualSimulations, props.simulation]);
 
   const [postSimulation, postSimulationErrors] = usePost("simulations");
   const [patchSimulation, patchSimulationErrors] = usePatch("simulations");
