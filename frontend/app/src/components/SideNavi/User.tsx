@@ -16,7 +16,7 @@ export const User = () => {
       }}
     >
       <FaceIcon />
-      <span>{currentUser?.name}</span>
+      <span>{currentUser?.name || "未ログイン"}</span>
     </Link>
   );
 };
