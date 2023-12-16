@@ -99,7 +99,7 @@ export const AnnualSimulationsField = ({
           <button
             onClick={() => onClickAdd(index)}
             disabled={
-              annualSimulation.end_year - annualSimulation.start_year <= 1
+              annualSimulation.end_year - annualSimulation.start_year === 0
             }
             style={{
               backgroundColor: "#F5F5F5",
@@ -111,8 +111,8 @@ export const AnnualSimulationsField = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              ...(annualSimulation.end_year - annualSimulation.start_year <=
-                1 && {
+              ...(annualSimulation.end_year - annualSimulation.start_year ===
+                0 && {
                 // disabledの時。本当はちゃんとdisabled属性を選択したいがstyle直当てだからできない
                 opacity: 0.4,
                 cursor: "not-allowed"

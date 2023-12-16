@@ -108,10 +108,8 @@ export const SimulationDetail = (props: Props) => {
     (e: ChangeEvent<HTMLInputElement>, index: number, key: string) => {
       let beforeEndYear = 0;
       const newAnnualSimulations = annualSimulations.map((item, i) => {
-        // index以前のデータはそのまま返す
-        if (i < index) return item;
         // index番目のデータは更新する
-        else if (i === index) {
+        if (i === index) {
           if (key === "monthly_deposit" || key === "rate") {
             return {
               ...item,
@@ -126,13 +124,13 @@ export const SimulationDetail = (props: Props) => {
             };
           }
         }
-        // index以降のデータはend_yearがkeyの場合は年数を更新する
+        // indexの次のデータはend_yearがkeyの場合は年数を更新する
         else if (i === index + 1) {
           if (key === "end_year") {
             // end_yearを更新する
             return {
               ...item,
-              start_year: beforeEndYear
+              start_year: beforeEndYear + 1
             };
           }
           // end_yearがkeyでないならそのまま返す
@@ -168,7 +166,7 @@ export const SimulationDetail = (props: Props) => {
       });
       // newAnnualSimulationsのindex+1番目にデータを追加する
       newAnnualSimulations.splice(index + 1, 0, {
-        start_year: start_year,
+        start_year: start_year + 1,
         end_year: end_year,
         monthly_deposit: 10000,
         rate: 3
