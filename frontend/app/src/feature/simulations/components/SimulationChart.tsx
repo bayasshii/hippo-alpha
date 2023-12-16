@@ -39,13 +39,11 @@ type Props = {
   principal: number;
   annualSimulations: Array<AnnualSimulation>;
   maxYear: number;
-  onChangeMaxYear: (e: ChangeEvent<HTMLSelectElement>) => void;
 };
 export const SimulationChart = ({
   principal,
   annualSimulations,
-  maxYear,
-  onChangeMaxYear
+  maxYear
 }: Props) => {
   // 年利率の配列にマッピング
   const annualRates = annualSimulations.map(
@@ -89,20 +87,8 @@ export const SimulationChart = ({
   return (
     <>
       <Flex gap={0.25} align="center">
-        <Select
-          name="max_year"
-          options={[
-            { value: 10, label: "10" },
-            { value: 30, label: "30" },
-            { value: 50, label: "50" },
-            { value: 100, label: "100" }
-          ]}
-          onChange={(e) => onChangeMaxYear(e)}
-          value={maxYear}
-          suffix="年"
-        />
         <p>
-          後には {principals.slice(-1)[0] + yields.slice(-1)[0]}
+          {maxYear}後には {principals.slice(-1)[0] + yields.slice(-1)[0]}
           円になってるよ
         </p>
       </Flex>

@@ -23,6 +23,7 @@ import {
   convertAnnualSimulationsForBack,
   convertAnnualSimulationsForFront
 } from "../helpers/convertAnnualSimulations";
+import { SelectField } from "@/components/SelectField";
 
 type Props = {
   simulation_id?: number;
@@ -290,20 +291,36 @@ export const SimulationDetail = (props: Props) => {
         p={2}
         style={{ backgroundColor: "#fff", borderRadius: "1.5rem" }}
       >
-        <InputField
-          label="元本"
-          type="number"
-          name="principal"
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            setSimulation({
-              ...simulation!,
-              principal: Number(e.target.value)
-            });
-          }}
-          value={simulation?.principal}
-          errorMessages={errors.principal}
-          suffix="円"
-        />
+        <Flex direction="row" gap={1}>
+          <InputField
+            label="元本"
+            type="number"
+            name="principal"
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setSimulation({
+                ...simulation!,
+                principal: Number(e.target.value)
+              });
+            }}
+            value={simulation?.principal}
+            errorMessages={errors.principal}
+            suffix="円"
+          />
+          <SelectField
+            label="シミュレーション期間"
+            name="max_year"
+            value={maxYear}
+            onChange={onChangeMaxYear}
+            options={[
+              { value: 10, label: "10" },
+              { value: 30, label: "30" },
+              { value: 50, label: "50" },
+              { value: 100, label: "100" }
+            ]}
+            suffix="年"
+            errorMessages={errors.principal}
+          />
+        </Flex>
         <AnnualSimulationsField
           annualSimulations={annualSimulations}
           onChange={onChangeAnnualSimulations}
@@ -324,7 +341,6 @@ export const SimulationDetail = (props: Props) => {
               annualSimulations.slice(0, maxYear)
             )}
             maxYear={maxYear}
-            onChangeMaxYear={onChangeMaxYear}
           />
         </Flex>
       )}
