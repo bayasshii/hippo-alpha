@@ -32,7 +32,7 @@ export const convertAnnualSimulationsForFront = (
           end_year: endYear
         });
         // 次の年の情報をセット
-        startYear = endYear;
+        startYear = endYear + 1;
         endYear += 1;
       }
     }
