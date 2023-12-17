@@ -46,15 +46,18 @@ export const SimulationChart = ({ principal, annualSimulations }: Props) => {
   const upperSumYears = sumYears > 200 ? 200 : sumYears;
 
   // 年利率の配列にマッピング
-  const annualRates = annualSimulations
-    .flatMap((annualSimulation) =>
-      Array(annualSimulation.years).fill(annualSimulation.rate)
+  // uppperSumYearsは200年を超える場合は200年に制限する
+  const annualRates = annualSimulations.flatMap((annualSimulation) =>
+    Array(Math.min(annualSimulation.years, upperSumYears)).fill(
+      annualSimulation.rate
     )
-    .slice(0, upperSumYears);
+  );
   // 月々の積立額の配列にマッピング
   const monthlyDeposits = annualSimulations
     .flatMap((annualSimulation) =>
-      Array(annualSimulation.years).fill(annualSimulation.monthly_deposit)
+      Array(Math.min(annualSimulation.years, upperSumYears)).fill(
+        annualSimulation.monthly_deposit
+      )
     )
     .slice(0, upperSumYears);
 

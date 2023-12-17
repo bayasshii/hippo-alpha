@@ -28,7 +28,7 @@ export const useDelete = (
           return error.response;
         });
     },
-    [path]
+    [headers, path]
   );
 
   return [doDelete, errors];

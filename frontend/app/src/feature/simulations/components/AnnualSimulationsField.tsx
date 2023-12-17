@@ -60,7 +60,7 @@ export const AnnualSimulationsField = ({
             name="monthly_deposit"
             value={annualSimulation.monthly_deposit}
             onChange={(e) => onChange(e, index, "monthly_deposit")}
-            styles={{ width: "10rem" }}
+            styles={{ width: "10rem", paddingRight: "1.5rem" }}
             prefix="月"
             suffix="円"
           />
