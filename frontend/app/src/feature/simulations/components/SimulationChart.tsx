@@ -40,8 +40,9 @@ export const SimulationChart = ({ principal, annualSimulations }: Props) => {
   // 合計の年数を取得
   const sumYears = annualSimulations.reduce(
     (sum, annualSimulation) => sum + annualSimulation.years,
-    0
+    1
   );
+
   const upperSumYears = sumYears > 200 ? 200 : sumYears;
 
   // 年利率の配列にマッピング

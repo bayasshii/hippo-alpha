@@ -38,7 +38,6 @@ export const AnnualSimulationsField = ({
           align="center"
           gap={0.5}
         >
-          {annualSimulation.order}
           <p
             style={{
               color: "#56555A",

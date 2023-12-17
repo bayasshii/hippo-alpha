@@ -18,7 +18,6 @@ import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/utils/toast/useToast";
 import { EditableText } from "@/components/EditableText";
 import { InputField } from "@/components/InputField";
-import { useDelete } from "@/hooks/useDelete";
 import { useDeleteAllAnnualSimulations } from "@/hooks/useDeleteAllAnnualSimulations";
 
 type Props = {
