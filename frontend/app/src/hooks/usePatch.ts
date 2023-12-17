@@ -14,7 +14,7 @@ export const usePatch = (path: string): UsePatch => {
   const patch = useCallback(
     async (params: Record<string, unknown>) => {
       const re = instance
-        .post(`/${path}/${params?.id}`, params)
+        .put(`/${path}/${params?.id}`, params)
         .then((response: any) => {
           if (response.status === 422) {
             console.log("エラーや！");

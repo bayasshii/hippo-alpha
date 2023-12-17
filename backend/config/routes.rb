@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
   resources :simulations
-  post '/simulations/:id', to: 'simulations#update'
-  resources :annual_simulations
-  post '/annual_simulations/:id', to: 'annual_simulations#update'
+  resources :annual_simulations do
+    collection do
+      delete 'delete_all', to: 'annual_simulations#delete_all'
+    end
+  end
   mount_devise_token_auth_for 'User', at: 'auth', controllers: {
     registrations: 'auth/registrations',
     confirmations: 'auth/confirmations'

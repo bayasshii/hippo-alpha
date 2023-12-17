@@ -19,12 +19,10 @@ export const EditableText = ({
   type,
   label
 }: Props): React.ReactElement => {
-  console.log(value);
   return (
     <Flex style={{ position: "relative", height: "100%" }} align="center">
       <input
         aria-label={label}
-        defaultValue={value}
         value={value}
         onChange={onChange}
         onBlur={onBlur}

@@ -1,12 +1,12 @@
 import { type ChangeEvent } from "react";
 import { Flex } from "@/components/Flex";
-import { ConvertAnnualSimulation } from "@/feature/simulations/helpers/convertAnnualSimulations";
 import { Input } from "@/components/Input";
 import { AddIcon } from "@/components/images/AddIcon";
 import { DeleteIcon } from "@/components/images/DeleteIcon";
+import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
 
 type Props = {
-  annualSimulations: Array<ConvertAnnualSimulation>;
+  annualSimulations: Array<AnnualSimulation>;
   onChange: (
     e: ChangeEvent<HTMLInputElement>,
     index: number,
@@ -14,71 +14,48 @@ type Props = {
   ) => void;
   onClickAdd: (i: number) => void;
   onClickDelete: (i: number) => void;
-  maxYear: number;
 };
 
 export const AnnualSimulationsField = ({
   annualSimulations = [],
   onChange,
   onClickAdd,
-  onClickDelete,
-  maxYear
+  onClickDelete
 }: Props) => {
+  let before_years = 2023;
+  const start_end_years = annualSimulations.map((annualSimulation) => {
+    const start = before_years + 1;
+    const end = before_years + annualSimulation.years;
+    before_years = end;
+    return { start, end };
+  });
   return (
-    <Flex style={{ width: `${100 / maxYear}%` }} direction="column" gap={1}>
+    <Flex direction="column" gap={1}>
       {annualSimulations?.map((annualSimulation, index) => (
-        <Flex key={index} direction="row" align="center" gap={0.5}>
+        <Flex
+          key={annualSimulation.order}
+          direction="row"
+          align="center"
+          gap={0.5}
+        >
+          {annualSimulation.order}
           <p
             style={{
               color: "#56555A",
-              minWidth: "4rem",
-              maxWidth: "4rem",
-              textAlign: "right",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              gap: "0.25rem",
-              paddingRight: "0.5rem"
+              fontSize: "0.75rem",
+              whiteSpace: "nowrap"
             }}
           >
-            <span style={{ fontSize: "1rem" }}>
-              {annualSimulation.start_year}
-            </span>
-            <span style={{ fontSize: "0.75rem", color: "#8D8B95" }}>年目</span>
+            {start_end_years[index].start} ~ {start_end_years[index].end}
           </p>
-          <p style={{ color: "#56555A" }}>〜 </p>
-          {annualSimulations.length === index + 1 ? (
-            <p
-              style={{
-                color: "#56555A",
-                minWidth: "6rem",
-                maxWidth: "6rem",
-                textAlign: "right",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
-                gap: "0.25rem",
-                paddingRight: "0.5rem"
-              }}
-            >
-              <span style={{ fontSize: "1rem" }}>
-                {annualSimulation.end_year}
-              </span>
-              <span style={{ fontSize: "0.75rem", color: "#8D8B95" }}>
-                年目
-              </span>
-            </p>
-          ) : (
-            <Input
-              type="number"
-              name="end_year"
-              value={annualSimulation.end_year}
-              onChange={(e) => onChange(e, index, "end_year")}
-              // TODO: 上下の値が変更されるのはblurでやりたい。
-              suffix="年目"
-              styles={{ paddingRight: "2.25rem", width: "6rem" }}
-            />
-          )}
+          <Input
+            type="number"
+            name="years"
+            value={annualSimulation.years}
+            onChange={(e) => onChange(e, index, "years")}
+            suffix="年間"
+            styles={{ paddingRight: "2.25rem", width: "6rem" }}
+          />
           <Input
             type="number"
             name="monthly_deposit"
@@ -98,9 +75,6 @@ export const AnnualSimulationsField = ({
           />
           <button
             onClick={() => onClickAdd(index)}
-            disabled={
-              annualSimulation.end_year - annualSimulation.start_year === 0
-            }
             style={{
               backgroundColor: "#F5F5F5",
               borderRadius: "0.5rem",
@@ -111,8 +85,7 @@ export const AnnualSimulationsField = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              ...(annualSimulation.end_year - annualSimulation.start_year ===
-                0 && {
+              ...(annualSimulation.years === 150 && {
                 // disabledの時。本当はちゃんとdisabled属性を選択したいがstyle直当てだからできない
                 opacity: 0.4,
                 cursor: "not-allowed"
@@ -123,7 +96,7 @@ export const AnnualSimulationsField = ({
           </button>
           <button
             onClick={() => onClickDelete(index)}
-            disabled={index === 0}
+            disabled={annualSimulations.length === 1}
             style={{
               backgroundColor: "#F5F5F5",
               borderRadius: "0.5rem",
@@ -134,7 +107,7 @@ export const AnnualSimulationsField = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              ...(index === 0 && {
+              ...(annualSimulations.length === 1 && {
                 // disabledの時。本当はちゃんとdisabled属性を選択したいがstyle直当てだからできない
                 opacity: 0.4,
                 cursor: "not-allowed"

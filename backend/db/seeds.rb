@@ -12,12 +12,19 @@ simulation1 = Simulation.create!(
 )
 
 # yearを100年分作成
-(0..99).each do |i|
-    AnnualSimulation.create!(
-        simulation: simulation1,
-        simulation_id: 1,
-        year: i,
-        monthly_deposit: 100000,
-        rate: 5,
-    )
-end
+AnnualSimulation.create!(
+    simulation: simulation1,
+    simulation_id: 1,
+    years: 50,
+    order: 1,
+    monthly_deposit: 100000,
+    rate: 5,
+)
+AnnualSimulation.create!(
+    simulation: simulation1,
+    simulation_id: 1,
+    years: 20,
+    order: 2,
+    monthly_deposit: 100000,
+    rate: 10,
+)

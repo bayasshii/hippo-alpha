@@ -1,6 +1,4 @@
 import { Flex } from "@/components/Flex";
-import { Select } from "@/components/Select";
-import { SelectField } from "@/components/SelectField";
 import { calculateAnnualData } from "@/feature/simulations/helpers/calculateAnnualData";
 import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
 import {
@@ -12,7 +10,6 @@ import {
   Tooltip,
   Legend
 } from "chart.js";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 ChartJS.register(
   CategoryScale,
@@ -38,21 +35,27 @@ export const options = {
 type Props = {
   principal: number;
   annualSimulations: Array<AnnualSimulation>;
-  maxYear: number;
 };
-export const SimulationChart = ({
-  principal,
-  annualSimulations,
-  maxYear
-}: Props) => {
+export const SimulationChart = ({ principal, annualSimulations }: Props) => {
+  // 合計の年数を取得
+  const sumYears = annualSimulations.reduce(
+    (sum, annualSimulation) => sum + annualSimulation.years,
+    0
+  );
+  const upperSumYears = sumYears > 200 ? 200 : sumYears;
+
   // 年利率の配列にマッピング
-  const annualRates = annualSimulations.map(
-    (annualSimulation) => annualSimulation.rate
-  );
+  const annualRates = annualSimulations
+    .flatMap((annualSimulation) =>
+      Array(annualSimulation.years).fill(annualSimulation.rate)
+    )
+    .slice(0, upperSumYears);
   // 月々の積立額の配列にマッピング
-  const monthlyDeposits = annualSimulations.map(
-    (annualSimulation) => annualSimulation.monthly_deposit
-  );
+  const monthlyDeposits = annualSimulations
+    .flatMap((annualSimulation) =>
+      Array(annualSimulation.years).fill(annualSimulation.monthly_deposit)
+    )
+    .slice(0, upperSumYears);
 
   // 年ごとの元本と運用収益を計算
   const { principals, yields } = calculateAnnualData(
@@ -62,10 +65,9 @@ export const SimulationChart = ({
   );
 
   const labels = [
-    "今",
-    ...Array(maxYear)
+    ...Array(upperSumYears)
       .fill(0)
-      .map((_, index) => `${index + 1}年後`)
+      .map((_, index) => `${2023 + index}年`)
   ];
 
   const data = {
@@ -88,7 +90,8 @@ export const SimulationChart = ({
     <>
       <Flex gap={0.25} align="center">
         <p>
-          {maxYear}年後には {principals.slice(-1)[0] + yields.slice(-1)[0]}
+          {upperSumYears}年後には
+          {(principals.slice(-1)[0] + yields.slice(-1)[0]).toLocaleString()}
           円になってるよ
         </p>
       </Flex>
