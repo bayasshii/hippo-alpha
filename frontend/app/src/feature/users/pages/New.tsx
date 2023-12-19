@@ -39,7 +39,7 @@ export const New = () => {
         <Flex direction="column" gap={1}>
           <InputField
             label="名前"
-            type="name"
+            type="text"
             name="name"
             value={name}
             onChange={(e) => setName(e.target.value)}

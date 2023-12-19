@@ -2,7 +2,7 @@ import { ChangeEvent, ReactNode } from "react";
 
 export type InputProps = {
   name: string;
-  type: string;
+  type: "text" | "number" | "password" | "email";
   value: string | number;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -55,8 +55,8 @@ export const Input = ({
           borderRadius: "0.5rem",
           padding: "0.5rem 1.5rem 0.5rem 0.5rem",
           color: "#56555A",
-          textAlign: "right",
           width: "15rem",
+          ...(type === "number" && { textAlign: "right" }),
           ...styles
         }}
         {...props}
