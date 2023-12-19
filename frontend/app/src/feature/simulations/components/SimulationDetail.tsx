@@ -6,7 +6,7 @@ import {
   useEffect
 } from "react";
 import { Flex } from "@/components/Flex";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { SimulationChart } from "@/feature/simulations/components/SimulationChart";
 import { Simulation } from "@/feature/simulations/types/Simulation";
@@ -19,6 +19,7 @@ import { useToast } from "@/utils/toast/useToast";
 import { EditableText } from "@/components/EditableText";
 import { InputField } from "@/components/InputField";
 import { useDeleteAllAnnualSimulations } from "@/hooks/useDeleteAllAnnualSimulations";
+import { useDelete } from "@/hooks/useDelete";
 
 type Props = {
   simulation_id?: number;
@@ -65,7 +66,8 @@ export const SimulationDetail = (props: Props) => {
   const [loading, setLoading] = useLoading();
   const [deleteAllAnnualSimulations, deleteAllAnnualSimulationsErrors] =
     useDeleteAllAnnualSimulations();
-  const navigate = useNavigate();
+  const [deleteSimulation, deleteSimulationErrors] = useDelete("simulations");
+  // const navigate = useNavigate();
 
   const errors = useMemo(() => {
     return {
@@ -133,6 +135,20 @@ export const SimulationDetail = (props: Props) => {
     [annualSimulations]
   );
 
+  const deleteData = useCallback(async () => {
+    try {
+      if (props.simulation_id) {
+        console.log("hoge");
+        await deleteSimulation(String(props.simulation_id));
+        // ホームにリダイレクト
+        window.location.href = "/";
+        // navigate('');
+      }
+    } catch (error) {
+      throw error;
+    }
+  }, [deleteSimulation, props.simulation_id]);
+
   const saveData = useCallback(async () => {
     const newSimulation: Simulation = {
       title: simulation?.title || "",
@@ -199,22 +215,43 @@ export const SimulationDetail = (props: Props) => {
           />
           <ErrorMessage messages={errors?.title} />
         </Flex>
-        <button
-          onClick={saveData}
-          disabled={loading}
-          style={{
-            backgroundColor: "#56555A",
-            color: "#fff",
-            fontSize: "1rem",
-            lineHeight: 1.5,
-            padding: "0.75rem",
-            borderRadius: "1rem",
-            minWidth: "7rem",
-            textAlign: "center"
-          }}
-        >
-          {loading ? "保存中" : "保存"}
-        </button>
+        <Flex gap={1}>
+          {props.simulation_id && (
+            <button
+              onClick={deleteData}
+              disabled={loading}
+              style={{
+                backgroundColor: "#F5F5F5",
+                color: "#56555A",
+                fontSize: "1rem",
+                lineHeight: 1.5,
+                padding: "0.75rem",
+                borderRadius: "1rem",
+                border: "1px solid #56555A",
+                minWidth: "7rem",
+                textAlign: "center"
+              }}
+            >
+              削除
+            </button>
+          )}
+          <button
+            onClick={saveData}
+            disabled={loading}
+            style={{
+              backgroundColor: "#56555A",
+              color: "#fff",
+              fontSize: "1rem",
+              lineHeight: 1.5,
+              padding: "0.75rem",
+              borderRadius: "1rem",
+              minWidth: "7rem",
+              textAlign: "center"
+            }}
+          >
+            {loading ? "保存中" : "保存"}
+          </button>
+        </Flex>
       </Flex>
       <Flex
         direction="column"

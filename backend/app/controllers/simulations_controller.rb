@@ -34,6 +34,17 @@ class SimulationsController < ApplicationController
     render json: { error: 'Simulation not found' }, status: :not_found
   end
 
+  def destroy
+    simulation = current_user.simulations.find(params[:id])
+    if simulation.destroy
+      render json: simulation, status: :ok
+    else
+      render json: simulation.errors, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Simulation not found' }, status: :not_found
+  end
+
   private
 
   def simulation_params
