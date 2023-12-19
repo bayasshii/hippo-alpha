@@ -189,6 +189,7 @@ export const SimulationDetail = (props: Props) => {
           );
           // 保存しきってからリダイレクト
           window.location.href = `/${id}`;
+          // サイドバーが最新のシミュレーションをとってこれないからhrefにしてる。本当はproviderを使ってuseContextでspaないい感じにしたい。
           // navigate(`/${id}`);
         }
       } catch (error) {
