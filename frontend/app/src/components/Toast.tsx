@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { ToastTypes, TOAST_TYPE } from "@/utils/toast/ToastProvider";
+import { Flex } from "./Flex";
 
 type Props = {
   visible: boolean;
@@ -22,19 +23,25 @@ export const Toast = ({ visible, hideToast, message, type }: Props) => {
   const baseStyle = useMemo(() => {
     return {
       position: "fixed" as "fixed",
-      top: 0,
+      top: "2rem",
+      right: 0,
       left: 0,
-      width: "100%",
-      padding: "1rem",
-      margin: "1rem"
+      margin: "auto",
+      width: "30rem",
+      borderRadius: "0.5rem"
     };
   }, []);
 
   if (!visible) return null;
   return (
-    <div style={{ ...baseStyle, ...colorStyle }}>
-      {message}
-      <button onClick={hideToast}>閉じる</button>
-    </div>
+    <Flex p={1} justify="space-between" style={{ ...baseStyle, ...colorStyle }}>
+      <p style={{ color: "#56555A", fontWeight: "bold" }}>{message}</p>
+      <button
+        onClick={hideToast}
+        style={{ color: "#56555A", fontWeight: "bold" }}
+      >
+        閉じる
+      </button>
+    </Flex>
   );
 };
