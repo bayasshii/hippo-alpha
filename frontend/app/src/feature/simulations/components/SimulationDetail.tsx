@@ -78,21 +78,17 @@ export const SimulationDetail = (props: Props) => {
   }, [patchSimulationErrors, postSimulationErrors, postAnnualSimulationErrors]);
 
   const onChangeAnnualSimulations = useCallback(
-    (e: ChangeEvent<HTMLInputElement>, index: number, key: string) => {
-      const newAnnualSimulations = annualSimulations.map((item, i) => {
-        // index番目のデータを更新する
-        if (i === index) {
-          return {
-            ...item,
-            [key]: Number(e.target.value)
-          };
-        }
-        // index番目のデータ以外はそのままリターン
-        return item;
+    (e: ChangeEvent<HTMLInputElement>, index: number) => {
+      setAnnualSimulations((prevAnnualSimulations) => {
+        const updatedAnnualSimulations = [...prevAnnualSimulations]; // 一旦展開することで別オブジェクトにしてる
+        updatedAnnualSimulations[index] = {
+          ...updatedAnnualSimulations[index],
+          [e.target.name]: Number(e.target.value)
+        };
+        return updatedAnnualSimulations;
       });
-      setAnnualSimulations(newAnnualSimulations);
     },
-    [annualSimulations]
+    []
   );
 
   const onClickAddAnnualSimulations = useCallback(
@@ -174,7 +170,8 @@ export const SimulationDetail = (props: Props) => {
             )
           );
           // 保存しきってからリダイレクト
-          navigate(`/${id}`);
+          window.location.href = `/${id}`;
+          // navigate(`/${id}`);
         }
       } catch (error) {
         throw error;

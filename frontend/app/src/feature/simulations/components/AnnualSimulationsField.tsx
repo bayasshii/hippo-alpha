@@ -7,11 +7,7 @@ import { AnnualSimulation } from "@/feature/simulations/types/AnnualSimulation";
 
 type Props = {
   annualSimulations: Array<AnnualSimulation>;
-  onChange: (
-    e: ChangeEvent<HTMLInputElement>,
-    index: number,
-    key: string
-  ) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>, index: number) => void;
   onClickAdd: (i: number) => void;
   onClickDelete: (i: number) => void;
 };
@@ -51,7 +47,7 @@ export const AnnualSimulationsField = ({
             type="number"
             name="years"
             value={annualSimulation.years}
-            onChange={(e) => onChange(e, index, "years")}
+            onChange={(e) => onChange(e, index)}
             suffix="年間"
             styles={{ paddingRight: "2.25rem", width: "6rem" }}
           />
@@ -59,7 +55,7 @@ export const AnnualSimulationsField = ({
             type="number"
             name="monthly_deposit"
             value={annualSimulation.monthly_deposit}
-            onChange={(e) => onChange(e, index, "monthly_deposit")}
+            onChange={(e) => onChange(e, index)}
             styles={{ width: "10rem", paddingRight: "1.5rem" }}
             prefix="月"
             suffix="円"
@@ -68,7 +64,7 @@ export const AnnualSimulationsField = ({
             type="number"
             name="rate"
             value={annualSimulation.rate}
-            onChange={(e) => onChange(e, index, "rate")}
+            onChange={(e) => onChange(e, index)}
             styles={{ width: "6rem" }}
             suffix="%"
           />
