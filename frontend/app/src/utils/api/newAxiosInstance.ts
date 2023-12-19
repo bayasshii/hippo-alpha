@@ -16,8 +16,6 @@ export const newAxiosInstance = () => {
       uid: Cookies.get("_uid")
     }
   };
-  console.log("yobareta");
-  console.log(axios_config);
   const instance = axios.create(axios_config);
   instance.interceptors.response.use(
     (response) => {
