@@ -3,7 +3,6 @@ import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "@/utils/auth/AuthProvider";
 import { usePost } from "@/hooks/usePost";
-import { ErrorMessage } from "@/components/ErrorMessage";
 import { useLoading } from "@/hooks/useLoading";
 import { Flex } from "@/components/Flex";
 import { InputField } from "@/components/InputField";
@@ -31,7 +30,7 @@ export const Login = () => {
           Cookies.set("_uid", res.headers["uid"]);
           setIsSignedIn(true);
           setCurrentUser(res.data.data);
-          navigation("/");
+          navigation("/new");
         }
       };
       setLoading(asyncLogin);

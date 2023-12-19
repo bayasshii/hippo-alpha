@@ -1,7 +1,7 @@
 import { newAxiosInstance } from "@/utils/api/newAxiosInstance";
 
-const instance = newAxiosInstance();
 export const getAPI = async (path: string, query?: Object) => {
+  const instance = newAxiosInstance();
   try {
     const response = await instance.get(path, { params: query });
     return response;
