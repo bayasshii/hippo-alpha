@@ -94,7 +94,7 @@ export const SimulationChart = ({ principal, annualSimulations }: Props) => {
     <>
       <Flex gap={0.25} align="center">
         <p>
-          {upperSumYears}年後には
+          {upperSumYears - 1}年後には
           {(principals.slice(-1)[0] + yields.slice(-1)[0]).toLocaleString()}
           円になってるよ
         </p>

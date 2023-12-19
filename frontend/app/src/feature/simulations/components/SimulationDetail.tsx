@@ -136,18 +136,20 @@ export const SimulationDetail = (props: Props) => {
   );
 
   const deleteData = useCallback(async () => {
-    try {
-      if (props.simulation_id) {
-        console.log("hoge");
-        await deleteSimulation(String(props.simulation_id));
-        // ホームにリダイレクト
-        window.location.href = "/";
-        // navigate('');
+    const asyncDeleteData = async () => {
+      try {
+        if (props.simulation_id) {
+          await deleteSimulation(String(props.simulation_id));
+          // ホームにリダイレクト
+          window.location.href = "/";
+          // navigate('');
+        }
+      } catch (error) {
+        throw error;
       }
-    } catch (error) {
-      throw error;
-    }
-  }, [deleteSimulation, props.simulation_id]);
+    };
+    setLoading(asyncDeleteData);
+  }, [deleteSimulation, props.simulation_id, setLoading]);
 
   const saveData = useCallback(async () => {
     const newSimulation: Simulation = {
@@ -198,7 +200,7 @@ export const SimulationDetail = (props: Props) => {
   }, [simulation, annualSimulations]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Flex direction="column" gap={2} style={{ width: "100%" }}>
+    <Flex direction="column" gap={2} style={{ width: "100%" }} pb={4}>
       <Flex direction="row" justify="space-between" gap={2}>
         <Flex direction="column">
           <EditableText
@@ -232,7 +234,7 @@ export const SimulationDetail = (props: Props) => {
                 textAlign: "center"
               }}
             >
-              削除
+              {loading ? "削除中" : "削除"}
             </button>
           )}
           <button
