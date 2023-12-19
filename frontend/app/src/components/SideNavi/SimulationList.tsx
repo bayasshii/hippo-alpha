@@ -40,7 +40,7 @@ export const SimulationList = () => {
     }
   }, [currentUser]);
 
-  if (isLoading) return <p>loading...</p>;
+  if (isLoading) return <p>ローディング中</p>;
 
   return (
     <Flex gap={1} direction="column">
