@@ -234,7 +234,7 @@ export const SimulationDetail = (props: Props) => {
                 textAlign: "center"
               }}
             >
-              {loading ? "削除中" : "削除"}
+              削除
             </button>
           )}
           <button
@@ -251,7 +251,7 @@ export const SimulationDetail = (props: Props) => {
               textAlign: "center"
             }}
           >
-            {loading ? "保存中" : "保存"}
+            保存
           </button>
         </Flex>
       </Flex>
