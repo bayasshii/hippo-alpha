@@ -26,7 +26,7 @@ export const New = () => {
 
     try {
       await setLoading(() => postUserNew(params));
-      alert("confirm email");
+      alert("メールを確認してね！");
     } catch (e) {
       console.log(e);
     }
@@ -92,7 +92,7 @@ export const New = () => {
               textAlign: "center"
             }}
           >
-            アカウントを登録
+            {loading ? "送信中" : "アカウントを登録"}
           </button>
         </Flex>
       </form>

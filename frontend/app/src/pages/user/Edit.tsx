@@ -54,7 +54,7 @@ export const Edit = () => {
       ) : (
         <>
           <Link to="/login">ログイン</Link>
-          <Link to="/user_new">ログイン</Link>
+          <Link to="/user_new">ユーザー登録</Link>
         </>
       )}
     </Flex>

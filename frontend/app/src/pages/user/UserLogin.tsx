@@ -23,15 +23,18 @@ export const Login = () => {
       password: password
     };
     try {
-      const res = await postUserLogin(params);
-      if (res?.status === 200) {
-        Cookies.set("_access_token", res.headers["access-token"]);
-        Cookies.set("_client", res.headers["client"]);
-        Cookies.set("_uid", res.headers["uid"]);
-        setIsSignedIn(true);
-        setCurrentUser(res.data.data);
-        navigation("/");
-      }
+      const asyncLogin = async () => {
+        const res = await postUserLogin(params);
+        if (res?.status === 200) {
+          Cookies.set("_access_token", res.headers["access-token"]);
+          Cookies.set("_client", res.headers["client"]);
+          Cookies.set("_uid", res.headers["uid"]);
+          setIsSignedIn(true);
+          setCurrentUser(res.data.data);
+          navigation("/");
+        }
+      };
+      setLoading(asyncLogin);
     } catch (e) {}
   };
   return (
@@ -70,7 +73,7 @@ export const Login = () => {
               textAlign: "center"
             }}
           >
-            ログイン
+            {loading ? "ログイン中" : "ログイン"}
           </button>
         </Flex>
       </form>
