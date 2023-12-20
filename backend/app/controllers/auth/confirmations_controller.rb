@@ -30,7 +30,7 @@ class Auth::ConfirmationsController < DeviseTokenAuth::ConfirmationsController
     end
   
     def redirect_url
-      url = ENV['CORS_ALLOWED_ORIGINS'] ? ENV['CORS_ALLOWED_ORIGINS'] << '/login': 'http://localhost:3000/login'
+      url = ENV['CORS_ALLOWED_ORIGINS'] ? ENV['CORS_ALLOWED_ORIGINS'] + '/login' : 'http://localhost:3000/login'
       return url
     end
   end
