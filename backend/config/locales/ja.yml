@@ -4,6 +4,16 @@ ja:
       simulation:
         title: "タイトル"
         principal: "元本"
+      annual_simulation:
+        year: "年"
+        principal: "元本"
+        monthly_deposit: "毎月の積立額"
+        rate: "利率"
+      user:
+        email: "メールアドレス"
+        password: "パスワード"
+        password_confirmation: "パスワード（確認）"
+        name: "名前"
     errors:
       messages:
         invalid: "%{attribute}が正しくありません。"
@@ -12,3 +22,5 @@ ja:
         too_long: "%{attribute}は%{count}文字以下で入力してください。"
         not_an_integer: "%{attribute}は整数で入力してください。"
         required: "%{attribute}が必要です"
+        taken: "%{attribute}は既に使用されています。"
+        confirmation: "%{attribute}が一致しません。"
