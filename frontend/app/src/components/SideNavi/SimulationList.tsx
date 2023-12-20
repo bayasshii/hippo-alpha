@@ -5,11 +5,11 @@ import { Flex } from "../Flex";
 import { SimulationContext } from "@/utils/provider/SimulationsProvider";
 
 export const SimulationList = () => {
-  const { isLoading, simulations } = useContext(SimulationContext);
+  const { simulations } = useContext(SimulationContext);
   // useParamsでとってきたい
   const location = useLocation();
   const id = location.pathname.split("/")[1];
-  if (isLoading) return <p>ローディング中</p>;
+
   return (
     <Flex gap={1} direction="column">
       {simulations.length !== 0 &&
