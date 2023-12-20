@@ -15,19 +15,17 @@ export const usePost = (path: string): UsePost => {
         .post(path, params)
         .then((response: any) => {
           if (response.status !== 200 && response.status !== 201) {
-            const error = new Error();
             setErrors(response.data);
-            throw error;
+            throw new Error();
           }
-
           return response;
         })
         .catch((error: any) => {
-          setErrors(error.data);
-          return error.response;
+          setErrors(error.response.data);
+          throw new Error();
         });
     },
-    [path]
+    [instance, path]
   );
 
   return [post, errors];

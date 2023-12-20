@@ -68,6 +68,7 @@ export const SimulationDetail = (props: Props) => {
     useDeleteAllAnnualSimulations();
   const [deleteSimulation, deleteSimulationErrors] = useDelete("simulations");
   // const navigate = useNavigate();
+  console.log(postSimulationErrors);
 
   const errors = useMemo(() => {
     return {
@@ -164,8 +165,6 @@ export const SimulationDetail = (props: Props) => {
             ...newSimulation,
             id: props.simulation_id
           });
-          // 一旦全て消した後に追加し直す
-          // simulation_idで全部消すことで、annual_simulationsのidの再取得を不要にする
           await deleteAllAnnualSimulations(String(props.simulation_id));
           await await Promise.all(
             annualSimulations.map((annualSimulation) =>
@@ -179,18 +178,20 @@ export const SimulationDetail = (props: Props) => {
           // postの処理
           const response = await postSimulation(newSimulation);
           const id = response.data.id; // ここでIDを取得
-          await Promise.all(
-            annualSimulations.map((annualSimulation) =>
-              postAnnualSimulation({
-                ...annualSimulation,
-                simulation_id: id
-              })
-            )
-          );
-          // 保存しきってからリダイレクト
-          window.location.href = `/${id}`;
-          // サイドバーが最新のシミュレーションをとってこれないからhrefにしてる。本当はproviderを使ってuseContextでspaないい感じにしたい。
-          // navigate(`/${id}`);
+          if (id) {
+            await Promise.all(
+              annualSimulations.map((annualSimulation) =>
+                postAnnualSimulation({
+                  ...annualSimulation,
+                  simulation_id: id
+                })
+              )
+            );
+            // 保存しきってからリダイレクト
+            window.location.href = `/${id}`;
+            // サイドバーが最新のシミュレーションをとってこれないからhrefにしてる。本当はproviderを使ってuseContextでspaないい感じにしたい。
+            // navigate(`/${id}`);
+          }
         }
       } catch (error) {
         throw error;

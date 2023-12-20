@@ -45,7 +45,8 @@ export const EditableText = ({
           color: "transparent",
           fontSize: "1.25rem",
           fontWeight: "normal",
-          lineHeight: 1
+          lineHeight: 1,
+          whiteSpace: "nowrap"
         }}
       >
         {value}
