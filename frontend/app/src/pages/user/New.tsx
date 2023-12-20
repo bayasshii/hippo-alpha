@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { usePost } from "@/hooks/usePost";
 import { useLoading } from "@/hooks/useLoading";
 import { Flex } from "@/components/Flex";
 import { InputField } from "@/components/InputField";
+import { useAuth } from "@/hooks/useAuth";
 
 export const New = () => {
   const [name, setName] = useState("");
@@ -11,7 +11,7 @@ export const New = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const confirmSuccessUrl = process.env.REACT_APP_URL;
-  const [postUserNew, postUserNewErrors] = usePost("/auth");
+  const [postUserNew, postUserNewErrors] = useAuth("/auth");
   const [loading, setLoading] = useLoading();
 
   const handleUserNew = async (e: any) => {

@@ -2,16 +2,16 @@ import Cookies from "js-cookie";
 import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "@/utils/provider/auth/AuthProvider";
-import { usePost } from "@/hooks/usePost";
 import { useLoading } from "@/hooks/useLoading";
 import { Flex } from "@/components/Flex";
 import { InputField } from "@/components/InputField";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Login = () => {
   const { setIsSignedIn, setCurrentUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [postUserLogin, postUserLoginErrors] = usePost("auth/sign_in");
+  const [postUserLogin, postUserLoginErrors] = useAuth("auth/sign_in");
   const navigation = useNavigate();
   const [loading, setLoading] = useLoading();
 
