@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "@/utils/auth/AuthProvider";
+import { AuthContext } from "@/utils/provider/auth/AuthProvider";
 import { usePost } from "@/hooks/usePost";
 import { useLoading } from "@/hooks/useLoading";
 import { Flex } from "@/components/Flex";

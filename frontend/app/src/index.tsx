@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterConfig } from "@/utils/router/RouterConfig";
-import { ToastProvider } from "@/utils/toast/ToastProvider";
-import { AuthProvider } from "./utils/auth/AuthProvider";
+import { ToastProvider } from "@/utils/provider/toast/ToastProvider";
+import { AuthProvider } from "@/utils/provider/auth/AuthProvider";
+import { SimulationProvider } from "@/utils/provider/SimulationsProvider";
 import "@/styles/reset.css";
 
 const root = ReactDOM.createRoot(
@@ -12,7 +13,9 @@ root.render(
   <React.StrictMode>
     <ToastProvider>
       <AuthProvider>
-        <RouterConfig />
+        <SimulationProvider>
+          <RouterConfig />
+        </SimulationProvider>
       </AuthProvider>
     </ToastProvider>
   </React.StrictMode>

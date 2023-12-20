@@ -1,5 +1,5 @@
-import { FC, ReactNode, createContext, useEffect, useState } from "react";
-import { getCurrentUser } from "@/utils/auth/getCurrentUser";
+import { ReactNode, createContext, useEffect, useState } from "react";
+import { getCurrentUser } from "@/utils/provider/auth/getCurrentUser";
 
 type Props = {
   children: ReactNode;
@@ -24,7 +24,7 @@ interface AuthContextType {
 }
 
 export const AuthContext = createContext<AuthContextType>(defaultAuthContext);
-export const AuthProvider: FC<Props> = ({ children }) => {
+export const AuthProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState();

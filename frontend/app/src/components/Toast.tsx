@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ToastTypes, TOAST_TYPE } from "@/utils/toast/ToastProvider";
+import { ToastTypes, TOAST_TYPE } from "@/utils/provider/toast/ToastProvider";
 import { Flex } from "./Flex";
 
 type Props = {

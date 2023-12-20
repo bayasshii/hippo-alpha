@@ -1,4 +1,4 @@
-import { AuthContext } from "@/utils/auth/AuthProvider";
+import { AuthContext } from "@/utils/provider/auth/AuthProvider";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { FaceIcon } from "@/components/images/FaceIcon";

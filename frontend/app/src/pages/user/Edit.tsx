@@ -1,4 +1,4 @@
-import { AuthContext } from "@/utils/auth/AuthProvider";
+import { AuthContext } from "@/utils/provider/auth/AuthProvider";
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDelete } from "@/hooks/useDelete";

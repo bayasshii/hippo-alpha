@@ -3,10 +3,11 @@ import {
   useCallback,
   useMemo,
   type ChangeEvent,
-  useEffect
+  useEffect,
+  useContext
 } from "react";
 import { Flex } from "@/components/Flex";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { SimulationChart } from "@/feature/simulations/components/SimulationChart";
 import { Simulation } from "@/feature/simulations/types/Simulation";
@@ -15,11 +16,12 @@ import { AnnualSimulationsField } from "@/feature/simulations/components/AnnualS
 import { usePost } from "@/hooks/usePost";
 import { usePatch } from "@/hooks/usePatch";
 import { useLoading } from "@/hooks/useLoading";
-import { useToast } from "@/utils/toast/useToast";
+import { useToast } from "@/utils/provider/toast/useToast";
 import { EditableText } from "@/components/EditableText";
 import { InputField } from "@/components/InputField";
 import { useDeleteAllAnnualSimulations } from "@/hooks/useDeleteAllAnnualSimulations";
 import { useDelete } from "@/hooks/useDelete";
+import { SimulationContext } from "@/utils/provider/SimulationsProvider";
 
 type Props = {
   simulation_id?: number;
@@ -67,8 +69,8 @@ export const SimulationDetail = (props: Props) => {
   const [deleteAllAnnualSimulations, deleteAllAnnualSimulationsErrors] =
     useDeleteAllAnnualSimulations();
   const [deleteSimulation, deleteSimulationErrors] = useDelete("simulations");
-  // const navigate = useNavigate();
-  console.log(postSimulationErrors);
+  const navigate = useNavigate();
+  const { fetchSimulations } = useContext(SimulationContext);
 
   const errors = useMemo(() => {
     return {
@@ -138,15 +140,16 @@ export const SimulationDetail = (props: Props) => {
 
   const deleteData = useCallback(async () => {
     const asyncDeleteData = async () => {
-      try {
-        if (props.simulation_id) {
+      if (props.simulation_id) {
+        try {
           await deleteSimulation(String(props.simulation_id));
           // ホームにリダイレクト
-          window.location.href = "/";
-          // navigate('');
+          navigate("/");
+        } catch (error) {
+          throw error;
+        } finally {
+          fetchSimulations();
         }
-      } catch (error) {
-        throw error;
       }
     };
     setLoading(asyncDeleteData);
@@ -187,14 +190,13 @@ export const SimulationDetail = (props: Props) => {
                 })
               )
             );
-            // 保存しきってからリダイレクト
-            window.location.href = `/${id}`;
-            // サイドバーが最新のシミュレーションをとってこれないからhrefにしてる。本当はproviderを使ってuseContextでspaないい感じにしたい。
-            // navigate(`/${id}`);
+            navigate(`/${id}`);
           }
         }
       } catch (error) {
         throw error;
+      } finally {
+        fetchSimulations();
       }
     };
     // TODO: なんかもっと上手いことまとめられそうな気はする

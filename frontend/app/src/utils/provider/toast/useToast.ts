@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ToastContext } from "@/utils/toast/ToastProvider";
+import { ToastContext } from "@/utils/provider/toast/ToastProvider";
 
 export const useToast = () => {
   // TODO:  URL変わったらToastは消えるべきだと思う
