@@ -19,7 +19,6 @@ import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/utils/provider/toast/useToast";
 import { EditableText } from "@/components/EditableText";
 import { InputField } from "@/components/InputField";
-import { useDeleteAllAnnualSimulations } from "@/hooks/useDeleteAllAnnualSimulations";
 import { useDelete } from "@/hooks/useDelete";
 import { SimulationContext } from "@/utils/provider/SimulationsProvider";
 
@@ -60,14 +59,14 @@ export const SimulationDetail = (props: Props) => {
     }
   }, [props.annualSimulations, props.simulation]);
 
-  const [postSimulation, postSimulationErrors] = usePost("simulations");
-  const [patchSimulation, patchSimulationErrors] = usePatch("simulations");
-  const [postAnnualSimulation, postAnnualSimulationErrors] =
-    usePost("annual_simulations");
+  const [postSimulation, postSimulationErrors] = usePost(
+    "simulations/create_simulation_and_annual_simulations"
+  );
+  const [patchSimulation, patchSimulationErrors] = usePatch(
+    "simulations/update_simulation_and_annual_simulations"
+  );
   const [setToast] = useToast();
   const [loading, setLoading] = useLoading();
-  const [deleteAllAnnualSimulations, deleteAllAnnualSimulationsErrors] =
-    useDeleteAllAnnualSimulations();
   const [deleteSimulation, deleteSimulationErrors] = useDelete("simulations");
   const navigate = useNavigate();
   const { fetchSimulations } = useContext(SimulationContext);
@@ -77,10 +76,15 @@ export const SimulationDetail = (props: Props) => {
       title: patchSimulationErrors?.title || postSimulationErrors?.title,
       principal:
         patchSimulationErrors?.principal || postSimulationErrors?.principal,
-      rate: postAnnualSimulationErrors?.rate,
-      monthly_deposit: postAnnualSimulationErrors?.monthly_deposit
+      rate: "",
+      monthly_deposit: ""
     };
-  }, [patchSimulationErrors, postSimulationErrors, postAnnualSimulationErrors]);
+  }, [
+    patchSimulationErrors?.title,
+    patchSimulationErrors?.principal,
+    postSimulationErrors?.title,
+    postSimulationErrors?.principal
+  ]);
 
   const onChangeAnnualSimulations = useCallback(
     (e: ChangeEvent<HTMLInputElement>, index: number) => {
@@ -153,7 +157,13 @@ export const SimulationDetail = (props: Props) => {
       }
     };
     setLoading(asyncDeleteData);
-  }, [deleteSimulation, props.simulation_id, setLoading]);
+  }, [
+    deleteSimulation,
+    fetchSimulations,
+    navigate,
+    props.simulation_id,
+    setLoading
+  ]);
 
   const saveData = useCallback(async () => {
     const newSimulation: Simulation = {
@@ -164,34 +174,19 @@ export const SimulationDetail = (props: Props) => {
       try {
         if (props.simulation_id) {
           // patchの処理
-          await patchSimulation({
+          patchSimulation({
             ...newSimulation,
-            id: props.simulation_id
+            id: props.simulation_id,
+            annual_simulations: annualSimulations
           });
-          await deleteAllAnnualSimulations(String(props.simulation_id));
-          await await Promise.all(
-            annualSimulations.map((annualSimulation) =>
-              postAnnualSimulation({
-                simulation_id: props.simulation_id,
-                ...annualSimulation
-              })
-            )
-          );
         } else {
           // postの処理
-          const response = await postSimulation(newSimulation);
-          const id = response.data.id; // ここでIDを取得
-          if (id) {
-            await Promise.all(
-              annualSimulations.map((annualSimulation) =>
-                postAnnualSimulation({
-                  ...annualSimulation,
-                  simulation_id: id
-                })
-              )
-            );
-            navigate(`/${id}`);
-          }
+          const response = await postSimulation({
+            ...newSimulation,
+            annual_simulations: annualSimulations
+          });
+          const id = response.data.id;
+          navigate(`/${id}`);
         }
       } catch (error) {
         throw error;
